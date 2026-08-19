@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<!--
+  テンプレート: メニュー画面 (タイル型ランチャー)
+  用途: 各ツールへの入口となるトップページ。
+  差し替え箇所は {{ }} で示す。セクション/タイルは増減自由。
+-->
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>メインメニュー | ToolKit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- 土台CSS(順番厳守): レイアウト → 基本スタイル → 共通部品 -->
+<link rel="stylesheet" href="./assets/flexbox.css" type="text/css">
+<link rel="stylesheet" href="./assets/design.css" type="text/css">
+<link rel="stylesheet" href="./assets/components.css" type="text/css">
+</head>
+<body>
+
+<!-- ===== ヘッダ(黒帯・ユーザー情報/ログアウト) ===== -->
+<div class="header">
+  <span style="float:right;font-size:10pt;line-height:30px;color:#cccccc;">
+    {{ユーザー名}} | <a href="#" style="color:#aaaaaa;">ログアウト</a>
+  </span>
+</div>
+
+<!-- ===== メニューバー(パンくず) ===== -->
+<div class="flex_menubar">
+  <a href="template_menu.html">ホーム</a>
+</div>
+
+<!-- ===== 本文 ===== -->
+<div class="flex_container">
+  <div class="flex_main">
+
+    <!-- セクション: 画面テンプレート(各サンプル画面への入口) -->
+    <div class="menu_section">
+      <div class="menu_section_title">画面テンプレート</div>
+      <div class="tile_container">
+
+        <a class="tile" href="template_list.html">
+          <div class="tile_icon">📋</div>
+          <div class="tile_label">一覧
+（絞り込み＋検索）</div>
+        </a>
+
+        <a class="tile" href="template_form_simple.html">
+          <div class="tile_icon">📥</div>
+          <div class="tile_label">簡易登録
+（Queueレベル）</div>
+        </a>
+
+        <a class="tile" href="template_form.html">
+          <div class="tile_icon">📝</div>
+          <div class="tile_label">単票登録
+（マスタ）</div>
+        </a>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

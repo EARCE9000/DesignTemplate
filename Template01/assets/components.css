@@ -1,0 +1,488 @@
+/*
+  components.css  —  共通コンポーネント集
+  ------------------------------------------------------------------
+  もともと各画面(queue_base / webhook_events / cert_issue / exec_status …)
+  が <style> にインラインで重複定義していた部品を 1 ファイルに集約したもの。
+  flexbox.css → design.css → components.css の順で読み込む前提。
+
+  Author : d.idei@earce.net  (base design: EARCE.NET "Simple Wireframe")
+  ------------------------------------------------------------------
+  ■ 配色トークン(参考)
+    アクセント(ホバー)   #ee7800   ボタンホバー          #ffa500
+    登録/主ボタン(青)     #187FF5   ヘッダ地(黒)          #16160e
+    メニューバー/見出し   #2b2b2b   危険(赤)              #d22222
+    警告(紫)              #5a4498   罫線グレー            #e8e8e8 / #d0d0d0
+  ================================================================== */
+
+
+/* ===== ページ見出し ================================================ */
+.system_title {
+  font-size: 18pt;
+  font-weight: bold;
+  line-height: 30px;
+  letter-spacing: 0.05em;
+}
+
+
+/* ===== フォームレイアウト ========================================== */
+/* ラベル(固定幅) + 入力欄 を横並びにし、行を薄い罫線で区切る          */
+.form_row   { display: flex; flex-wrap: wrap; gap: 0; }
+
+.form_field {
+  display: flex;
+  align-items: flex-start;
+  border-bottom: 1px solid #eeeeee;
+  padding: 8px 10px;
+  flex: 1;
+  min-width: 280px;   /* 狭くなると自動で縦積み(2カラム→1カラム) */
+}
+.form_field:last-child { border-bottom: none; }
+
+.form_label {
+  width: 130px;
+  min-width: 130px;
+  font-size: 10pt;
+  font-weight: bold;
+  color: #555555;
+  padding-top: 6px;
+}
+.form_label.required::after { content: " *"; color: #d22222; }  /* 必須マーク */
+
+.form_value { flex: 1; }
+.form_value input[type="text"],
+.form_value select   { width: 100%; }
+.form_value textarea {
+  width: 100%;
+  height: 5em;
+  border-radius: 10px;
+  padding: 6px 10px;
+  border: 1px solid #d5d5d5;
+  font-size: 11pt;
+  resize: vertical;
+}
+
+.form_hint { font-size: 9pt; color: #8a8a8a; margin-top: 3px; }  /* 入力補足 */
+
+/* 単票フォーム内のセクション見出し(基本情報 / 詳細 など) */
+.form_section_title {
+  font-size: 11pt;
+  font-weight: bold;
+  color: #2b2b2b;
+  padding: 6px 10px;
+  margin-top: 6px;
+  border-left: 4px solid #ee7800;
+  background-color: #faf6f0;
+}
+
+/* 単票の確認表示(登録せず内容を見せる)用: 入力欄の代わりに値を表示 */
+.form_static {
+  font-size: 11pt;
+  color: #2b2b2b;
+  padding-top: 6px;
+  word-break: break-all;
+}
+
+/* チェックボックス / ラジオ(フォーム内)
+   <label><input type="checkbox"> ラベル</label> の形で使う。
+   design.css の全input共通枠(border/height)を打ち消し、少し大きめ+ブランド色。 */
+.form_value input[type="checkbox"],
+.form_value input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  accent-color: #ee7800;   /* チェック/ドットをアクセント色に */
+  flex: 0 0 auto;
+  cursor: pointer;
+}
+
+/* input を内包する label: 縦中央そろえ + 適切な間隔でラベルと対比を改善 */
+.form_value label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11pt;
+  line-height: 1.2;
+  margin-right: 1.6em;
+  cursor: pointer;
+  vertical-align: middle;
+}
+.form_value label:last-child { margin-right: 0; }
+
+/* 確認画面など: トグル/チェック/ラジオを「見た目そのまま・操作不可」で表示。
+   form_value に .readonly を付けるとその中の操作系がクリック/キー操作を受けない。
+   値は別途 <input type="hidden"> で送る前提。 */
+.form_value.readonly { pointer-events: none; }
+.form_value.readonly label { cursor: default; }
+
+/* トグルスイッチ (ON=緑/右, OFF=グレー/左)。右横にラベル。
+   <label class="toggle_switch">
+     <input type="checkbox" name="xxx" value="1" checked>
+     <span class="toggle_track"></span>
+     <span class="toggle_label">ラベル文言</span>
+   </label>                                                            */
+.toggle_switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  margin-right: 0;
+}
+.toggle_switch input {          /* 元のチェックボックスは隠す */
+  display: none;
+}
+.toggle_switch .toggle_track {
+  position: relative;
+  flex: 0 0 auto;
+  width: 46px;
+  height: 26px;
+  background-color: #c8ccd0;    /* OFF時の地色 */
+  border-radius: 999px;
+  transition: background-color 0.2s;
+}
+.toggle_switch .toggle_track::after {   /* 白いノブ */
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: left 0.2s;
+}
+.toggle_switch input:checked + .toggle_track {
+  background-color: #2fc36b;    /* ON時の緑 */
+}
+.toggle_switch input:checked + .toggle_track::after {
+  left: 23px;                   /* 46 - 20 - 3 */
+}
+.toggle_switch .toggle_label {
+  font-size: 11pt;
+  color: #2b2b2b;
+  line-height: 1.2;
+}
+
+/* 状態語の出し分け(JS不要): toggle_label 内に toggle_on / toggle_off を置くと
+   ON時は toggle_on、OFF時は toggle_off だけが表示される。
+   <span class="toggle_label"><span class="toggle_on">公開</span><span class="toggle_off">非公開</span></span> */
+.toggle_switch .toggle_on  { display: none; }
+.toggle_switch .toggle_off { display: inline; }
+.toggle_switch input:checked ~ .toggle_label .toggle_on  { display: inline; }
+.toggle_switch input:checked ~ .toggle_label .toggle_off { display: none; }
+
+
+/* ===== ファイル ドラッグ&ドロップ ================================= */
+/* <label class="dropzone"> でファイル入力を包み、隣に .dz_file_list を置く。
+   挙動は assets/dropzone.js が全 .dropzone を自動初期化する。          */
+.dropzone {
+  display: block;
+  border: 2px dashed #c0c6cc;
+  border-radius: 10px;
+  background-color: #fafbfc;
+  padding: 22px 16px;
+  text-align: center;
+  color: #6a7178;
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s, color 0.15s;
+}
+.dropzone:hover        { border-color: #ee7800; background-color: #fff7ef; }
+.dropzone.dragover     { border-color: #ee7800; background-color: #fff4e5; color: #ee7800; }
+.dropzone .dz_icon     { font-size: 26pt; line-height: 1; }
+.dropzone .dz_text     { font-size: 10.5pt; margin-top: 6px; }
+.dropzone .dz_hint     { font-size: 9pt; color: #9aa0a6; margin-top: 2px; }
+.dropzone .dz_browse   { color: #187FF5; text-decoration: underline; }
+
+/* 選択済みファイルの一覧 */
+.dz_file_list { margin-top: 8px; }
+.dz_file {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10pt;
+  padding: 5px 10px;
+  border: 1px solid #e2e5e9;
+  border-radius: 6px;
+  background-color: #ffffff;
+  margin-top: 5px;
+}
+.dz_file .dz_name   { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dz_file .dz_size   { color: #9aa0a6; font-size: 9pt; white-space: nowrap; }
+.dz_file .dz_remove { color: #d22222; cursor: pointer; text-decoration: none; font-weight: bold; padding: 0 4px; }
+.dz_file .dz_remove:hover { color: #a11; }
+
+
+/* ===== ステータスバッジ ============================================ */
+/* <span class="status_badge completed">completed</span> のように使う      */
+.status_badge {
+  display: inline-block;
+  font-size: 8pt;
+  font-weight: bold;
+  border-radius: 4px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+.status_badge.pending    { background-color: #ffe4c0; color: #b05000; }
+.status_badge.processing { background-color: #d0e8ff; color: #1558a0; }
+.status_badge.completed  { background-color: #d0f0d0; color: #1a6e1a; }
+.status_badge.failed     { background-color: #ffd0d0; color: #aa1111; }
+.status_badge.unknown    { background-color: #e8e8e8; color: #555555; }
+.status_badge.stale      { background-color: #fff3c4; color: #8a6d00; }
+.status_badge.intranet   { background-color: #cceceb; color: #0e6b66; }
+
+/* 属性の色分け(任意) */
+.status_badge.provider_exec    { background-color: #e0e5ff; color: #3945a5; }
+.status_badge.provider_rundeck { background-color: #ffe0dc; color: #a53a3a; }
+
+/* 経過時間バッジ(任意) */
+.status_badge.elapsed_15m     { background-color: #eaf3de; color: #27500a; }
+.status_badge.elapsed_1h      { background-color: #e6f1fb; color: #0c447c; }
+.status_badge.elapsed_6h      { background-color: #f1efe8; color: #444441; }
+.status_badge.elapsed_12h     { background-color: #faeeda; color: #633806; }
+.status_badge.elapsed_over12h { background-color: #fcebeb; color: #791f1f; }
+
+
+/* ===== 一覧テーブル ================================================ */
+.data_table_wrap { overflow-x: auto; }   /* 横スクロール(列が多い一覧用) */
+
+.data_table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10pt;
+  background-color: #ffffff;
+}
+.data_table thead tr { background-color: #2b2b2b; color: #ffffff; }
+.data_table thead th {
+  padding: 7px 10px;
+  text-align: left;
+  white-space: nowrap;
+  font-weight: bold;
+  font-size: 9pt;
+}
+.data_table tbody tr  { border-bottom: 1px solid #e8e8e8; }
+.data_table tbody tr:hover { background-color: #fff4e5; }
+.data_table tbody td  { padding: 6px 10px; vertical-align: middle; }
+
+/* 行の状態強調(任意 / <tr class="row_failed"> などで付与) */
+.data_table tbody tr.row_completed        { background-color: #f0f0f0; color: #888; }
+.data_table tbody tr.row_completed:hover  { background-color: #e8e8e8; }
+.data_table tbody tr.row_failed           { background-color: #fff0f0; color: #aa1111; }
+.data_table tbody tr.row_failed:hover     { background-color: #ffe4e4; }
+.data_table tbody tr.row_processing       { background-color: #f0fff4; color: #1a6e1a; }
+.data_table tbody tr.row_processing:hover { background-color: #e0f5e8; }
+
+.null_val    { color: #b0b0b0; font-style: italic; font-size: 9pt; }  /* NULL/空値 */
+.fqdn_cell   { font-family: Consolas, "Courier New", monospace; }     /* 等幅セル */
+
+
+/* ===== 件数・条件表示(一覧ヘッダ行) =============================== */
+.result_count { font-size: 10pt; color: #666; margin-bottom: 8px; }
+
+.result_meta {
+  padding: 8px 14px;
+  font-size: 10pt;
+  color: #666;
+  border-bottom: 1px solid #eeeeee;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 参照先DB等の補助バッジ */
+.db_badge {
+  display: inline-block;
+  font-size: 8pt;
+  font-weight: bold;
+  background-color: #e8d8ff;
+  color: #6600cc;
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+
+/* ===== フィルタパネル(絞り込み) =================================== */
+.filter_panel {
+  padding: 12px 14px;
+  border-bottom: 1px solid #e8e8e8;
+  background-color: #fafafa;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+.filter_group { display: flex; align-items: center; gap: 6px; }
+.filter_label { font-size: 9pt; font-weight: bold; color: #666; white-space: nowrap; }
+
+/* 期間などのトグルボタン(ピル型) */
+.range_btn {
+  display: inline-block;
+  font-size: 9pt;
+  font-weight: bold;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid #d0d0d0;
+  background-color: #ffffff;
+  color: #444;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.12s, border-color 0.12s, color 0.12s;
+}
+.range_btn:hover  { background-color: #fff4e5; border-color: #ee7800; color: #ee7800; }
+.range_btn.active { background-color: #ee7800; border-color: #ee7800; color: #ffffff; }
+
+/* キーワード検索 */
+.search_form  { display: flex; align-items: center; gap: 6px; }
+.search_input {
+  font-size: 10pt;
+  padding: 4px 10px;
+  border: 1px solid #d5d5d5;
+  border-radius: 6px;
+  width: 220px;
+}
+.search_input:focus {
+  outline: none;
+  border-color: #ee7800;
+  box-shadow: 0 0 0 2px rgba(238,120,0,0.15);
+}
+.search_btn {
+  font-size: 9pt;
+  font-weight: bold;
+  padding: 4px 14px;
+  border-radius: 6px;
+  border: 1px solid #d0d0d0;
+  background-color: #fff;
+  color: #444;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.12s;
+}
+.search_btn:hover  { background-color: #fff4e5; border-color: #ee7800; color: #ee7800; }
+.search_clear      { font-size: 9pt; color: #888; text-decoration: none; padding: 4px 8px; }
+.search_clear:hover { color: #ee7800; }
+
+/* 現在の検索条件表示 */
+.active_search {
+  font-size: 9pt;
+  background-color: #fff3cd;
+  color: #7a5a00;
+  border: 1px solid #ffe08a;
+  border-radius: 4px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+/* クリック可能なフィルタバッジ(status_badge に併用) */
+.filter_badge { cursor: pointer; user-select: none; transition: filter 0.12s, box-shadow 0.12s; }
+.filter_badge:hover  { filter: brightness(0.93); }
+.filter_badge.active { box-shadow: inset 0 0 0 2px currentColor; }
+.filter_clear_btn    { font-size: 9pt; color: #888; cursor: pointer; text-decoration: none; padding: 2px 8px; }
+.filter_clear_btn:hover { color: #ee7800; }
+
+
+/* ===== メッセージ(結果通知) ====================================== */
+.msg_success {
+  font-size: 11pt;
+  font-weight: bold;
+  color: #1a6e1a;
+  border: 2px solid #5cb85c;
+  border-radius: 6px;
+  padding: 8px 14px;
+  margin-bottom: 10px;
+  background-color: #f0fff0;
+}
+.msg_error {
+  font-size: 11pt;
+  font-weight: bold;
+  color: #d22222;
+  border: 2px solid #ec6d71;
+  border-radius: 6px;
+  padding: 8px 14px;
+  margin-bottom: 10px;
+  background-color: #fff0f0;
+}
+
+
+/* ===== 行内アクション(ダウンロード等の小ボタン) ================= */
+.dl_button {
+  display: inline-block;
+  font-size: 8pt;
+  font-weight: bold;
+  border-radius: 4px;
+  padding: 2px 10px;
+  background-color: #187FF5;
+  color: #ffffff;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.dl_button:hover { background-color: #0f5fbb; }
+
+
+/* ===== メニュー(タイル) =========================================== */
+.menu_section       { padding: 20px 10px 10px 10px; }
+.menu_section_title {
+  font-size: 12pt;
+  color: #8a8a8a;
+  font-weight: bold;
+  padding: 0 4px 6px 4px;
+  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 12px;
+}
+.tile_container { display: flex; flex-wrap: wrap; gap: 12px; padding: 4px 0; }
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 160px;
+  height: 120px;
+  background-color: #ffffff;
+  border: 1px solid #d0d0d0;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #2b2b2b;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+  padding: 10px;
+  text-align: center;
+}
+.tile:hover     { background-color: #fff4e5; border-color: #ee7800; color: #ee7800; }
+.tile_icon      { font-size: 32pt; margin-bottom: 8px; line-height: 1; }
+.tile_label     { font-size: 11pt; font-weight: bold; text-align: center; white-space: pre-line; }
+
+
+/* ===== レスポンシブ補強（スマホ幅対応） ============================ */
+/* design.css の .item_group{min-width:480px} 等が狭幅で横はみ出しを起こす
+   ため、700px 以下で上書きする。flexbox.css の縦積み切替と併用。         */
+@media screen and (max-width: 700px) {
+
+  /* カードの固定下限幅を解除（横スクロールの主因） */
+  .item_group,
+  .wizard { min-width: 0; }
+
+  /* フォーム: ラベルを上、入力を下に積む（横幅130px固定をやめる） */
+  .form_field { min-width: 0; }
+  .form_label { width: auto; min-width: 0; padding-top: 0; margin-bottom: 4px; }
+
+  /* ボタン行: flex_item を縦積み（flexbox.css の flex_container 縦化に追従） */
+  .item_action button,
+  .item_action input[type="button"] { width: 100% !important; }
+
+  /* 見出しの折り返しを許可（db_badge 等が右にはみ出さないよう） */
+  .item_title .title { white-space: normal; }
+  .data_table thead th,
+  .data_table tbody td { white-space: normal; }
+
+  /* 本文の左右パディングを詰める */
+  .flex_main { padding: 6px; }
+
+  /* フィルタ: 期間ボタン列・検索欄を折り返す */
+  .filter_group { flex-wrap: wrap; }
+  .search_form  { flex-wrap: wrap; }
+  .search_input { width: 100%; }
+}

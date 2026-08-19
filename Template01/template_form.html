@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<!--
+  テンプレート: 単票 情報登録／編集 画面 (標準フォーム)
+  用途: 1レコードをじっくり登録・編集する画面(マスタ登録・詳細編集など)。
+        template_form_simple.html との違い:
+          - template_form_simple.html … Queueレベルの簡易登録(少項目)。上で入力・下で直近一覧。
+          - template_form.html (本ファイル) … 単票。項目が多くセクション分け・2カラム・各種入力型を持つ。
+                                              一覧は同画面に持たず、保存後は一覧画面へ戻る運用。
+  ポイント:
+    - form_row に form_field を2つ並べると2カラム(狭幅で自動的に1カラム)。
+    - 全幅にしたい項目(テキストエリア等)は form_field を1つだけ置く。
+    - セクション見出しは .form_section_title。
+-->
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>単票登録サンプル | ToolKit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="./assets/flexbox.css" type="text/css">
+<link rel="stylesheet" href="./assets/design.css" type="text/css">
+<link rel="stylesheet" href="./assets/components.css" type="text/css">
+</head>
+<body>
+
+<div class="header">
+  <span style="float:right;font-size:10pt;line-height:30px;color:#cccccc;">
+    {{ユーザー名}} | <a href="#" style="color:#aaaaaa;">ログアウト</a>
+  </span>
+</div>
+
+<div class="flex_menubar">
+  <a href="template_menu.html">ホーム</a>
+  <a href="template_list.html">一覧サンプル</a>
+  <a href="template_form.html">新規登録</a>
+</div>
+
+<div class="flex_container">
+  <div class="flex_main">
+
+    <!-- 処理結果メッセージ(必要時のみ) -->
+    <!-- <div class="msg_success">保存しました。</div> -->
+    <!-- <div class="msg_error">エラー: {{項目}}を確認してください。</div> -->
+
+    <div class="item_group" style="min-width:0;">
+      <div class="item_title">
+        <div class="title">{{対象名}} 登録</div>
+        <!-- 編集モードでは登録日時やIDのバッジを添える例 -->
+        <!-- <span class="db_badge" style="margin-left:auto;">ID: 1024</span> -->
+      </div>
+
+      <!-- 入力→確認画面へ(確認画面で最終的に登録する)。
+           編集は action=update + hidden id。確認を挟まない場合は直接
+           登録エンドポイントを action にしてよい。 -->
+      <form method="post" action="template_form_confirm.html">
+        <input type="hidden" name="action" value="confirm">
+        <!-- 編集時: <input type="hidden" name="id" value="{{id}}"> -->
+
+        <!-- ===== セクション: 基本情報 ===== -->
+        <div class="form_section_title">基本情報</div>
+
+        <div class="form_row">
+          <div class="form_field">
+            <div class="form_label required">コード</div>
+            <div class="form_value">
+              <input type="text" name="code" value="" placeholder="例: A-001" maxlength="32" required>
+            </div>
+          </div>
+          <div class="form_field">
+            <div class="form_label required">名称</div>
+            <div class="form_value">
+              <input type="text" name="name" value="" placeholder="表示名" maxlength="128" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="form_row">
+          <div class="form_field">
+            <div class="form_label">区分</div>
+            <div class="form_value">
+              <select name="category">
+                <option value="">選択してください</option>
+                <option value="1">区分A</option>
+                <option value="2">区分B</option>
+                <option value="3">区分C</option>
+              </select>
+            </div>
+          </div>
+          <div class="form_field">
+            <div class="form_label">状態</div>
+            <div class="form_value" style="padding-top:6px;">
+              <label><input type="radio" name="state" value="active" checked> 有効</label>
+              <label><input type="radio" name="state" value="inactive"> 無効</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== セクション: 詳細 ===== -->
+        <div class="form_section_title">詳細</div>
+
+        <div class="form_row">
+          <div class="form_field">
+            <div class="form_label">表示順</div>
+            <div class="form_value">
+              <input type="number" name="sort_order" value="0" min="0" step="1" style="width:8em;">
+            </div>
+          </div>
+          <div class="form_field">
+            <div class="form_label">適用開始日</div>
+            <div class="form_value">
+              <input type="date" name="start_date" value="">
+            </div>
+          </div>
+        </div>
+
+        <!-- 全幅項目(1行に1フィールドだけ置く) -->
+        <div class="form_row">
+          <div class="form_field">
+            <div class="form_label">オプション</div>
+            <div class="form_value" style="padding-top:6px;">
+              <label><input type="checkbox" name="opt_notify" value="1"> 通知する</label>
+              <label><input type="checkbox" name="opt_public" value="1"> 公開する</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- トグルスイッチ(ON/OFF): 状態語が切り替わる例。確認画面と同じ2カラム配置 -->
+        <div class="form_row">
+          <div class="form_field">
+            <div class="form_label">メール通知</div>
+            <div class="form_value" style="padding-top:4px;">
+              <label class="toggle_switch">
+                <input type="checkbox" name="mail_notify" value="1" checked>
+                <span class="toggle_track"></span>
+                <span class="toggle_label">
+                  <span class="toggle_on">受け取る</span>
+                  <span class="toggle_off">受け取らない</span>
+                </span>
+              </label>
+            </div>
+          </div>
+          <div class="form_field">
+            <div class="form_label">公開設定</div>
+            <div class="form_value" style="padding-top:4px;">
+              <label class="toggle_switch">
+                <input type="checkbox" name="is_public" value="1">
+                <span class="toggle_track"></span>
+                <span class="toggle_label">
+                  <span class="toggle_on">公開</span>
+                  <span class="toggle_off">非公開</span>
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form_row">
+          <div class="form_field">
+            <div class="form_label">説明</div>
+            <div class="form_value">
+              <textarea name="description" placeholder="補足説明"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- 添付ファイル(ドラッグ&ドロップ / クリック選択、複数可) -->
+        <div class="form_row">
+          <div class="form_field">
+            <div class="form_label">添付ファイル</div>
+            <div class="form_value">
+              <label class="dropzone">
+                <input type="file" name="attachments[]" multiple hidden>
+                <div class="dz_icon">📎</div>
+                <div class="dz_text">ここにファイルをドラッグ＆ドロップ</div>
+                <div class="dz_hint">または<span class="dz_browse">クリックして選択</span>（複数可）</div>
+              </label>
+              <div class="dz_file_list"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== ボタン ===== -->
+        <div style="padding:10px;">
+          <div class="flex_container">
+            <div class="flex_item1 item_action">
+              <a href="template_list.html" class="cancel_button" style="display:inline-block;line-height:36px;text-decoration:none;width:90%;text-align:center;border-radius:10px;">一覧へ戻る</a>
+            </div>
+            <div class="flex_item1 item_action">
+              <button type="submit" class="entry_button" style="width:90%">確認画面へ</button>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<!-- ファイルD&Dの共通挙動(全 .dropzone を自動初期化) -->
+<script src="./assets/dropzone.js"></script>
+</body>
+</html>

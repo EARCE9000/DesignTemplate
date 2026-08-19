@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<!--
+  テンプレート: 登録内容の確認 画面
+  用途: 単票フォーム(template_form.html)で入力した内容を確認してから登録する。
+        フロー: template_form.html(入力) → template_form_confirm.html(確認) → 登録
+  ポイント:
+    - 入力値は .form_static で読み取り専用表示(入力欄は出さない)。
+    - 同じ値を <input type="hidden"> で保持し、登録アクションへそのまま送る。
+    - 「戻る」は入力画面へ。サーバ側はPOST値でフォームを再表示する想定。
+    - ラベル/セクション構成は入力フォームと一致させる。
+-->
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>登録内容の確認 | ToolKit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="./assets/flexbox.css" type="text/css">
+<link rel="stylesheet" href="./assets/design.css" type="text/css">
+<link rel="stylesheet" href="./assets/components.css" type="text/css">
+</head>
+<body>
+
+<div class="header">
+  <span style="float:right;font-size:10pt;line-height:30px;color:#cccccc;">
+    {{ユーザー名}} | <a href="#" style="color:#aaaaaa;">ログアウト</a>
+  </span>
+</div>
+
+<div class="flex_menubar">
+  <a href="template_menu.html">ホーム</a>
+  <a href="template_list.html">一覧サンプル</a>
+  <a href="template_form.html">新規登録</a>
+</div>
+
+<div class="flex_container">
+  <div class="flex_main">
+
+    <div class="item_group" style="min-width:0;">
+      <div class="item_title">
+        <div class="title">登録内容の確認</div>
+      </div>
+
+      <div style="padding:8px 10px 2px 10px; font-size:10pt; color:#555;">
+        以下の内容で登録します。よろしければ「この内容で登録」を押してください。修正する場合は「戻る」を押してください。
+      </div>
+
+      <!-- 登録アクションへ送信(実際の登録エンドポイントに置き換える)。
+           demo では一覧へ遷移して「登録完了」を模擬。 -->
+      <form method="post" action="template_list.html">
+        <input type="hidden" name="action" value="create">
+
+        <!-- 入力値を保持(登録処理へそのまま渡す) -->
+        <input type="hidden" name="code"           value="A-001">
+        <input type="hidden" name="name"           value="サンプル名称">
+        <input type="hidden" name="category"       value="1">
+        <input type="hidden" name="state"          value="active">
+        <input type="hidden" name="sort_order"     value="10">
+        <input type="hidden" name="start_date"     value="2026-08-13">
+        <input type="hidden" name="opt_notify"     value="1">
+        <input type="hidden" name="mail_notify"    value="1">
+        <input type="hidden" name="is_public"      value="0">
+        <input type="hidden" name="description"    value="サンプルの説明文です。">
+
+        <!-- ===== 基本情報 ===== -->
+        <div class="form_section_title">基本情報</div>
+
+        <div class="form_row">
+          <div class="form_field">
+            <div class="form_label">コード</div>
+            <div class="form_value"><div class="form_static">A-001</div></div>
+          </div>
+          <div class="form_field">
+            <div class="form_label">名称</div>
+            <div class="form_value"><div class="form_static">サンプル名称</div></div>
+          </div>
+        </div>
+
+        <div class="form_row">
+          <div class="form_field">
+            <div class="form_label">区分</div>
+            <div class="form_value"><div class="form_static">区分A</div></div>
+          </div>
+          <div class="form_field">
+            <div class="form_label">状態</div>
+            <div class="form_value"><div class="form_static">有効</div></div>
+          </div>
+        </div>
+
+        <!-- ===== 詳細 ===== -->
+        <div class="form_section_title">詳細</div>
+
+        <div class="form_row">
+          <div class="form_field">
+            <div class="form_label">表示順</div>
+            <div class="form_value"><div class="form_static">10</div></div>
+          </div>
+          <div class="form_field">
+            <div class="form_label">適用開始日</div>
+            <div class="form_value"><div class="form_static">2026-08-13</div></div>
+          </div>
+        </div>
+
+        <div class="form_row">
+          <div class="form_field">
+            <div class="form_label">オプション</div>
+            <div class="form_value"><div class="form_static">通知する</div></div>
+          </div>
+        </div>
+
+        <div class="form_row">
+          <div class="form_field">
+            <div class="form_label">メール通知</div>
+            <div class="form_value"><div class="form_static">受け取る</div></div>
+          </div>
+          <div class="form_field">
+            <div class="form_label">公開設定</div>
+            <div class="form_value"><div class="form_static">非公開</div></div>
+          </div>
+        </div>
+
+        <div class="form_row">
+          <div class="form_field">
+            <div class="form_label">説明</div>
+            <div class="form_value"><div class="form_static">サンプルの説明文です。</div></div>
+          </div>
+        </div>
+
+        <!-- 添付ファイルはファイル名をテキスト表示(確認画面は全項目テキスト) -->
+        <div class="form_row">
+          <div class="form_field">
+            <div class="form_label">添付ファイル</div>
+            <div class="form_value"><div class="form_static">仕様書.pdf、画面イメージ.png（2件）</div></div>
+          </div>
+        </div>
+
+        <!-- ===== ボタン(戻る / 登録) ===== -->
+        <div style="padding:10px;">
+          <div class="flex_container">
+            <div class="flex_item1 item_action">
+              <a href="template_form.html" class="cancel_button" style="display:inline-block;line-height:36px;text-decoration:none;width:90%;text-align:center;border-radius:10px;">戻る</a>
+            </div>
+            <div class="flex_item1 item_action">
+              <button type="submit" class="entry_button" style="width:90%">この内容で登録</button>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<!--
+  テンプレート: 登録フォーム + 直近一覧 画面
+  用途: 入力フォームで1件登録し、下に登録済みの直近レコードを一覧表示する
+        (queue_base / cert_issue と同型の「メンテナンス画面」)。
+-->
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>簡易登録サンプル | ToolKit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="./assets/flexbox.css" type="text/css">
+<link rel="stylesheet" href="./assets/design.css" type="text/css">
+<link rel="stylesheet" href="./assets/components.css" type="text/css">
+</head>
+<body>
+
+<div class="header">
+  <span style="float:right;font-size:10pt;line-height:30px;color:#cccccc;">
+    {{ユーザー名}} | <a href="#" style="color:#aaaaaa;">ログアウト</a>
+  </span>
+</div>
+
+<div class="flex_menubar">
+  <a href="template_menu.html">ホーム</a>
+  <a href="template_form_simple.html">簡易登録サンプル</a>
+</div>
+
+<div class="flex_container">
+  <div class="flex_main">
+
+    <!-- 処理結果メッセージ(必要時のみ出力) -->
+    <!-- <div class="msg_success">登録しました。</div> -->
+    <!-- <div class="msg_error">エラー: ○○を確認してください。</div> -->
+
+    <!-- ===== 登録フォーム ===== -->
+    <div class="item_group" style="min-width:0; margin-bottom:14px;">
+      <div class="item_title">
+        <div class="title">簡易登録サンプル</div>
+      </div>
+
+      <form method="post" action="template_form_simple.html">
+        <input type="hidden" name="action" value="register">
+
+        <!-- 必須テキスト -->
+        <div class="form_row">
+          <div class="form_field">
+            <div class="form_label required">{{項目名}}</div>
+            <div class="form_value">
+              <input type="text" name="{{name}}" value="" placeholder="{{入力例}}" maxlength="128" required>
+              <div class="form_hint">{{補足説明(任意)}}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 任意テキストエリア -->
+        <div class="form_row">
+          <div class="form_field">
+            <div class="form_label">備考</div>
+            <div class="form_value">
+              <textarea name="data_comment" placeholder="補足事項など"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- ボタン(左:クリア / 右:登録) -->
+        <div style="padding:10px;">
+          <div class="flex_container">
+            <div class="flex_item1 item_action">
+              <button type="reset" class="cancel_button" style="width:90%">クリア</button>
+            </div>
+            <div class="flex_item1 item_action">
+              <button type="submit" class="entry_button" style="width:90%">登録</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- ===== 直近一覧 ===== -->
+    <div class="item_group" style="min-width:0;">
+      <div class="item_title">
+        <div class="title">直近 100 件</div>
+      </div>
+
+      <div class="item_data">
+        <div class="result_count">
+          {{件数}} 件表示
+          <a href="template_form_simple.html" style="margin-left:12px;font-size:9pt;color:#187FF5;text-decoration:none;">↻ 更新</a>
+        </div>
+
+        <div class="data_table_wrap">
+          <table class="data_table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>{{項目}}</th>
+                <th>ステータス</th>
+                <th>備考</th>
+                <th>登録日時</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>21</td>
+                <td>{{値}}</td>
+                <td><span class="status_badge completed">completed</span></td>
+                <td><span class="null_val">-</span></td>
+                <td style="white-space:nowrap;">2026-04-27 02:12:16</td>
+                <td style="text-align:center;">
+                  <!-- 行内アクション(ダウンロード等) -->
+                  <a href="#" class="dl_button">DL</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

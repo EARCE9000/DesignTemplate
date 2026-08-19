@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<!--
+  テンプレート: 一覧画面 (絞り込み + キーワード検索 + テーブル)
+  用途: レコードを条件で絞り込んで一覧表示する画面。
+  絞り込み(range_btn)・検索・列・行状態はデータに合わせて増減する。
+-->
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>一覧サンプル | ToolKit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="./assets/flexbox.css" type="text/css">
+<link rel="stylesheet" href="./assets/design.css" type="text/css">
+<link rel="stylesheet" href="./assets/components.css" type="text/css">
+</head>
+<body>
+
+<div class="header">
+  <span style="float:right;font-size:10pt;line-height:30px;color:#cccccc;">
+    {{ユーザー名}} | <a href="#" style="color:#aaaaaa;">ログアウト</a>
+  </span>
+</div>
+
+<div class="flex_menubar">
+  <a href="template_menu.html">ホーム</a>
+  <a href="template_list.html">一覧サンプル</a>
+</div>
+
+<div class="flex_container">
+  <div class="flex_main">
+
+    <div class="item_group" style="min-width:0;">
+      <div class="item_title">
+        <div class="title">
+          一覧サンプル
+          <!-- 参照先などの補助バッジ(任意) -->
+          <span class="db_badge">{{参照先: 例) warehouse @ db-host}}</span>
+          <a href="template_form.html" class="entry_button" style="margin-left:auto;font-size:10pt;line-height:28px;height:auto;width:auto;padding:2px 16px;text-decoration:none;">＋新規登録</a>
+        </div>
+      </div>
+
+      <!-- ===== フィルタパネル ===== -->
+      <div class="filter_panel">
+
+        <!-- 期間トグル: 現在選択に .active を付ける -->
+        <div class="filter_group">
+          <span class="filter_label">期間</span>
+          <a class="range_btn"        href="?time_range=1h">直近1時間</a>
+          <a class="range_btn"        href="?time_range=6h">直近6時間</a>
+          <a class="range_btn active" href="?time_range=24h">直近24時間</a>
+          <a class="range_btn"        href="?time_range=7d">直近7日間</a>
+          <a class="range_btn"        href="?time_range=30d">直近30日間</a>
+          <a class="range_btn"        href="?time_range=all">全件</a>
+        </div>
+
+        <!-- キーワード検索(GET) -->
+        <form method="get" action="template_list.html" class="search_form">
+          <input type="hidden" name="time_range" value="24h">
+          <span class="filter_label">キーワード</span>
+          <input type="text" name="search" class="search_input" value="" placeholder="{{検索対象の例}}">
+          <button type="submit" class="search_btn">検索</button>
+          <!-- 検索中のみ表示: <a class="search_clear" href="{{この画面URL}}">×クリア</a> -->
+        </form>
+
+      </div>
+
+      <!-- ===== 件数・条件表示 ===== -->
+      <div class="result_meta">
+        <span>{{件数}} 件表示（上限{{上限}}件）</span>
+        <span style="font-size:9pt;color:#999;">基準列: {{基準列名}}</span>
+        <a href="template_list.html?time_range=24h" style="margin-left:auto;font-size:9pt;color:#187FF5;text-decoration:none;">↻ 更新</a>
+      </div>
+
+      <!-- ===== 一覧テーブル ===== -->
+      <div class="data_table_wrap">
+        <table class="data_table">
+          <thead>
+            <tr>
+              <th>{{列1}}</th>
+              <th>{{列2}}</th>
+              <th>ステータス</th>
+              <th>{{列4}}</th>
+              <th>登録日時</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- 通常行 -->
+            <tr>
+              <td>1</td>
+              <td>{{値}}</td>
+              <td><span class="status_badge completed">completed</span></td>
+              <td>{{値}}</td>
+              <td style="white-space:nowrap;">2026-04-27 02:12:16</td>
+              <td><a href="template_form.html" class="dl_button" style="background-color:#5a4498;">編集</a></td>
+            </tr>
+
+            <!-- 状態強調行の例(任意): row_failed / row_processing / row_completed -->
+            <tr class="row_failed">
+              <td>2</td>
+              <td>{{値}}</td>
+              <td><span class="status_badge failed">failed</span></td>
+              <td><span class="null_val">NULL</span></td>
+              <td style="white-space:nowrap;">2026-04-27 01:03:11</td>
+              <td><a href="template_form.html" class="dl_button" style="background-color:#5a4498;">編集</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
