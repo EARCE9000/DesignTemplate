@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<!--
+  Template02 / 個人向け(B2C) : さがす(検索・一覧/発見型)
+  見せ方: 検索バー + カテゴリチップ + カードグリッド(画像/タイトル/メタ/価格)。
+  ※ お知らせ(時系列フィード)とは別の見せ方。こちらは「探して選ぶ」ための一覧。
+-->
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>さがす | {{サービス名}}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="./assets/base.css" type="text/css">
+</head>
+<body>
+
+<header class="app_header">
+  <div class="app_header_inner">
+    <div class="app_brand"><span class="brand_mark">🌷</span><span>さがす</span></div>
+    <div class="app_actions">
+      <button class="icon_btn" aria-label="お知らせ">🔔<span class="dot"></span></button>
+      <a class="avatar" href="template_mypage.html" aria-label="マイページ">は</a>
+    </div>
+  </div>
+</header>
+
+<main class="app_main">
+
+  <!-- 検索バー -->
+  <div class="search_bar">
+    <span class="sb_icon">🔍</span>
+    <input type="search" name="q" placeholder="サービス・お店をさがす" autocomplete="off">
+  </div>
+
+  <!-- カテゴリチップ(現在選択に active) -->
+  <div class="chip_row">
+    <a class="chip active" href="#">すべて</a>
+    <a class="chip" href="#">ビューティ</a>
+    <a class="chip" href="#">グルメ</a>
+    <a class="chip" href="#">リラク</a>
+    <a class="chip" href="#">レッスン</a>
+    <a class="chip" href="#">おでかけ</a>
+  </div>
+
+  <div class="result_count">128 件</div>
+
+  <!-- カードグリッド -->
+  <div class="card_grid">
+
+    <a class="pcard" href="#">
+      <div class="pc_thumb">💇<span class="pc_tag"><span class="badge badge_accent">人気</span></span></div>
+      <div class="pc_body">
+        <div class="pc_title">カット＆カラー 60分</div>
+        <div class="pc_meta">サロン青山 表参道店</div>
+        <div class="pc_foot">
+          <div class="pc_price">¥4,800</div>
+          <span class="pc_like">♡</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="pcard" href="#">
+      <div class="pc_thumb">☕</div>
+      <div class="pc_body">
+        <div class="pc_title">選べるドリンク＆スイーツ</div>
+        <div class="pc_meta">カフェ・ソレイユ</div>
+        <div class="pc_foot">
+          <div class="pc_price">¥1,200</div>
+          <span class="pc_like">♡</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="pcard" href="#">
+      <div class="pc_thumb">💆<span class="pc_tag"><span class="badge badge_ok">空きあり</span></span></div>
+      <div class="pc_body">
+        <div class="pc_title">アロマ全身リラクゼーション 90分</div>
+        <div class="pc_meta">リラク・なごみ 新宿</div>
+        <div class="pc_foot">
+          <div class="pc_price">¥6,500</div>
+          <span class="pc_like">♡</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="pcard" href="#">
+      <div class="pc_thumb">🧑‍🍳</div>
+      <div class="pc_body">
+        <div class="pc_title">はじめてのパン作り体験</div>
+        <div class="pc_meta">クッキングスタジオ Fu</div>
+        <div class="pc_foot">
+          <div class="pc_price">¥3,300</div>
+          <span class="pc_like">♡</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="pcard" href="#">
+      <div class="pc_thumb">💅</div>
+      <div class="pc_body">
+        <div class="pc_title">ジェルネイル 付け放題</div>
+        <div class="pc_meta">nail room lume</div>
+        <div class="pc_foot">
+          <div class="pc_price">¥5,000</div>
+          <span class="pc_like">♡</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="pcard" href="#">
+      <div class="pc_thumb">🎨</div>
+      <div class="pc_body">
+        <div class="pc_title">陶芸ワンデイ体験</div>
+        <div class="pc_meta">アトリエ土あそび</div>
+        <div class="pc_foot">
+          <div class="pc_price">¥2,800</div>
+          <span class="pc_like">♡</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+</main>
+
+<nav class="app_nav">
+  <div class="app_nav_inner">
+    <a class="nav_item" href="template_home.html"><span class="ni_icon">🏠</span>ホーム</a>
+    <a class="nav_item active" href="template_search.html"><span class="ni_icon">🔍</span>さがす</a>
+    <a class="nav_item" href="template_notifications.html"><span class="ni_icon">🔔</span>お知らせ</a>
+    <a class="nav_item" href="template_mypage.html"><span class="ni_icon">👤</span>マイページ</a>
+  </div>
+</nav>
+
+</body>
+</html>

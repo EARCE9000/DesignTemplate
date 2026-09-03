@@ -17,6 +17,8 @@ Template02/
 ├─ template_login.html      ログイン(中央パネル)
 ├─ template_register.html   新規会員登録(中央パネル)
 ├─ template_home.html       ログイン後ホーム(メニュー): ヘッダ＋ハイライト＋タイル＋リスト＋下部ナビ
+├─ template_search.html     さがす(発見型): 検索バー＋カテゴリチップ＋カードグリッド
+├─ template_notifications.html お知らせ(時系列): すべて/未読＋日付グループ＋未読/既読フィード
 ├─ template_mypage.html     マイページ(プロフィール/設定/ログアウト)
 └─ AI_GUIDE.md
 ```
@@ -46,6 +48,10 @@ Template02/
 - バッジ: `.badge.badge_primary|badge_accent|badge_ok`。
 - トグル: `.switch > input + .track`（onで青）。
 - 通知ドット: `.icon_btn > .dot`。
+
+## 一覧系の見せ方の違い
+- **さがす(発見型)** = `search_bar` ＋ `chip_row/chip`(カテゴリ、選択で `active`) ＋ `card_grid > a.pcard`(`pc_thumb`/`pc_body`(`pc_title`/`pc_meta`/`pc_foot`(`pc_price`/`pc_like`)))。探して選ぶための**カードグリッド**。
+- **お知らせ(時系列型)** = `seg`(すべて/未読) ＋ `feed_date`(今日/今週/以前) ＋ `list_card > a.list_row`。未読は `list_row.unread` ＋ `unread_dot`。読む**フィード**。
 
 ## フロー(デモ)
 ログイン/登録 → `template_home.html`（実際は認証エンドポイントへPOST→成功後リダイレクト）。ホーム⇄マイページは下部ナビ／アバターで往復。ログアウト→ログイン。
