@@ -471,3 +471,71 @@ a:hover { text-decoration: underline; }
 }
 .seg a.active { background: #fff; color: var(--text); box-shadow: var(--shadow-soft); }
 .seg a:hover { text-decoration: none; }
+
+
+/* ==================================================================
+   単票入力フォーム(編集画面など) 用の追加部品
+   ================================================================== */
+
+/* 必須マーク */
+.field_label .req { color: var(--danger); margin-left: 2px; }
+
+/* テキストエリア / セレクト(.input を流用) */
+textarea.input {
+  height: auto; min-height: 104px; padding: 12px 16px; line-height: 1.6; resize: vertical;
+}
+select.input {
+  appearance: none; -webkit-appearance: none; -moz-appearance: none;
+  padding-right: 40px; cursor: pointer;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%238a8a8a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center;
+}
+
+/* セグメント選択(ラジオをピルで) */
+.opt_row { display: flex; gap: 8px; }
+.opt { flex: 1; position: relative; }
+.opt input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.opt span {
+  display: block; text-align: center;
+  padding: 12px 6px; border: 1.5px solid var(--line); border-radius: 12px;
+  font-size: 14px; font-weight: 700; color: #555;
+}
+.opt input:checked + span { border-color: var(--primary); background: #eef4ff; color: var(--primary-dark); }
+
+/* フォーム内トグル行 */
+.toggle_field {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 12px 14px; border: 1.5px solid var(--line); border-radius: var(--radius-field); background: #fbfcfd;
+}
+.toggle_field .tf_text { font-size: 14px; }
+.toggle_field .tf_sub { font-size: 12px; color: var(--muted); }
+
+/* アバター編集 */
+.avatar_edit { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 4px 0 22px; }
+.ae_pic { position: relative; }
+.ae_pic .avatar { width: 84px; height: 84px; font-size: 32px; }
+.ae_cam {
+  position: absolute; right: -2px; bottom: -2px;
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--primary); color: #fff; display: grid; place-items: center;
+  border: 3px solid #fff; font-size: 13px; cursor: pointer;
+}
+.ae_link { font-size: 13px; font-weight: 700; color: var(--primary); background: none; border: none; cursor: pointer; }
+
+/* サブページ用ヘッダの戻る/タイトル */
+.app_header_inner .hdr_title { font-weight: 700; font-size: 16px; }
+.hdr_back { font-size: 24px; line-height: 1; color: var(--text); }
+
+/* 固定の保存バー(下部) */
+.form_bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+  background: rgba(255,255,255,0.96); backdrop-filter: saturate(1.2) blur(6px);
+  box-shadow: 0 -2px 14px rgba(30,40,60,0.10);
+}
+.form_bar_inner {
+  max-width: 480px; margin: 0 auto; display: flex; gap: 10px;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+}
+.form_bar .btn { height: 48px; }
+.form_bar .btn_ghost { flex: 0 0 40%; }
+.form_bar .btn_primary { flex: 1; }

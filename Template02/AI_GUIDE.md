@@ -20,6 +20,7 @@ Template02/
 ├─ template_search.html     さがす(発見型): 検索バー＋カテゴリチップ＋カードグリッド
 ├─ template_notifications.html お知らせ(時系列): すべて/未読＋日付グループ＋未読/既読フィード
 ├─ template_mypage.html     マイページ(プロフィール/設定/ログアウト)
+├─ template_profile_edit.html 単票入力サンプル(プロフィール編集): 各種入力型＋固定保存バー
 └─ AI_GUIDE.md
 ```
 
@@ -52,6 +53,14 @@ Template02/
 ## 一覧系の見せ方の違い
 - **さがす(発見型)** = `search_bar` ＋ `chip_row/chip`(カテゴリ、選択で `active`) ＋ `card_grid > a.pcard`(`pc_thumb`/`pc_body`(`pc_title`/`pc_meta`/`pc_foot`(`pc_price`/`pc_like`)))。探して選ぶための**カードグリッド**。
 - **お知らせ(時系列型)** = `seg`(すべて/未読) ＋ `feed_date`(今日/今週/以前) ＋ `list_card > a.list_row`。未読は `list_row.unread` ＋ `unread_dot`。読む**フィード**。
+
+## 単票入力フォーム（`template_profile_edit.html`）
+1レコードをまとめて編集するサブページ。ヘッダは `hdr_back`(戻る)＋`hdr_title`、下部タブナビは出さず**固定保存バー** `form_bar`(`btn_ghost`＋`btn_primary`)を置く（保存ボタンはフォーム外なので `form="<id>"` で紐付け）。
+- 基本入力: `.field > .field_label(.req で必須) + .input`（`input`/`textarea.input`/`select.input` を共用。selectは右にシェブロン付与済み、textareaは高さ可変）。
+- セグメント選択(ラジオ): `.opt_row > label.opt > input[type=radio] + span`（選択で青）。
+- フォーム内トグル: `.toggle_field`（説明＋`.switch`）。
+- アバター編集: `.avatar_edit > .ae_pic(.avatar + .ae_cam) + .ae_link`。
+- 本文は `app_main` の下余白で保存バーを避ける。
 
 ## フロー(デモ)
 ログイン/登録 → `template_home.html`（実際は認証エンドポイントへPOST→成功後リダイレクト）。ホーム⇄マイページは下部ナビ／アバターで往復。ログアウト→ログイン。
