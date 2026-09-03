@@ -93,7 +93,7 @@
               <td><span class="status_badge completed">completed</span></td>
               <td>{{値}}</td>
               <td style="white-space:nowrap;">2026-04-27 02:12:16</td>
-              <td><a href="template_form.html" class="dl_button" style="background-color:#5a4498;">編集</a></td>
+              <td><a href="template_detail.html" class="dl_button" style="background-color:#5a4498;">詳細</a></td>
             </tr>
 
             <!-- 状態強調行の例(任意): row_failed / row_processing / row_completed -->
@@ -103,11 +103,19 @@
               <td><span class="status_badge failed">failed</span></td>
               <td><span class="null_val">NULL</span></td>
               <td style="white-space:nowrap;">2026-04-27 01:03:11</td>
-              <td><a href="template_form.html" class="dl_button" style="background-color:#5a4498;">編集</a></td>
+              <td><a href="template_detail.html" class="dl_button" style="background-color:#5a4498;">詳細</a></td>
             </tr>
           </tbody>
         </table>
       </div>
+
+      <!-- 空状態(0件のとき): 上のテーブルを出さずこちらを表示する
+      <div class="empty_state">
+        <div class="empty_icon">🗂️</div>
+        <div class="empty_text">該当するデータがありません</div>
+        <div class="empty_hint">条件を変えるか、右上の「＋新規登録」から追加してください。</div>
+      </div>
+      -->
 
     </div>
   </div>
