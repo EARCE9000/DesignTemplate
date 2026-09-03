@@ -1,0 +1,54 @@
+# Template02 — 個人向け(B2C) ベーステンプレート
+
+個人ユーザー向けサービスのUIベース。**丸み・余白広め・モバイルファースト**の親しみやすいレイアウトに、**Template01と同じ配色（青の主ボタン＋オレンジのアクセント）**を合わせた系統。
+
+新しい画面をAIに作らせるときは、このファイルと `Template02/` 一式を渡し「このテンプレートに従って○○画面を作って」と依頼してください。
+
+## AIへの基本指示（コピペ可）
+> 添付の `Template02/` を唯一のデザイン基準とすること。
+> - CSSは `assets/base.css` のみを読み込み、既存のクラス／トークンで組む（新規CSSは極力書かない）。
+> - モバイルファースト。中央寄せの最大幅（認証カード420px／アプリ本文480px）を踏襲。
+> - 配色は下記トークンの範囲（青=主アクション、オレンジ=アクセント/選択、ニュートラル背景）。
+
+## ファイル構成
+```
+Template02/
+├─ assets/base.css          配色トークン＋全部品(認証/アプリシェル)
+├─ template_login.html      ログイン(中央パネル)
+├─ template_register.html   新規会員登録(中央パネル)
+├─ template_home.html       ログイン後ホーム(メニュー): ヘッダ＋ハイライト＋タイル＋リスト＋下部ナビ
+├─ template_mypage.html     マイページ(プロフィール/設定/ログアウト)
+└─ AI_GUIDE.md
+```
+
+## デザイントークン（`:root`、Template01準拠）
+| 用途 | 変数 | 値 |
+|---|---|---|
+| 主アクション(青) | `--primary` / `--primary-dark` | `#187FF5` / `#0f5fbb` |
+| アクセント(オレンジ) | `--accent` / `--accent-tint` | `#ee7800` / `#fff4e5` |
+| 文字 / 補助 | `--text` / `--muted` | `#2b2b2b` / `#8a8a8a` |
+| 背景 / 面 / 罫線 | `--bg` / `--card` / `--line` | `#f2f4f7` / `#fff` / `#e8e8e8` |
+| 危険 / 成功 | `--danger` / `--ok` | `#d22222` / `#1a6e1a` |
+| 角丸 | `--radius-card/field/pill` | `22 / 14 / 999px` |
+
+- 主ボタン=`btn btn_primary`(青・角丸pill)、副=`btn btn_ghost`。
+- 選択/アクティブ状態・アイコンチップ・ホバー地は**オレンジ系**（`--accent` / `--accent-tint`）。
+
+## 画面の骨格
+- **中央パネル系(認証)**: `.auth_wrap > .auth_card`（`brand` → `auth_title/auth_sub` → `field`×n → `btn_primary` → `divider` → `auth_foot`）。
+- **ログイン後(アプリシェル)**: `.app_header`（`app_brand`＋`app_actions`）→ `.app_main`（`greeting`／`hero_card`／`section_title`＋`menu_grid`／`list_card`）→ `.app_nav`（`nav_item`、現在地に `active`）。本文は下部ナビ分の余白込み。
+
+## 主要コンポーネント早見
+- 入力: `.field > .field_label + .input`（パスワードは `.input_group` に `.input_toggle`）。
+- ボタン: `.btn.btn_primary` / `.btn.btn_ghost`（`.btn_social` でアイコン＋文言）。
+- タイル: `.menu_grid > a.menu_tile(.mt_icon/.mt_label)`。
+- リスト: `.list_card > a.list_row(.lr_icon/.lr_body(.lr_title/.lr_sub)/.lr_meta/.lr_chev)`。
+- バッジ: `.badge.badge_primary|badge_accent|badge_ok`。
+- トグル: `.switch > input + .track`（onで青）。
+- 通知ドット: `.icon_btn > .dot`。
+
+## フロー(デモ)
+ログイン/登録 → `template_home.html`（実際は認証エンドポイントへPOST→成功後リダイレクト）。ホーム⇄マイページは下部ナビ／アバターで往復。ログアウト→ログイン。
+
+## 注意
+UIテンプレート（ダミー項目）です。実在サービスの偽装や実資格情報の収集には使わないこと。

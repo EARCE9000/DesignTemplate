@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<!--
+  Template02 / 個人向け(B2C) : ログイン(中央パネル)
+  トーン: 親しみ・ポップ(暖色・丸み)。モバイルファースト。
+  ※ UIテンプレート(ダミー項目)。実在サービスの偽装や実資格情報の収集には使わない。
+  差し替えは {{ }}。パスワード表示切替は下部の小さなJSで動作(任意)。
+-->
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>ログイン | {{サービス名}}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="./assets/base.css" type="text/css">
+</head>
+<body>
+
+<div class="auth_wrap">
+  <div class="auth_card">
+
+    <!-- ブランド -->
+    <div class="brand">
+      <div class="brand_mark">🌷</div>
+      <div class="brand_name">{{サービス名}}</div>
+    </div>
+
+    <h1 class="auth_title">おかえりなさい</h1>
+    <p class="auth_sub">アカウントにログインしてください</p>
+
+    <!-- エラー時のみ表示 -->
+    <!-- <div class="alert alert_error">メールアドレスまたはパスワードが違います。</div> -->
+
+    <!-- 実際は認証エンドポイントへPOSTし、成功後にホームへリダイレクト。demoは home へ遷移 -->
+    <form method="post" action="template_home.html">
+
+      <div class="field">
+        <label class="field_label" for="email">メールアドレス</label>
+        <input class="input" type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required>
+      </div>
+
+      <div class="field">
+        <label class="field_label" for="password">パスワード</label>
+        <div class="input_group">
+          <input class="input" type="password" id="password" name="password" placeholder="••••••••" autocomplete="current-password" required>
+          <button type="button" class="input_toggle" data-toggle="password" aria-label="パスワードを表示">👁️</button>
+        </div>
+      </div>
+
+      <div class="row_between">
+        <label class="check"><input type="checkbox" name="remember" value="1"> ログイン状態を保持</label>
+        <a class="link_sm" href="{{パスワード再発行URL}}">パスワードをお忘れですか？</a>
+      </div>
+
+      <button type="submit" class="btn btn_primary">ログイン</button>
+    </form>
+
+    <div class="divider">または</div>
+
+    <!-- ソーシャルログイン(任意・プレースホルダ) -->
+    <button type="button" class="btn btn_ghost btn_social">
+      <span class="btn_icon">🟦</span> Googleで続ける
+    </button>
+    <button type="button" class="btn btn_ghost btn_social">
+      <span class="btn_icon">💬</span> LINEで続ける
+    </button>
+
+    <div class="auth_foot">
+      アカウントをお持ちでない方は <a href="template_register.html">新規登録</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- パスワード表示切替(任意) -->
+<script>
+  document.querySelectorAll('.input_toggle[data-toggle]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var input = document.getElementById(btn.getAttribute('data-toggle'));
+      if (!input) return;
+      var show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      btn.textContent = show ? '🙈' : '👁️';
+      btn.setAttribute('aria-label', show ? 'パスワードを隠す' : 'パスワードを表示');
+    });
+  });
+</script>
+</body>
+</html>
