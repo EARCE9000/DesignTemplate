@@ -537,5 +537,9 @@ select.input {
   padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
 }
 .form_bar .btn { height: 48px; }
-.form_bar .btn_ghost { flex: 0 0 40%; }
+.form_bar_inner .btn + .btn { margin-top: 0; }  /* 横並びなので縦積みの余白を打ち消す */
+.form_bar .btn_ghost {
+  flex: 0 0 40%;
+  display: flex; align-items: center; justify-content: center; text-decoration: none;
+}
 .form_bar .btn_primary { flex: 1; }
