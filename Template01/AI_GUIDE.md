@@ -26,14 +26,23 @@ _template/
 ├─ assets/
 │   ├─ flexbox.css       レイアウト土台(box-sizing, flex骨格) ※変更しない
 │   ├─ design.css        基本スタイル(ヘッダ/メニューバー/ボタン/item_group) ※変更しない
-│   └─ components.css    共通部品(バッジ/テーブル/フォーム/フィルタ/タイル 等)
-├─ template_menu.html    メニュー画面
-├─ template_list.html    一覧+絞り込み+検索 画面
+│   ├─ components.css    共通部品(バッジ/テーブル/フォーム/フィルタ/タイル/モーダル/カード 等)
+│   └─ dropzone.js       ファイルD&Dの共通挙動(全 .dropzone を自動初期化)
+├─ template_menu.html         メニュー画面
+├─ template_list.html         一覧+絞り込み+検索(空状態の例も内包)
 ├─ template_form_simple.html  簡易登録(Queueレベル): 上で入力・下で直近一覧
 ├─ template_form.html         単票登録/編集(標準): 多項目・セクション分け・2カラム
 ├─ template_form_confirm.html 登録内容の確認: form → confirm → 登録 の中間画面
-└─ AI_GUIDE.md           このファイル
+├─ template_detail.html       詳細表示(読み取り専用)+編集/削除、削除確認モーダル内蔵
+├─ template_monitor.html      状態モニタ/ダッシュボード: カード+ステータス+自動更新
+├─ template_status.html       状態画面: 完了/エラー(403/404/500の例)
+└─ AI_GUIDE.md                このファイル
 ```
+
+### 画面の使い分けと標準フロー
+- 一覧 `template_list.html` → 行の「詳細」→ `template_detail.html` → 「編集」→ `template_form.html`（→確認→完了）／「削除」→ 詳細内のモーダル。
+- 登録: `template_form.html` → `template_form_confirm.html` → `template_status.html`（完了）。
+- 監視系は `template_monitor.html`、結果/エラー表示は `template_status.html`。
 
 CSSは3枚を**この順**で読み込む（後勝ちで上書きするため順序が重要）:
 
@@ -183,6 +192,54 @@ CSSは3枚を**この順**で読み込む（後勝ちで上書きするため順
 ```html
 <div class="msg_success">登録しました。</div>
 <div class="msg_error">エラー: …</div>
+```
+
+### モーダル（確認ダイアログ・JS不要）
+チェックボックス方式。削除など破壊的操作の確認に使う。`modal_toggle` の直後に置いた `modal_overlay` が `:checked` で表示される。
+```html
+<input type="checkbox" id="del_modal" class="modal_toggle" hidden>
+<label for="del_modal" class="caution_button" style="cursor:pointer;">削除</label>
+...
+<div class="modal_overlay">
+  <label for="del_modal" class="modal_backdrop"></label>
+  <div class="modal_box">
+    <div class="modal_title danger">削除の確認</div>
+    <div class="modal_body">「対象名」を削除します。取り消せません。</div>
+    <div class="modal_actions">
+      <label for="del_modal" class="cancel_button" style="cursor:pointer;">キャンセル</label>
+      <form method="post" action="{{削除先}}"><button class="caution_button">削除する</button></form>
+    </div>
+  </div>
+</div>
+```
+
+### 状態モニタ カード
+```html
+<div class="monitor_list">
+  <div class="monitor_card is_ok">   <!-- is_ok/is_running/is_stale/is_failed -->
+    <span class="monitor_name">host / job</span>
+    <span class="status_badge completed">正常</span>
+    <span class="status_badge elapsed_15m">3分前</span>
+    <span class="monitor_meta">最終成功 09:27</span>
+  </div>
+</div>
+```
+自動更新は `<head>` に `<meta http-equiv="refresh" content="30">`。
+
+### 空状態 / 結果状態
+```html
+<div class="empty_state">
+  <div class="empty_icon">🗂️</div>
+  <div class="empty_text">該当するデータがありません</div>
+  <div class="empty_hint">条件を変えるか新規追加してください。</div>
+</div>
+
+<div class="result_state ok">   <!-- ok / error -->
+  <div class="result_icon">✅</div>
+  <div class="result_title">登録が完了しました</div>
+  <div class="result_desc">…</div>
+  <div class="result_actions"><a href="…" class="entry_button" style="...">一覧へ戻る</a></div>
+</div>
 ```
 
 ---

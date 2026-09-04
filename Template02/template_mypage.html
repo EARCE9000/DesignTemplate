@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<!--
+  Template02 / 個人向け(B2C) : マイページ(プロフィール/設定)
+  アプリ風シェル。プロフィールヘッダ + 設定リスト(トグル/リンク行) + ログアウト。
+-->
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>マイページ | {{サービス名}}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="./assets/base.css" type="text/css">
+</head>
+<body>
+
+<header class="app_header">
+  <div class="app_header_inner">
+    <div class="app_brand">
+      <span class="brand_mark">🌷</span>
+      <span>マイページ</span>
+    </div>
+    <div class="app_actions">
+      <button class="icon_btn" aria-label="お知らせ">🔔<span class="dot"></span></button>
+    </div>
+  </div>
+</header>
+
+<main class="app_main">
+
+  <!-- プロフィール -->
+  <div class="list_card" style="padding:18px 16px; display:flex; align-items:center; gap:14px;">
+    <div class="avatar" style="width:60px;height:60px;font-size:26px;">は</div>
+    <div style="flex:1; min-width:0;">
+      <div style="font-size:17px; font-weight:700;">山田 はな</div>
+      <div style="font-size:13px; color:var(--muted);">hana@example.com</div>
+      <span class="badge badge_accent" style="margin-top:6px;">ゴールド会員</span>
+    </div>
+    <a class="btn btn_ghost" href="template_profile_edit.html" style="width:auto; height:auto; padding:8px 16px; font-size:13px;">編集</a>
+  </div>
+
+  <!-- 設定(トグル) -->
+  <div class="section_title">通知設定</div>
+  <div class="list_card">
+    <div class="list_row">
+      <div class="lr_icon">🔔</div>
+      <div class="lr_body"><div class="lr_title">プッシュ通知</div><div class="lr_sub">お得な情報を受け取る</div></div>
+      <label class="switch"><input type="checkbox" checked><span class="track"></span></label>
+    </div>
+    <div class="list_row">
+      <div class="lr_icon">✉️</div>
+      <div class="lr_body"><div class="lr_title">メールマガジン</div><div class="lr_sub">週1回のおすすめ</div></div>
+      <label class="switch"><input type="checkbox"><span class="track"></span></label>
+    </div>
+  </div>
+
+  <!-- アカウント(リンク行) -->
+  <div class="section_title">アカウント</div>
+  <div class="list_card">
+    <a class="list_row" href="template_profile_edit.html">
+      <div class="lr_icon">👤</div>
+      <div class="lr_body"><div class="lr_title">プロフィール編集</div></div>
+      <span class="lr_chev">›</span>
+    </a>
+    <a class="list_row" href="#">
+      <div class="lr_icon">💳</div>
+      <div class="lr_body"><div class="lr_title">お支払い方法</div></div>
+      <span class="lr_chev">›</span>
+    </a>
+    <a class="list_row" href="#">
+      <div class="lr_icon">🔒</div>
+      <div class="lr_body"><div class="lr_title">パスワード変更</div></div>
+      <span class="lr_chev">›</span>
+    </a>
+  </div>
+
+  <!-- サポート -->
+  <div class="section_title">サポート</div>
+  <div class="list_card">
+    <a class="list_row" href="#">
+      <div class="lr_icon">❓</div>
+      <div class="lr_body"><div class="lr_title">よくある質問</div></div>
+      <span class="lr_chev">›</span>
+    </a>
+    <a class="list_row" href="#">
+      <div class="lr_icon">📄</div>
+      <div class="lr_body"><div class="lr_title">利用規約・プライバシー</div></div>
+      <span class="lr_chev">›</span>
+    </a>
+  </div>
+
+  <!-- ログアウト(編集と同じ枠付きボタン) -->
+  <div style="margin-top:22px;">
+    <a class="btn btn_ghost" href="template_login.html" style="display:inline-block; width:auto; height:auto; padding:8px 16px; font-size:13px; color:var(--danger); border-color:#ffdad7;">ログアウト</a>
+  </div>
+
+</main>
+
+<nav class="app_nav">
+  <div class="app_nav_inner">
+    <a class="nav_item" href="template_home.html"><span class="ni_icon">🏠</span>ホーム</a>
+    <a class="nav_item" href="template_search.html"><span class="ni_icon">🔍</span>さがす</a>
+    <a class="nav_item" href="template_notifications.html"><span class="ni_icon">🔔</span>お知らせ</a>
+    <a class="nav_item active" href="template_mypage.html"><span class="ni_icon">👤</span>マイページ</a>
+  </div>
+</nav>
+
+</body>
+</html>

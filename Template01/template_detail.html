@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<!--
+  テンプレート: 詳細表示(読み取り専用) 画面
+  用途: 一覧の行から開く「1件の全項目表示」。編集・削除への入口を持つ。
+        値は form_static で表示(入力欄は出さない)。
+  含む: 削除確認モーダル(JS不要・チェックボックス方式)。
+  フロー: 一覧 → 詳細 → [編集]template_form.html / [削除]モーダル→削除実行
+-->
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>詳細 | ToolKit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="./assets/flexbox.css" type="text/css">
+<link rel="stylesheet" href="./assets/design.css" type="text/css">
+<link rel="stylesheet" href="./assets/components.css" type="text/css">
+</head>
+<body>
+
+<div class="header">
+  <span style="float:right;font-size:10pt;line-height:30px;color:#cccccc;">
+    {{ユーザー名}} | <a href="#" style="color:#aaaaaa;">ログアウト</a>
+  </span>
+</div>
+
+<div class="flex_menubar">
+  <a href="template_menu.html">ホーム</a>
+  <a href="template_list.html">一覧サンプル</a>
+  <a href="template_detail.html">詳細</a>
+</div>
+
+<div class="flex_container">
+  <div class="flex_main">
+
+    <!-- 削除確認モーダルのトグル(本体は下部) -->
+    <input type="checkbox" id="del_modal" class="modal_toggle" hidden>
+
+    <div class="item_group" style="min-width:0;">
+      <div class="item_title">
+        <div class="title">サンプル名称</div>
+        <span class="status_badge completed" style="margin-left:12px;">有効</span>
+        <span style="margin-left:auto;display:inline-flex;gap:8px;">
+          <a href="template_form.html" class="entry_button" style="line-height:28px;height:auto;width:auto;padding:2px 16px;text-decoration:none;font-size:10pt;">編集</a>
+          <label for="del_modal" class="caution_button" style="line-height:28px;height:auto;width:auto;padding:2px 16px;font-size:10pt;cursor:pointer;border-radius:10px;">削除</label>
+        </span>
+      </div>
+
+      <!-- ===== 基本情報 ===== -->
+      <div class="form_section_title">基本情報</div>
+      <div class="form_row">
+        <div class="form_field">
+          <div class="form_label">コード</div>
+          <div class="form_value"><div class="form_static">A-001</div></div>
+        </div>
+        <div class="form_field">
+          <div class="form_label">名称</div>
+          <div class="form_value"><div class="form_static">サンプル名称</div></div>
+        </div>
+      </div>
+      <div class="form_row">
+        <div class="form_field">
+          <div class="form_label">区分</div>
+          <div class="form_value"><div class="form_static">区分A</div></div>
+        </div>
+        <div class="form_field">
+          <div class="form_label">状態</div>
+          <div class="form_value"><div class="form_static">有効</div></div>
+        </div>
+      </div>
+
+      <!-- ===== 詳細 ===== -->
+      <div class="form_section_title">詳細</div>
+      <div class="form_row">
+        <div class="form_field">
+          <div class="form_label">表示順</div>
+          <div class="form_value"><div class="form_static">10</div></div>
+        </div>
+        <div class="form_field">
+          <div class="form_label">適用開始日</div>
+          <div class="form_value"><div class="form_static">2026-08-13</div></div>
+        </div>
+      </div>
+      <div class="form_row">
+        <div class="form_field">
+          <div class="form_label">メール通知</div>
+          <div class="form_value"><div class="form_static">受け取る</div></div>
+        </div>
+        <div class="form_field">
+          <div class="form_label">公開設定</div>
+          <div class="form_value"><div class="form_static">非公開</div></div>
+        </div>
+      </div>
+      <div class="form_row">
+        <div class="form_field">
+          <div class="form_label">説明</div>
+          <div class="form_value"><div class="form_static">サンプルの説明文です。</div></div>
+        </div>
+      </div>
+
+      <!-- ===== 更新履歴などのメタ(任意) ===== -->
+      <div class="form_section_title">履歴</div>
+      <div class="form_row">
+        <div class="form_field">
+          <div class="form_label">登録</div>
+          <div class="form_value"><div class="form_static">2026-08-13 10:20  by yama</div></div>
+        </div>
+        <div class="form_field">
+          <div class="form_label">最終更新</div>
+          <div class="form_value"><div class="form_static">2026-08-14 09:05  by yama</div></div>
+        </div>
+      </div>
+
+      <!-- 下部ボタン -->
+      <div style="padding:10px;">
+        <div class="flex_container">
+          <div class="flex_item1 item_action">
+            <a href="template_list.html" class="cancel_button" style="display:inline-block;line-height:36px;text-decoration:none;width:90%;text-align:center;border-radius:10px;">一覧へ戻る</a>
+          </div>
+          <div class="flex_item1 item_action">
+            <a href="template_form.html" class="entry_button" style="display:inline-block;line-height:36px;text-decoration:none;width:90%;text-align:center;border-radius:10px;">編集</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 削除確認モーダル ===== -->
+    <div class="modal_overlay">
+      <label for="del_modal" class="modal_backdrop"></label>
+      <div class="modal_box">
+        <div class="modal_title danger">削除の確認</div>
+        <div class="modal_body">
+          「<strong>サンプル名称</strong>（A-001）」を削除します。<br>
+          この操作は取り消せません。よろしいですか？
+        </div>
+        <div class="modal_actions">
+          <label for="del_modal" class="cancel_button" style="line-height:34px;padding:0 18px;cursor:pointer;border-radius:10px;">キャンセル</label>
+          <!-- 実際の削除エンドポイントに置き換える。demoは一覧へ遷移 -->
+          <form method="post" action="template_list.html">
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="id" value="1">
+            <button type="submit" class="caution_button">削除する</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

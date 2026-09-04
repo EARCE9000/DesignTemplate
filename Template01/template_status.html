@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<!--
+  テンプレート: 状態画面(完了 / エラー)
+  用途: 処理完了や、権限なし/未検出/サーバエラー等の結果を大きく伝える画面。
+  使い方: .result_state に ok / error を付け、アイコン・タイトル・説明・
+          次アクションを差し替える。下部コメントに 403/404/500 の例。
+  ※ 一覧の「空状態(0件)」は template_list.html 内の .empty_state を参照。
+-->
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>登録完了 | ToolKit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="./assets/flexbox.css" type="text/css">
+<link rel="stylesheet" href="./assets/design.css" type="text/css">
+<link rel="stylesheet" href="./assets/components.css" type="text/css">
+</head>
+<body>
+
+<div class="header">
+  <span style="float:right;font-size:10pt;line-height:30px;color:#cccccc;">
+    {{ユーザー名}} | <a href="#" style="color:#aaaaaa;">ログアウト</a>
+  </span>
+</div>
+
+<div class="flex_menubar">
+  <a href="template_menu.html">ホーム</a>
+  <a href="template_list.html">一覧サンプル</a>
+</div>
+
+<div class="flex_container">
+  <div class="flex_main">
+
+    <div class="item_group" style="min-width:0;">
+
+      <!-- ===== 完了 ===== -->
+      <div class="result_state ok">
+        <div class="result_icon">✅</div>
+        <div class="result_title">登録が完了しました</div>
+        <div class="result_desc">
+          「サンプル名称（A-001）」を登録しました。<br>
+          続けて操作する場合は下のボタンから移動してください。
+        </div>
+        <div class="result_actions">
+          <a href="template_list.html" class="entry_button" style="display:inline-block;line-height:36px;text-decoration:none;padding:0 22px;border-radius:10px;">一覧へ戻る</a>
+          <a href="template_form.html" class="cancel_button" style="display:inline-block;line-height:36px;text-decoration:none;padding:0 22px;border-radius:10px;">続けて登録</a>
+        </div>
+      </div>
+
+      <!-- ===== エラー例(必要に応じて上の完了と差し替え) =====
+      <div class="result_state error">
+        <div class="result_icon">🚫</div>
+        <div class="result_title">アクセス権限がありません (403)</div>
+        <div class="result_desc">この操作を行う権限がありません。管理者にお問い合わせください。</div>
+        <div class="result_actions">
+          <a href="template_menu.html" class="entry_button" style="display:inline-block;line-height:36px;text-decoration:none;padding:0 22px;border-radius:10px;">メニューへ</a>
+        </div>
+      </div>
+
+      <div class="result_state error">
+        <div class="result_icon">🔍</div>
+        <div class="result_title">ページが見つかりません (404)</div>
+        <div class="result_desc">お探しのデータは削除されたか、URLが誤っている可能性があります。</div>
+        <div class="result_actions">
+          <a href="template_menu.html" class="entry_button" style="display:inline-block;line-height:36px;text-decoration:none;padding:0 22px;border-radius:10px;">メニューへ</a>
+        </div>
+      </div>
+
+      <div class="result_state error">
+        <div class="result_icon">⚠️</div>
+        <div class="result_title">エラーが発生しました (500)</div>
+        <div class="result_desc">処理中に問題が発生しました。時間をおいて再度お試しください。</div>
+        <div class="result_actions">
+          <a href="template_menu.html" class="entry_button" style="display:inline-block;line-height:36px;text-decoration:none;padding:0 22px;border-radius:10px;">メニューへ</a>
+        </div>
+      </div>
+      ===== -->
+
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

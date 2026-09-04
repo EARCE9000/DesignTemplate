@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<!--
+  テンプレート: 状態モニタ / ダッシュボード 画面
+  用途: ジョブ/プロバイダ/ホスト等の状態をカードで一覧監視する
+        (キャプチャの exec_status 型)。ステータスバッジ＋経過時間＋自動更新。
+  ポイント:
+    - カードの左罫線色で状態を表す: is_ok / is_failed / is_stale / is_running。
+    - 自動更新は <meta http-equiv="refresh"> をheadに置く(下のコメント参照)。
+-->
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>状態モニタ | ToolKit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 自動更新(30秒毎)。有効化する場合は次行のコメントを外す:
+<meta http-equiv="refresh" content="30"> -->
+
+<link rel="stylesheet" href="./assets/flexbox.css" type="text/css">
+<link rel="stylesheet" href="./assets/design.css" type="text/css">
+<link rel="stylesheet" href="./assets/components.css" type="text/css">
+</head>
+<body>
+
+<div class="header">
+  <span style="float:right;font-size:10pt;line-height:30px;color:#cccccc;">
+    {{ユーザー名}} | <a href="#" style="color:#aaaaaa;">ログアウト</a>
+  </span>
+</div>
+
+<div class="flex_menubar">
+  <a href="template_menu.html">ホーム</a>
+  <a href="template_monitor.html">状態モニタ</a>
+</div>
+
+<div class="flex_container">
+  <div class="flex_main">
+
+    <div class="item_group" style="min-width:0;">
+      <div class="item_title">
+        <div class="title">状態モニタ</div>
+      </div>
+
+      <!-- 件数・凡例・更新 -->
+      <div class="result_meta">
+        <span>4 件</span>
+        <span style="font-size:9pt;color:#999;">
+          <span class="status_badge completed">正常</span>
+          <span class="status_badge processing">実行中</span>
+          <span class="status_badge stale">遅延</span>
+          <span class="status_badge failed">失敗</span>
+        </span>
+        <span style="font-size:9pt;color:#999;margin-left:auto;">最終取得 2026-08-14 09:30</span>
+        <a href="template_monitor.html" style="font-size:9pt;color:#187FF5;text-decoration:none;">↻ 更新</a>
+      </div>
+
+      <!-- カード一覧 -->
+      <div class="monitor_list">
+
+        <div class="monitor_card is_ok">
+          <span class="monitor_name">batch-01.intra / nightly_report</span>
+          <span class="status_badge completed">正常</span>
+          <span class="status_badge elapsed_15m">3分前</span>
+          <span class="monitor_meta">最終成功 09:27</span>
+        </div>
+
+        <div class="monitor_card is_running">
+          <span class="monitor_name">batch-02.intra / sync_master</span>
+          <span class="status_badge processing">実行中</span>
+          <span class="status_badge elapsed_15m">実行中 2分</span>
+          <span class="monitor_meta">開始 09:28</span>
+        </div>
+
+        <div class="monitor_card is_stale">
+          <span class="monitor_name">batch-03.intra / apnic_iplist</span>
+          <span class="status_badge stale">遅延</span>
+          <span class="status_badge elapsed_6h">5時間前</span>
+          <span class="monitor_meta">想定間隔 1時間</span>
+        </div>
+
+        <div class="monitor_card is_failed">
+          <span class="monitor_name">batch-04.intra / site_check</span>
+          <span class="status_badge failed">失敗</span>
+          <span class="status_badge elapsed_1h">40分前</span>
+          <span class="monitor_meta">exit=1 / 詳細ログ参照</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

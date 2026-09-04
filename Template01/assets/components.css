@@ -486,3 +486,96 @@
   .search_form  { flex-wrap: wrap; }
   .search_input { width: 100%; }
 }
+
+
+/* ===== モーダル(確認ダイアログ) — JS不要(チェックボックス方式) ======= */
+/* <input type="checkbox" id="m1" class="modal_toggle" hidden>
+   <label for="m1" class="caution_button ...">削除</label>
+   <div class="modal_overlay">
+     <label for="m1" class="modal_backdrop"></label>
+     <div class="modal_box"> ...本体... </div>
+   </div>                                                              */
+.modal_overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+.modal_toggle:checked ~ .modal_overlay { display: flex; }
+.modal_backdrop { position: absolute; inset: 0; cursor: default; }
+.modal_box {
+  position: relative;
+  background-color: #ffffff;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+.modal_title {
+  font-size: 13pt;
+  font-weight: bold;
+  color: #2b2b2b;
+  padding: 14px 18px;
+  border-bottom: 1px solid #eeeeee;
+}
+.modal_title.danger { color: #d22222; }
+.modal_body    { padding: 16px 18px; font-size: 11pt; color: #444; line-height: 1.6; }
+.modal_actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding: 12px 18px;
+  border-top: 1px solid #eeeeee;
+  background-color: #fafafa;
+}
+.modal_actions form { margin: 0; }
+
+
+/* ===== 状態モニタ(カード一覧) ===================================== */
+.monitor_list { display: flex; flex-direction: column; gap: 8px; padding: 10px; }
+.monitor_card {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  border: 1px solid #dcdfe4;
+  border-left: 4px solid #9aa0a6;
+  border-radius: 8px;
+  padding: 10px 16px;
+  background-color: #ffffff;
+  box-shadow: 0 1px 2px rgba(30, 40, 60, 0.05);
+}
+.monitor_card.is_ok      { border-left-color: #2fae4e; }
+.monitor_card.is_failed  { border-left-color: #d94c4c; background-color: #fdecec; }
+.monitor_card.is_stale   { border-left-color: #d9a441; background-color: #fff8e8; }
+.monitor_card.is_running { border-left-color: #1558a0; background-color: #eef5ff; }
+.monitor_name    { font-weight: bold; font-size: 11pt; color: #2b3648; flex: 1 1 auto; min-width: 0; }
+.monitor_meta    { font-size: 9pt; color: #8a8a8a; white-space: nowrap; }
+
+
+/* ===== 空状態 / 状態画面 ========================================== */
+.empty_state {
+  text-align: center;
+  color: #8a8a8a;
+  padding: 48px 16px;
+}
+.empty_state .empty_icon { font-size: 40pt; line-height: 1; margin-bottom: 10px; }
+.empty_state .empty_text { font-size: 12pt; font-weight: bold; color: #6a7178; }
+.empty_state .empty_hint { font-size: 10pt; margin-top: 6px; }
+
+/* 完了/エラーなどの大きな結果表示 */
+.result_state {
+  text-align: center;
+  padding: 40px 16px;
+}
+.result_state .result_icon  { font-size: 44pt; line-height: 1; }
+.result_state .result_title { font-size: 16pt; font-weight: bold; margin-top: 10px; }
+.result_state.ok    .result_title { color: #1a6e1a; }
+.result_state.error .result_title { color: #d22222; }
+.result_state .result_desc  { font-size: 11pt; color: #555; margin-top: 8px; line-height: 1.6; }
+.result_state .result_actions { margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }

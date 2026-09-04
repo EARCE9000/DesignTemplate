@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<!--
+  Template02 / 個人向け(B2C) : プロフィール編集(単票入力サンプル)
+  マイページ「編集」から遷移。1レコードをまとめて編集する単票フォームの見本。
+  各種入力型(テキスト/メール/電話/日付/セグメント選択/セレクト/テキストエリア/トグル)を網羅。
+  下部に固定の保存バー。サブページなので下部タブナビは出さない。
+-->
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>プロフィール編集 | {{サービス名}}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="./assets/base.css" type="text/css">
+</head>
+<body>
+
+<!-- サブページヘッダ(戻る＋タイトル) -->
+<header class="app_header">
+  <div class="app_header_inner">
+    <a class="icon_btn hdr_back" href="template_mypage.html" aria-label="戻る">‹</a>
+    <div class="hdr_title">プロフィール編集</div>
+  </div>
+</header>
+
+<main class="app_main">
+
+  <form id="profileForm" method="post" action="template_mypage.html">
+
+    <!-- アバター編集 -->
+    <div class="avatar_edit">
+      <div class="ae_pic">
+        <div class="avatar">は</div>
+        <button type="button" class="ae_cam" aria-label="写真を変更">📷</button>
+      </div>
+      <button type="button" class="ae_link">写真を変更</button>
+    </div>
+
+    <!-- 名前 -->
+    <div class="field">
+      <label class="field_label" for="name">お名前<span class="req">*</span></label>
+      <input class="input" type="text" id="name" name="name" value="山田 はな" required>
+    </div>
+
+    <div class="field">
+      <label class="field_label" for="kana">フリガナ</label>
+      <input class="input" type="text" id="kana" name="kana" value="ヤマダ ハナ" placeholder="ヤマダ ハナ">
+    </div>
+
+    <!-- 連絡先 -->
+    <div class="field">
+      <label class="field_label" for="email">メールアドレス<span class="req">*</span></label>
+      <input class="input" type="email" id="email" name="email" value="hana@example.com" autocomplete="email" required>
+    </div>
+
+    <div class="field">
+      <label class="field_label" for="tel">電話番号</label>
+      <input class="input" type="tel" id="tel" name="tel" value="" placeholder="090-1234-5678" autocomplete="tel">
+    </div>
+
+    <!-- 生年月日 -->
+    <div class="field">
+      <label class="field_label" for="birth">生年月日</label>
+      <input class="input" type="date" id="birth" name="birth" value="1995-04-01">
+    </div>
+
+    <!-- 性別(セグメント選択) -->
+    <div class="field">
+      <label class="field_label">性別</label>
+      <div class="opt_row">
+        <label class="opt"><input type="radio" name="gender" value="female" checked><span>女性</span></label>
+        <label class="opt"><input type="radio" name="gender" value="male"><span>男性</span></label>
+        <label class="opt"><input type="radio" name="gender" value="na"><span>回答しない</span></label>
+      </div>
+    </div>
+
+    <!-- お住まい(セレクト) -->
+    <div class="field">
+      <label class="field_label" for="pref">お住まい</label>
+      <select class="input" id="pref" name="pref">
+        <option value="">選択してください</option>
+        <option value="13" selected>東京都</option>
+        <option value="14">神奈川県</option>
+        <option value="27">大阪府</option>
+        <option value="other">その他</option>
+      </select>
+    </div>
+
+    <!-- 自己紹介(テキストエリア) -->
+    <div class="field">
+      <label class="field_label" for="bio">自己紹介</label>
+      <textarea class="input" id="bio" name="bio" placeholder="好きなことや興味を書いてみましょう">カフェ巡りとネイルが好きです。よろしくお願いします！</textarea>
+      <div class="field_hint">120文字まで</div>
+    </div>
+
+    <!-- 公開設定(トグル) -->
+    <div class="field">
+      <label class="field_label">プロフィールの公開</label>
+      <div class="toggle_field">
+        <div>
+          <div class="tf_text">ほかの利用者に公開する</div>
+          <div class="tf_sub">オフにすると自分だけが閲覧できます</div>
+        </div>
+        <label class="switch"><input type="checkbox" name="is_public" value="1" checked><span class="track"></span></label>
+      </div>
+    </div>
+
+  </form>
+</main>
+
+<!-- 固定の保存バー -->
+<div class="form_bar">
+  <div class="form_bar_inner">
+    <a class="btn btn_ghost" href="template_mypage.html" style="display:flex; align-items:center; justify-content:center; text-decoration:none;">キャンセル</a>
+    <button type="submit" class="btn btn_primary" form="profileForm">保存する</button>
+  </div>
+</div>
+
+</body>
+</html>
