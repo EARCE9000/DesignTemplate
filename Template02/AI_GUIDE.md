@@ -67,3 +67,11 @@ Template02/
 
 ## 注意
 UIテンプレート（ダミー項目）です。実在サービスの偽装や実資格情報の収集には使わないこと。
+
+---
+
+## 著作権・ライセンス
+
+- Copyright (c) 2026 EARCE.NET — 本テンプレートのコードおよび画面デザインの著作権は EARCE.NET が保有します。
+- ライセンス: MIT License（リポジトリ直下の `LICENSE` を参照）。
+- 公開場所: GitHub で公開しています — <https://github.com/EARCE9000/DesignTemplate>

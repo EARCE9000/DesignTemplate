@@ -17,6 +17,9 @@
   ・選択済みファイルを一覧表示し、× で個別削除
   ・DataTransfer で input.files を同期するので、そのまま form 送信できる
   Author: d.idei@earce.net
+  Copyright (c) 2026 EARCE.NET (code & design)
+  License: MIT License - see LICENSE
+  Source: https://github.com/EARCE9000/DesignTemplate (published on GitHub)
   ------------------------------------------------------------------ */
 (function () {
   "use strict";
