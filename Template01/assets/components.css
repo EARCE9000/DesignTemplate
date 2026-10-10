@@ -6,6 +6,9 @@
   flexbox.css → design.css → components.css の順で読み込む前提。
 
   Author : d.idei@earce.net  (base design: EARCE.NET "Simple Wireframe")
+  Copyright (c) 2026 EARCE.NET (code & design)
+  License: MIT License - see LICENSE
+  Source: https://github.com/EARCE9000/DesignTemplate (published on GitHub)
   ------------------------------------------------------------------
   ■ 配色トークン(参考)
     アクセント(ホバー)   #ee7800   ボタンホバー          #ffa500
@@ -21,6 +24,31 @@
   font-weight: bold;
   line-height: 30px;
   letter-spacing: 0.05em;
+}
+
+
+/* ===== フッター(左:コピーライト / 右:バージョン) =================== */
+/* <div class="footer">
+     <span class="footer_copyright">&copy; {{年}} {{会社名}}</span>
+     <span class="footer_version">Ver. {{バージョン}}</span>
+   </div>
+   内容が短い画面でも画面下端に付くよう body を縦flexにしている。     */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2px 16px;
+  margin-top: auto;
+  padding: 0 10px;
+  line-height: 24px;
+  background: #16160e;   /* ヘッダと同じ黒帯 */
+  font-size: 8pt;
+  color: #cccccc;
 }
 
 
