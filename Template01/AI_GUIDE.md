@@ -98,9 +98,14 @@ CSSは3枚を**この順**で読み込む（後勝ちで上書きするため順
       <div class="item_group"> … カード単位のコンテンツ … </div>
     </div>
   </div>
+  <div class="footer">                                       <!-- 黒帯 左:コピーライト / 右:バージョン -->
+    <span class="footer_copyright">&copy; {{年}} {{会社名}}</span>
+    <span class="footer_version">Ver. {{バージョン}}</span>
+  </div>
 </body>
 ```
 
+- `footer` = 全画面共通のフッター。固定表示ではなくページ最下部に置く（内容が短い画面では画面下端に付く）。
 - `item_group` = 1つの機能ブロック（カード）。見出しは `item_title > .title`。
 - 2カラムにしたい時は `flex_container` 内に `flex_main`/`flex_side` を並べる。
 
