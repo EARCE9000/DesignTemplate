@@ -91,7 +91,15 @@ CSSは3枚を**この順**で読み込む（後勝ちで上書きするため順
 
 ```html
 <body>
-  <div class="header"> … ユーザー名 / ログアウト … </div>   <!-- 黒帯 -->
+  <div class="header">                                       <!-- 黒帯 左:システム名 / 右:ユーザー名+アイコン -->
+    <div class="header_title">{{システム名}}</div>
+    <div class="header_actions">
+      <span class="header_user">{{ユーザー名}}</span>
+      <a href="#" class="header_icon_button" title="管理" aria-label="管理"><svg>…</svg></a>
+      <a href="#" class="header_icon_button" title="操作履歴" aria-label="操作履歴"><svg>…</svg></a>
+      <a href="#" class="header_icon_button" title="ログアウト" aria-label="ログアウト"><svg>…</svg></a>
+    </div>
+  </div>
   <div class="flex_menubar"> … ホーム / パンくず … </div>    <!-- 濃灰ナビ -->
   <div class="flex_container">
     <div class="flex_main">
@@ -105,6 +113,7 @@ CSSは3枚を**この順**で読み込む（後勝ちで上書きするため順
 </body>
 ```
 
+- `header` = 全画面共通のヘッダ。管理・操作履歴・ログアウトなど**たまにしか使わない機能は右上に `header_icon_button`(アイコン)で並べる**。文字ラベルは出さず、`title`(ツールチップ)と `aria-label` に機能名を入れる。SVGは各テンプレHTMLのものをコピーし、権限のない利用者にはボタンごと出さない。ログアウトは常に右端。
 - `footer` = 全画面共通のフッター。固定表示ではなくページ最下部に置く（内容が短い画面では画面下端に付く）。
 - `item_group` = 1つの機能ブロック（カード）。見出しは `item_title > .title`。
 - 2カラムにしたい時は `flex_container` 内に `flex_main`/`flex_side` を並べる。
@@ -264,5 +273,6 @@ CSSは3枚を**この順**で読み込む（後勝ちで上書きするため順
 
 - Copyright (c) 2026 EARCE.NET — 本テンプレートのコードおよび画面デザインの著作権は EARCE.NET が保有します。
 - ライセンス: MIT License（リポジトリ直下の `LICENSE` を参照）。
+- 第三者の著作物: ヘッダ右上のアイコンは Feather Icons（MIT）と Lucide（ISC）のもので、EARCE.NET の著作物ではありません。著作権表示とライセンス文は `THIRD_PARTY_NOTICES.md` にあります。**アイコンを追加するときは、出典とライセンスを同ファイルに追記してください。**
 - 公開場所: GitHub で公開しています — <https://github.com/EARCE9000/DesignTemplate>
 - 各画面フッターの `&copy; {{年}} {{会社名}}` は、このテンプレートで作る**システム側**の表記です（テンプレート自体の著作権表記ではありません）。
