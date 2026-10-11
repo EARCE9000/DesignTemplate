@@ -27,6 +27,68 @@
 }
 
 
+/* ===== ヘッダ(左:システム名 / 右:ユーザー名 + アイコンボタン) ====== */
+/* <div class="header">
+     <div class="header_title">{{システム名}}</div>
+     <div class="header_actions">
+       <span class="header_user">{{ユーザー名}}</span>
+       <a href="#" class="header_icon_button" title="ログアウト" aria-label="ログアウト"><svg>…</svg></a>
+     </div>
+   </div>
+   管理・操作履歴・ログアウトなど、たまにしか使わない機能を右上に
+   アイコンで並べる。アイコンは 24x24 の線画SVG(stroke="currentColor")。
+   テンプレHTMLのアイコンは第三者の著作物: Feather Icons (MIT) の
+   settings / log-out、Lucide (ISC) の history。EARCE.NET の著作物ではない。
+   著作権表示とライセンス文はリポジトリ直下の THIRD_PARTY_NOTICES.md を参照。 */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 44px;
+}
+.header_title {
+  font-weight: bold;
+  font-size: 11pt;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.header_actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.header_user {
+  margin-right: 4px;
+  font-size: 10pt;
+  color: #cccccc;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.header_icon_button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+  background: transparent;
+  color: #cccccc;
+  text-decoration: none;
+  cursor: pointer;
+}
+.header_icon_button:hover {
+  background: rgba(238, 120, 0, 0.18);
+  border-color: #ee7800;
+  color: #ee7800;
+}
+.header_icon_button svg { width: 18px; height: 18px; display: block; }
+
+
 /* ===== フッター(左:コピーライト / 右:バージョン) =================== */
 /* <div class="footer">
      <span class="footer_copyright">&copy; {{年}} {{会社名}}</span>
