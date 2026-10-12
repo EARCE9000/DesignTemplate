@@ -584,7 +584,8 @@ body {
    <div class="modal_overlay">
      <label for="m1" class="modal_backdrop"></label>
      <div class="modal_box"> ...本体... </div>
-   </div>                                                              */
+   </div>
+   modal_actions は、左にキャンセル、右に実行(削除など)。2 つは左右の端に離れる。   */
 .modal_overlay {
   position: fixed;
   inset: 0;
@@ -618,12 +619,15 @@ body {
 .modal_actions {
   display: flex;
   gap: 10px;
-  justify-content: flex-end;
+  /* 壊す操作の確認では、キャンセル(左の端)と実行(右の端)を離す。隣り合わせにすると押し間違える */
+  justify-content: space-between;
   padding: 12px 18px;
   border-top: 1px solid #eeeeee;
   background-color: #fafafa;
 }
 .modal_actions form { margin: 0; }
+/* ボタンが 1 つだけ(「閉じる」)のときは、右の端に置く */
+.modal_actions > :only-child { margin-left: auto; }
 
 
 /* ===== 状態モニタ(カード一覧) ===================================== */
@@ -669,3 +673,60 @@ body {
 .result_state.error .result_title { color: #d22222; }
 .result_state .result_desc  { font-size: 11pt; color: #555; margin-top: 8px; line-height: 1.6; }
 .result_state .result_actions { margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+
+/* ===== アイコン(SVG の線画) ======================================== */
+/* 絵文字は使わない(環境によって形と色が変わるため)。押すアイコンにも、タイルや
+   結果表示の大きな絵にも、SVG の線画を使う。SVG は template_icons.html からコピーする。
+   出典とライセンスは THIRD_PARTY_NOTICES.md に書く。                         */
+
+/* 大きな絵(タイル / 空状態 / 結果表示 / ドロップ欄)。色は親の文字色に従う */
+.tile_icon svg                 { width: 42px; height: 42px; display: block; }
+.empty_state .empty_icon svg   { width: 54px; height: 54px; }
+.result_state .result_icon svg { width: 58px; height: 58px; }
+.result_state.ok    .result_icon { color: #1a6e1a; }
+.result_state.error .result_icon { color: #d22222; }
+.dropzone .dz_icon svg         { width: 34px; height: 34px; }
+
+/* 文字に添える小さなアイコン(「更新」の頭など)。文字の大きさに合わせる */
+.inline_icon { width: 1em; height: 1em; vertical-align: -0.12em; margin-right: 3px; }
+
+/* アイコンだけのボタン。場所が足りない所(一覧の行の右端、値のすぐ横)に限って使う。
+   必ず title と aria-label を付ける。それ以外の場所では、文字の付いたボタンにする。
+   <a href="#" class="icon_button" title="詳細" aria-label="詳細"><svg>…</svg></a>
+   <a href="#" class="icon_button danger" title="削除" aria-label="削除"><svg>…</svg></a>   */
+.icon_button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 26px;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #2b2b2b;
+  text-decoration: none;
+  cursor: pointer;
+  vertical-align: middle;
+}
+.icon_button:hover        { border-color: #ee7800; color: #ee7800; background-color: #fff4e5; }
+.icon_button.danger:hover { border-color: #d22222; color: #d22222; background-color: #fff0f0; }
+.icon_button svg          { width: 15px; height: 15px; display: block; }
+/* 行の右端に並べる。順は 詳細 → 編集 → 別画面 → ダウンロード → コピー → 削除。削除は右の端で、少し離す */
+.row_actions                      { white-space: nowrap; text-align: right; }
+.row_actions .icon_button         { margin-left: 4px; }
+.row_actions .icon_button.danger  { margin-left: 12px; }
+
+/* 状態を示す印(押す物ではない)。必ず文字を添える */
+.state_icon          { width: 1.1em; height: 1.1em; vertical-align: -0.18em; margin-right: 4px; }
+.state_icon.ok       { color: #1a6e1a; }
+.state_icon.warn     { color: #b05000; }
+.state_icon.error    { color: #d22222; }
+
+/* アイコン一覧(template_icons.html) */
+.icon_catalog       { display: flex; flex-wrap: wrap; gap: 10px; padding: 10px; }
+.icon_catalog_item  { display: flex; align-items: center; gap: 12px; width: 300px; border: 1px solid #e8e8e8; border-radius: 8px; padding: 8px 12px; }
+.icon_catalog_item > svg { width: 24px; height: 24px; flex-shrink: 0; color: #2b2b2b; }
+.icon_catalog_name  { font-size: 10.5pt; font-weight: bold; color: #2b2b2b; }
+.icon_catalog_note  { font-size: 9pt; color: #6a7178; }

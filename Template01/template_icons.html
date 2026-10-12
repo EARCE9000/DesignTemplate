@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<!--
+  テンプレート: アイコン一覧 (コピー元)
+  用途: 画面で使うアイコン(SVG の線画)の一覧。ここから SVG をコピーして使う。
+  絵文字は使わない。アイコンを足したら、出典とライセンスを THIRD_PARTY_NOTICES.md に書く。
+
+  Copyright (c) 2026 EARCE.NET (code & design)
+  License: MIT License - see LICENSE
+  Source: https://github.com/EARCE9000/DesignTemplate (published on GitHub)
+-->
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>アイコン一覧 | ToolKit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- 土台CSS(順番厳守): レイアウト → 基本スタイル → 共通部品 -->
+<link rel="stylesheet" href="./assets/flexbox.css" type="text/css">
+<link rel="stylesheet" href="./assets/design.css" type="text/css">
+<link rel="stylesheet" href="./assets/components.css" type="text/css">
+</head>
+<body>
+
+<!-- ===== ヘッダ(黒帯・ユーザー情報/ログアウト) ===== -->
+<div class="header">
+  <div class="header_title">{{システム名}}</div>
+  <!-- たまにしか使わない機能は右上にアイコンで並べる(title がツールチップになる) -->
+  <!-- 並べる順: APIキー → 通知 → 管理 → 操作履歴 → ログアウト(ログアウトは常に右端)。無い機能は詰め、権限のない利用者にはボタンごと出さない -->
+  <!-- アイコン出典: Feather Icons (MIT) key / bell / settings / log-out、Lucide (ISC) history — THIRD_PARTY_NOTICES.md 参照 -->
+  <div class="header_actions">
+    <span class="header_user">{{ユーザー名}}</span>
+    <a href="#" class="header_icon_button" title="APIキー管理" aria-label="APIキー管理">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+    </a>
+    <a href="#" class="header_icon_button" title="通知" aria-label="通知">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </a>
+    <a href="#" class="header_icon_button" title="管理" aria-label="管理">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </a>
+    <a href="#" class="header_icon_button" title="操作履歴" aria-label="操作履歴">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>
+    </a>
+    <a href="#" class="header_icon_button" title="ログアウト" aria-label="ログアウト">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    </a>
+  </div>
+</div>
+
+<!-- ===== メニューバー(パンくず) ===== -->
+<div class="flex_menubar">
+  <a href="template_menu.html"><svg class="inline_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>ホーム</a>
+  <a href="template_icons.html">アイコン一覧</a>
+</div>
+
+<!-- ===== 本文 ===== -->
+<div class="flex_container">
+  <div class="flex_main">
+
+    <div class="item_group" style="min-width:0;">
+      <div class="item_title"><div class="title">アイコンの使い方</div></div>
+      <div style="padding:10px 14px;font-size:10.5pt;line-height:1.8;color:#444;">
+        ・<strong>アイコンだけのボタンは、場所が足りない所に限る</strong>（一覧の行の右端、ヘッダ右上、値のすぐ横、閉じる）。それ以外は、文字の付いたボタンにする。<br>
+        ・アイコンだけのボタンには、必ず <code>title</code> と <code>aria-label</code> を付ける。<br>
+        ・<strong>絵文字は使わない</strong>。タイルや結果表示の大きな絵にも、SVG の線画を使う。<br>
+        ・同じ意味には、同じアイコンを使う（削除はゴミ箱、追加は＋）。削除と失効は別の操作で、失効にゴミ箱は使わない。<br>
+        ・保存・登録・発行・キャンセルと、確認モーダルの中の実行（削除する など）は、文字のボタンにする。<br>
+        ・アイコンを足したら、出典とライセンスを <code>THIRD_PARTY_NOTICES.md</code> に書く。
+      </div>
+    </div>
+
+    <div class="item_group" style="min-width:0;">
+      <div class="item_title"><div class="title">行の操作・値の横(アイコンだけのボタン)</div></div>
+      <div class="form_hint" style="padding:8px 10px 0;">行の右端に並べる順は、詳細 → 編集 → 別画面で開く → ダウンロード → コピー → 削除。削除は右の端で、少し離す。</div>
+      <div class="icon_catalog">
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <div><div class="icon_catalog_name">詳細</div><div class="icon_catalog_note">Feather info ｜ 行の右端(削除より左)</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+          <div><div class="icon_catalog_name">編集</div><div class="icon_catalog_note">Feather edit-2 ｜ 行の右端</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <div><div class="icon_catalog_name">別画面で開く</div><div class="icon_catalog_note">Feather external-link ｜ リンクや名前の横</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <div><div class="icon_catalog_name">ダウンロード</div><div class="icon_catalog_note">Feather download ｜ ファイル名の横</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <div><div class="icon_catalog_name">コピー</div><div class="icon_catalog_note">Feather copy ｜ コピーしたい値の横</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          <div><div class="icon_catalog_name">削除</div><div class="icon_catalog_note">Feather trash ｜ 行の右端(いちばん右)</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <div><div class="icon_catalog_name">追加</div><div class="icon_catalog_note">Feather plus ｜ 幅が無い所だけ。それ以外は「＋ 追加」</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          <div><div class="icon_catalog_name">更新・再確認</div><div class="icon_catalog_note">Feather refresh-cw ｜ 一覧の上、管理画面</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <div><div class="icon_catalog_name">検索</div><div class="icon_catalog_note">Feather search ｜ 検索欄</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <div><div class="icon_catalog_name">閉じる</div><div class="icon_catalog_note">Feather x ｜ モーダル・ポップアップの右上</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <div><div class="icon_catalog_name">ホーム</div><div class="icon_catalog_note">Feather home ｜ メニューバーの先頭。文字を添える</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="item_group" style="min-width:0;">
+      <div class="item_title"><div class="title">行の右端の並べ方(例)</div></div>
+      <div class="data_table_wrap">
+        <table class="data_table">
+          <thead><tr><th>名前</th><th>ステータス</th><th style="text-align:right;">操作</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>サンプル名称</td>
+              <td><span class="status_badge completed">completed</span></td>
+              <td class="row_actions">
+                <a href="#" class="icon_button" title="詳細" aria-label="詳細"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></a>
+                <a href="#" class="icon_button" title="編集" aria-label="編集"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></a>
+                <a href="#" class="icon_button" title="コピー" aria-label="コピー"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></a>
+                <a href="#" class="icon_button danger" title="削除" aria-label="削除"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="item_group" style="min-width:0;">
+      <div class="item_title"><div class="title">ヘッダ右上(header_icon_button)</div></div>
+      <div class="form_hint" style="padding:8px 10px 0;">並べる順は、APIキー → 通知 → 管理 → 操作履歴 → ログアウト。ログアウトは常に右端。無い機能は詰める。</div>
+      <div class="icon_catalog">
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+          <div><div class="icon_catalog_name">APIキー管理</div><div class="icon_catalog_note">Feather key</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <div><div class="icon_catalog_name">通知</div><div class="icon_catalog_note">Feather bell</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <div><div class="icon_catalog_name">管理</div><div class="icon_catalog_note">Feather settings ｜ 管理者だけ</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <div><div class="icon_catalog_name">操作履歴</div><div class="icon_catalog_note">ヘッダでは Lucide history を使う(各テンプレの HTML 参照)</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <div><div class="icon_catalog_name">ログアウト</div><div class="icon_catalog_note">Feather log-out ｜ 常に右端</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="item_group" style="min-width:0;">
+      <div class="item_title"><div class="title">状態を示す印(押す物ではない。必ず文字を添える)</div></div>
+      <div style="padding:10px 14px;font-size:10.5pt;line-height:2;">
+        <svg class="state_icon ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>コピーしました<br>
+        <svg class="state_icon warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>有効期限が 1 年のキーは、漏れたときの影響が長く続きます<br>
+        <svg class="state_icon error" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>保存できませんでした<br>
+        <svg class="state_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>一覧は 30 秒ごとに更新されます
+      </div>
+    </div>
+
+    <div class="item_group" style="min-width:0;">
+      <div class="item_title"><div class="title">状態を示す印(一覧)</div></div>
+      <div class="form_hint" style="padding:8px 10px 0;">注意(続けてよい)とエラー(できなかった)を、同じ印にしない。閉じるの × と、エラーの丸に × も使い分ける。</div>
+      <div class="icon_catalog">
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <div><div class="icon_catalog_name">済み・正常</div><div class="icon_catalog_note">Feather check ｜ 緑</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div><div class="icon_catalog_name">注意</div><div class="icon_catalog_note">Feather alert-triangle ｜ 続けてよいが知らせたいこと</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          <div><div class="icon_catalog_name">エラー・失敗</div><div class="icon_catalog_note">Feather x-circle ｜ 赤。できなかったこと</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <div><div class="icon_catalog_name">情報</div><div class="icon_catalog_note">Feather info ｜ 補足の説明</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="item_group" style="min-width:0;">
+      <div class="item_title"><div class="title">大きな絵(タイル / 空状態 / 結果表示 / ドロップ欄)</div></div>
+      <div class="form_hint" style="padding:8px 10px 0;">大きな絵にも、絵文字ではなく SVG の線画を使う。大きさは CSS が決める。</div>
+      <div class="icon_catalog">
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          <div><div class="icon_catalog_name">一覧</div><div class="icon_catalog_note">Feather list ｜ メニューのタイル</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+          <div><div class="icon_catalog_name">受け取り・空の状態</div><div class="icon_catalog_note">Feather inbox ｜ タイル、空状態</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          <div><div class="icon_catalog_name">登録</div><div class="icon_catalog_note">Feather edit ｜ メニューのタイル</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <div><div class="icon_catalog_name">詳細・文書</div><div class="icon_catalog_note">Feather file-text ｜ メニューのタイル</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <div><div class="icon_catalog_name">状態モニタ</div><div class="icon_catalog_note">Feather activity ｜ メニューのタイル</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <div><div class="icon_catalog_name">完了</div><div class="icon_catalog_note">Feather check-circle ｜ 結果表示(完了)</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+          <div><div class="icon_catalog_name">権限なし</div><div class="icon_catalog_note">Feather slash ｜ 結果表示(403)</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+          <div><div class="icon_catalog_name">ファイル</div><div class="icon_catalog_note">Feather paperclip ｜ ドロップ欄</div></div>
+        </div>
+        <div class="icon_catalog_item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <div><div class="icon_catalog_name">一覧(タイル)</div><div class="icon_catalog_note">Feather grid ｜ メニューのタイル</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="footer">
+  <span class="footer_copyright">&copy; {{年}} {{会社名}}</span>
+  <span class="footer_version">Ver. {{バージョン}}</span>
+</div>
+
+</body>
+</html>

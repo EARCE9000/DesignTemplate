@@ -3,13 +3,24 @@
 このリポジトリのコードと画面デザインの著作権は EARCE.NET が保有し、MIT License で公開しています（`LICENSE` を参照）。
 ただし、以下の第三者の著作物を含みます。これらはそれぞれのライセンスに従います。
 
-## アイコン（Template01 ヘッダ右上の `header_icon_button`）
+## アイコン（Template01）
 
-| アイコン | 出典 | ライセンス |
-|---|---|---|
-| 管理（歯車） | Feather Icons `settings` | MIT |
-| ログアウト | Feather Icons `log-out` | MIT |
-| 操作履歴 | Lucide `history`（v0.200.0 時点の図形） | ISC |
+| 使う場所 | アイコン | 出典 | ライセンス |
+|---|---|---|---|
+| ヘッダ右上（`header_icon_button`） | APIキー管理 | Feather Icons `key` | MIT |
+| ヘッダ右上 | 通知 | Feather Icons `bell` | MIT |
+| ヘッダ右上 | 管理（歯車） | Feather Icons `settings` | MIT |
+| ヘッダ右上 | 操作履歴 | Lucide `history`（v0.200.0 時点の図形） | ISC |
+| ヘッダ右上 | ログアウト | Feather Icons `log-out` | MIT |
+| 行の操作・値の横（`icon_button`） | 詳細 / 編集 / 別画面で開く / ダウンロード / コピー / 削除 | Feather Icons `info` / `edit-2` / `external-link` / `download` / `copy` / `trash` | MIT |
+| 行の操作・値の横 | 追加 / 更新 / 検索 / 閉じる | Feather Icons `plus` / `refresh-cw` / `search` / `x` | MIT |
+| メニューバー（`inline_icon`） | ホーム | Feather Icons `home` | MIT |
+| 状態を示す印（`state_icon`） | 済み / 注意 / エラー / 情報 | Feather Icons `check` / `alert-triangle` / `x-circle` / `info` | MIT |
+| メニューのタイル（`tile_icon`） | 一覧 / 簡易登録 / 単票登録 / 詳細表示 / 状態モニタ / 状態画面 / アイコン一覧 | Feather Icons `list` / `inbox` / `edit` / `file-text` / `activity` / `check-circle` / `grid` | MIT |
+| 結果表示（`result_icon`） | 完了 / 403 / 404 / 500 | Feather Icons `check-circle` / `slash` / `search` / `alert-triangle` | MIT |
+| 空状態（`empty_icon`） | 該当なし | Feather Icons `inbox` | MIT |
+| ドロップ欄（`dz_icon`） | ファイル | Feather Icons `paperclip` | MIT |
+| アイコン一覧（`template_icons.html`） | 上記のほか、操作履歴の代わりの例 | Feather Icons `clock` | MIT |
 
 SVG は配布元のものを改変せずに使用しています（`width` / `height` 属性のみ省略し、大きさは CSS で指定）。
 

@@ -7,7 +7,7 @@
   期待するマークアップ:
     <label class="dropzone">
       <input type="file" name="attachments[]" multiple hidden>
-      <div class="dz_icon">📎</div>
+      <div class="dz_icon"><svg>…(Feather paperclip。template_form.html からコピー)</svg></div>
       <div class="dz_text">ここにファイルをドラッグ&ドロップ</div>
       <div class="dz_hint">または<span class="dz_browse">クリックして選択</span></div>
     </label>
