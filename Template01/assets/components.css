@@ -711,7 +711,9 @@ body {
   vertical-align: middle;
 }
 .icon_button:hover        { border-color: #ee7800; color: #ee7800; background-color: #fff4e5; }
-.icon_button.danger:hover { border-color: #d22222; color: #d22222; background-color: #fff0f0; }
+/* 削除は、いつも警戒色(赤)で出す。マウスを乗せると、赤で塗りつぶす */
+.icon_button.danger       { border-color: #e9a9a9; color: #d22222; }
+.icon_button.danger:hover { border-color: #d22222; color: #ffffff; background-color: #d22222; }
 .icon_button svg          { width: 15px; height: 15px; display: block; }
 /* 行の右端に並べる。順は 詳細 → 編集 → 別画面 → ダウンロード → コピー → 削除。削除は右の端で、少し離す */
 .row_actions                      { white-space: nowrap; text-align: right; }
