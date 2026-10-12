@@ -36,6 +36,7 @@ _template/
 ├─ template_detail.html       詳細表示(読み取り専用)+編集/削除、削除確認モーダル内蔵
 ├─ template_monitor.html      状態モニタ/ダッシュボード: カード+ステータス+自動更新
 ├─ template_status.html       状態画面: 完了/エラー(403/404/500の例)
+├─ template_icons.html        アイコン一覧(SVG のコピー元)と、使い方の決まり
 └─ AI_GUIDE.md                このファイル
 ```
 
@@ -95,6 +96,8 @@ CSSは3枚を**この順**で読み込む（後勝ちで上書きするため順
     <div class="header_title">{{システム名}}</div>
     <div class="header_actions">
       <span class="header_user">{{ユーザー名}}</span>
+      <a href="#" class="header_icon_button" title="APIキー管理" aria-label="APIキー管理"><svg>…</svg></a>
+      <a href="#" class="header_icon_button" title="通知" aria-label="通知"><svg>…</svg></a>
       <a href="#" class="header_icon_button" title="管理" aria-label="管理"><svg>…</svg></a>
       <a href="#" class="header_icon_button" title="操作履歴" aria-label="操作履歴"><svg>…</svg></a>
       <a href="#" class="header_icon_button" title="ログアウト" aria-label="ログアウト"><svg>…</svg></a>
@@ -113,7 +116,7 @@ CSSは3枚を**この順**で読み込む（後勝ちで上書きするため順
 </body>
 ```
 
-- `header` = 全画面共通のヘッダ。管理・操作履歴・ログアウトなど**たまにしか使わない機能は右上に `header_icon_button`(アイコン)で並べる**。文字ラベルは出さず、`title`(ツールチップ)と `aria-label` に機能名を入れる。SVGは各テンプレHTMLのものをコピーし、権限のない利用者にはボタンごと出さない。ログアウトは常に右端。
+- `header` = 全画面共通のヘッダ。管理・操作履歴・ログアウトなど**たまにしか使わない機能は右上に `header_icon_button`(アイコン)で並べる**。文字ラベルは出さず、`title`(ツールチップ)と `aria-label` に機能名を入れる。SVGは各テンプレHTMLのものをコピーし、権限のない利用者にはボタンごと出さない。**並べる順は APIキー → 通知 → 管理 → 操作履歴 → ログアウト**で、無い機能は詰める。ログアウトは常に右端。
 - `footer` = 全画面共通のフッター。固定表示ではなくページ最下部に置く（内容が短い画面では画面下端に付く）。
 - `item_group` = 1つの機能ブロック（カード）。見出しは `item_title > .title`。
 - 2カラムにしたい時は `flex_container` 内に `flex_main`/`flex_side` を並べる。
@@ -189,7 +192,7 @@ CSSは3枚を**この順**で読み込む（後勝ちで上書きするため順
 <div class="form_value">
   <label class="dropzone">
     <input type="file" name="attachments[]" multiple hidden>
-    <div class="dz_icon">📎</div>
+    <div class="dz_icon"><svg>…</svg></div>   <!-- Feather paperclip。template_form.html からコピー -->
     <div class="dz_text">ここにファイルをドラッグ＆ドロップ</div>
     <div class="dz_hint">または<span class="dz_browse">クリックして選択</span>（複数可）</div>
   </label>
@@ -197,6 +200,23 @@ CSSは3枚を**この順**で読み込む（後勝ちで上書きするため順
 </div>
 ```
 `</body>` 直前で `<script src="./assets/dropzone.js"></script>` を読み込む（全 `.dropzone` を自動初期化）。DataTransfer で `input.files` を同期するのでそのまま送信可。単一ファイルなら `multiple` を外す。確認画面では**ファイル名をテキスト表示**する（全項目テキスト方針）。
+
+### アイコン
+**アイコンだけのボタンは、場所が足りない所に限る**（一覧の行の右端、ヘッダ右上、値のすぐ横、閉じる）。それ以外は、文字の付いたボタンにする。
+```html
+<td class="row_actions">
+  <a href="…" class="icon_button" title="詳細" aria-label="詳細"><svg>…</svg></a>
+  <a href="…" class="icon_button" title="編集" aria-label="編集"><svg>…</svg></a>
+  <a href="…" class="icon_button danger" title="削除" aria-label="削除"><svg>…</svg></a>
+</td>
+```
+- SVG は `template_icons.html` からコピーする（行の操作 / ヘッダ右上 / 状態を示す印 / 大きな絵）。
+- アイコンだけのボタンには、必ず `title` と `aria-label` を付ける。
+- 行の右端に並べる順は **詳細 → 編集 → 別画面で開く → ダウンロード → コピー → 削除**。削除（`icon_button danger`）は右の端で、少し離れる。**削除のアイコンは、いつも警戒色（赤）で出す**（ほかのアイコンは黒）。1 行に並べるのは 3〜4 個まで。
+- **絵文字は使わない**（環境によって形と色が変わるため）。タイル（`tile_icon`）・空状態（`empty_icon`）・結果表示（`result_icon`）・ドロップ欄（`dz_icon`）の大きな絵にも、SVG の線画を入れる。
+- 保存・登録・発行・キャンセルと、確認モーダルの中の実行（「削除する」など）は、アイコンにせず文字のボタンにする。削除は「入口はゴミ箱のアイコン、実行は文字のボタン」。
+- 状態を示す印は `state_icon`（`ok` / `warn` / `error`）。押す物ではなく、必ず文字を添える。注意（三角に！）とエラー（丸に×）を同じ印にしない。
+- 文字に添える小さなアイコン（「更新」の頭、メニューバーの「ホーム」の頭など）は `inline_icon`。メニューバーの先頭は、家のアイコンと「ホーム」の文字にする。
 
 ### 絞り込み
 `.filter_panel` 内に、期間トグル `.range_btn`（選択中に `.active`）と
@@ -210,6 +230,7 @@ CSSは3枚を**この順**で読み込む（後勝ちで上書きするため順
 
 ### モーダル（確認ダイアログ・JS不要）
 チェックボックス方式。削除など破壊的操作の確認に使う。`modal_toggle` の直後に置いた `modal_overlay` が `:checked` で表示される。
+**ボタンは、左にキャンセル、右に実行。`modal_actions` が 2 つを左右の端に離す**（隣り合わせにすると押し間違えるため）。実行のボタンには、何をするかを書く（「削除する」。「OK」「はい」にしない）。ボタンが 1 つだけ（「閉じる」）のときは、右の端に付く。
 ```html
 <input type="checkbox" id="del_modal" class="modal_toggle" hidden>
 <label for="del_modal" class="caution_button" style="cursor:pointer;">削除</label>
@@ -243,13 +264,13 @@ CSSは3枚を**この順**で読み込む（後勝ちで上書きするため順
 ### 空状態 / 結果状態
 ```html
 <div class="empty_state">
-  <div class="empty_icon">🗂️</div>
+  <div class="empty_icon"><svg>…</svg></div>   <!-- Feather inbox。template_list.html からコピー -->
   <div class="empty_text">該当するデータがありません</div>
   <div class="empty_hint">条件を変えるか新規追加してください。</div>
 </div>
 
 <div class="result_state ok">   <!-- ok / error -->
-  <div class="result_icon">✅</div>
+  <div class="result_icon"><svg>…</svg></div>   <!-- Feather check-circle。template_status.html からコピー -->
   <div class="result_title">登録が完了しました</div>
   <div class="result_desc">…</div>
   <div class="result_actions"><a href="…" class="entry_button" style="...">一覧へ戻る</a></div>
@@ -262,6 +283,8 @@ CSSは3枚を**この順**で読み込む（後勝ちで上書きするため順
 
 - `flexbox.css` / `design.css` の**改変**（土台なので全画面に影響する）。
 - 独自カラー・独自フォント・重いUIライブラリの持ち込み。
+- **絵文字**をアイコンや絵として使うこと（SVG の線画を使う）。
+- アイコンだけのボタンを、場所がある所（一覧の上、フォームの下、モーダルの下、詳細画面）に置くこと。
 - 既存クラスで表現できるものを新規CSSで作り直すこと。
 - CSSリンクの読み込み順を変えること。
 
@@ -273,6 +296,6 @@ CSSは3枚を**この順**で読み込む（後勝ちで上書きするため順
 
 - Copyright (c) 2026 EARCE.NET — 本テンプレートのコードおよび画面デザインの著作権は EARCE.NET が保有します。
 - ライセンス: MIT License（リポジトリ直下の `LICENSE` を参照）。
-- 第三者の著作物: ヘッダ右上のアイコンは Feather Icons（MIT）と Lucide（ISC）のもので、EARCE.NET の著作物ではありません。著作権表示とライセンス文は `THIRD_PARTY_NOTICES.md` にあります。**アイコンを追加するときは、出典とライセンスを同ファイルに追記してください。**
+- 第三者の著作物: アイコン（ヘッダ右上、行の操作、状態を示す印、タイルや結果表示の絵）は Feather Icons（MIT）と Lucide（ISC）のもので、EARCE.NET の著作物ではありません。著作権表示とライセンス文は `THIRD_PARTY_NOTICES.md` にあります。**アイコンを追加するときは、出典とライセンスを同ファイルに追記してください。**
 - 公開場所: GitHub で公開しています — <https://github.com/EARCE9000/DesignTemplate>
 - 各画面フッターの `&copy; {{年}} {{会社名}}` は、このテンプレートで作る**システム側**の表記です（テンプレート自体の著作権表記ではありません）。
