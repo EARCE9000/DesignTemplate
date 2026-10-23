@@ -874,3 +874,9 @@ button.icon_button        { width: 28px; height: 26px; padding: 0; margin: 0; fo
 .key_value       { margin: 6px 0; padding: 6px 8px; background: #ffffff; border: 1px solid #e8e8e8; border-radius: 4px; word-break: break-all; user-select: all; }
 .key_issued_actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 tr.row_expired td { color: #9a9a9a; }
+
+/* サーバーのタブの書き出しの欄(admin.js) */
+.export_bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 10px 14px 0; padding: 8px 12px; border: 1px dashed #d0d0d0; border-radius: 8px; background-color: #fcfcfc; }
+.export_bar > span:first-child { flex: 1; min-width: 14em; }
+.export_bar label { display: inline-flex; align-items: center; gap: 4px; }
+
