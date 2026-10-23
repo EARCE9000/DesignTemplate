@@ -15,6 +15,7 @@
 >   - 検索・絞り込み一覧 → `template_list.html`
 >   - Queueレベルの簡易登録(少項目・上入力/下直近一覧) → `template_form_simple.html`
 >   - 単票の登録/編集(多項目・セクション分け・2カラム) → `template_form.html`
+>   - 管理機能の画面(管理者だけ) → `template_admin.html`
 > - 独自の色や角丸を新設せず、下記トークン/クラスの範囲で構成する。
 
 ---
@@ -27,7 +28,8 @@ _template/
 │   ├─ flexbox.css       レイアウト土台(box-sizing, flex骨格) ※変更しない
 │   ├─ design.css        基本スタイル(ヘッダ/メニューバー/ボタン/item_group) ※変更しない
 │   ├─ components.css    共通部品(バッジ/テーブル/フォーム/フィルタ/タイル/モーダル/カード 等)
-│   └─ dropzone.js       ファイルD&Dの共通挙動(全 .dropzone を自動初期化)
+│   ├─ dropzone.js       ファイルD&Dの共通挙動(全 .dropzone を自動初期化)
+│   └─ admin_server.js   管理機能の「サーバー」タブを、共通の WebAPI の応答から描く
 ├─ template_menu.html         メニュー画面
 ├─ template_list.html         一覧+絞り込み+検索(空状態の例も内包)
 ├─ template_form_simple.html  簡易登録(Queueレベル): 上で入力・下で直近一覧
@@ -37,6 +39,7 @@ _template/
 ├─ template_monitor.html      状態モニタ/ダッシュボード: カード+ステータス+自動更新
 ├─ template_status.html       状態画面: 完了/エラー(403/404/500の例)
 ├─ template_icons.html        アイコン一覧(SVG のコピー元)と、使い方の決まり
+├─ template_admin.html        管理機能の画面: 共通のタブ(利用者/セッション/監査ログ/サーバー)+サービスが足すタブ
 └─ AI_GUIDE.md                このファイル
 ```
 
@@ -44,6 +47,7 @@ _template/
 - 一覧 `template_list.html` → 行の「詳細」→ `template_detail.html` → 「編集」→ `template_form.html`（→確認→完了）／「削除」→ 詳細内のモーダル。
 - 登録: `template_form.html` → `template_form_confirm.html` → `template_status.html`（完了）。
 - 監視系は `template_monitor.html`、結果/エラー表示は `template_status.html`。
+- 管理機能は `template_admin.html`。**入口は右上の歯車(`header_icon_button` の「管理」)だけ**にし、メニューバーには出さない(メニューバーはホームだけ)。
 
 CSSは3枚を**この順**で読み込む（後勝ちで上書きするため順序が重要）:
 
@@ -247,6 +251,41 @@ CSSは3枚を**この順**で読み込む（後勝ちで上書きするため順
   </div>
 </div>
 ```
+
+### タブ(JS不要)
+1つのページの中を切り替える。ラジオボタン方式(モーダルと同じ考え方)。ラベルは上に横並び、選んだタブの中身だけが下に出る。
+```html
+<div class="tab_set">
+  <input type="radio" name="t" id="t1" class="tab_toggle" checked><label for="t1" class="tab_label">利用者</label>
+  <div class="tab_panel"> … </div>
+  <input type="radio" name="t" id="t2" class="tab_toggle"><label for="t2" class="tab_label">サーバー</label>
+  <div class="tab_panel"> … </div>
+  <!-- サービスが足したタブは、共通のタブの後ろに。先頭のラベルに custom_first を付けると区切りが入る -->
+  <input type="radio" name="t" id="t3" class="tab_toggle"><label for="t3" class="tab_label custom_first">変換サービス</label>
+  <div class="tab_panel"> … </div>
+</div>
+```
+- タブの中の説明は `panel_note`、節の見出しは `panel_section_title`(右端に操作を置くなら `panel_section_action`)。
+- 版・日時などのラベルと値の組は `info_grid`(`info_label` + `info_value`)。版の文字は `version_text`(等幅。略さず、コピーできる文字で)。
+- サービスで URL に残したいときは、JS で `?tab=` に切り替えてよい。
+- 広い表を持つタブを置く画面は、`flex_main` に `style="min-width:0;max-width:100%;"` を付ける(表ごとの横スクロールに任せ、ページ全体を横に広げない)。
+
+### 管理機能の画面(`template_admin.html`)
+- 管理者(admin)にだけ出す。出さないだけでなく、WebAPI も 403 を返す。入口は右上の歯車だけ。メニューバーには出さない。
+- **共通のタブ**は、どのサービスでも同じ順・同じ中身にする: **利用者 → セッション → 監査ログ → サーバー**。
+- **サービスが足すタブ**(変換サービス、外部連携、データベースの点検など)は、共通のタブの後ろに `custom_first` で区切って並べる。共通のタブの中身を、足したタブへ移さない。
+- 利用者の削除は、行の右端のゴミ箱(`icon_button danger`)から確認のモーダルを開く。
+- **セッションのタブは、利用者ごとのカード**(`session_card`)にする。切断するかを判断できるよう、次を出す: 利用者・自分か・権限・セッションと APIキーの数、セッションごとの**ログイン・最終アクセス・接続元 IP・ブラウザ等(User-Agent を略さず)・期限**と「この画面」の印、APIキーごとの**名前・権限・最終利用**。カードの右上に文字のボタン「切断する」(`caution_button session_revoke`)を置き、確認のモーダルに、止まる物と元に戻せない物を書く。
+- 「サーバー」のタブは `assets/admin_server.js` が描く:
+```html
+<div class="admin_server" data-base="./webapi/server-status" data-login="./"></div>
+<script src="./assets/admin_server.js"></script>
+```
+  - 共通の WebAPI を 3 つ呼ぶ: `{base}`(版・起動した日時・DB)、`{base}/components`(本体・DB・つながっている相手の、状態と製品と版と土台)、`{base}/packages?q=`(部品表を名前で探す)。応答の形は、共通アーキテクチャ(構成の資料 6.3)に従う。
+  - 401 のときは `data-login` へ移る(画面の中の認証切れは、必ずログインの画面へ戻す)。
+  - サービスごとの足し方: `{base}` の `extra: [{label, value}]` で「このサーバー」に項目を足す。`components[]` にサービス独自の相手(外部連携など)を足すと、そのまま 1 行で出る(`details: [{label, value}]` も出る)。知らない項目は読み飛ばす。
+  - サービス独自の節(機能の On/Off、回数の上限など)は、`admin_server` の要素の外、後ろに書く(スクリプトは、要素の中しか書き換えない)。
+  - テンプレートでは `data-sample` で、ページに埋めた見本の JSON から描いている。
 
 ### 状態モニタ カード
 ```html

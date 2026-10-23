@@ -732,3 +732,62 @@ body {
 .icon_catalog_item > svg { width: 24px; height: 24px; flex-shrink: 0; color: #2b2b2b; }
 .icon_catalog_name  { font-size: 10.5pt; font-weight: bold; color: #2b2b2b; }
 .icon_catalog_note  { font-size: 9pt; color: #6a7178; }
+
+
+/* ===== タブ(JS不要) =============================================== */
+/* 管理機能の画面などで、1つのページの中を切り替える。ラジオボタン方式(モーダルと同じ考え方)。
+   <div class="tab_set">
+     <input type="radio" name="t" id="t1" class="tab_toggle" checked><label for="t1" class="tab_label">利用者</label>
+     <div class="tab_panel"> … </div>
+     <input type="radio" name="t" id="t2" class="tab_toggle"><label for="t2" class="tab_label">サーバー</label>
+     <div class="tab_panel"> … </div>
+   </div>
+   ラベルは上に横並び、選んだタブの中身だけが下に出る。サービスで URL に残したいときは、JS で ?tab= に切り替えてよい */
+.tab_set                { display: flex; flex-wrap: wrap; align-items: flex-end; min-width: 0; }
+.tab_toggle             { position: absolute; opacity: 0; pointer-events: none; }
+.tab_label              { order: 0; padding: 9px 18px 7px; font-size: 10.5pt; color: #555555; cursor: pointer;
+                          border-bottom: 3px solid transparent; user-select: none; white-space: nowrap; }
+.tab_label:hover        { color: #ee7800; }
+.tab_toggle:focus-visible + .tab_label { outline: 2px solid #187FF5; outline-offset: -2px; }
+.tab_toggle:checked + .tab_label { color: #2b2b2b; font-weight: bold; border-bottom-color: #ee7800; }
+.tab_panel              { order: 1; width: 100%; min-width: 0; display: none; border-top: 1px solid #e8e8e8; }   /* min-width:0 で、中の広い表を横スクロールに任せる */
+.tab_toggle:checked + .tab_label + .tab_panel { display: block; }
+/* サービスが足したタブ(共通のタブの後ろに並べる)。見た目は同じで、区切りの線だけ入れる */
+.tab_label.custom_first { margin-left: 10px; border-left: 1px solid #e8e8e8; }
+
+/* タブの中の説明文と、節の見出し */
+.panel_note             { padding: 10px 14px; font-size: 9.5pt; color: #555555; background-color: #fafafa; border-bottom: 1px solid #eeeeee; }
+.panel_note ul          { margin: 4px 0 0 1.2em; padding: 0; }
+.panel_section_title    { display: flex; align-items: center; gap: 10px; padding: 14px 14px 6px; font-size: 11pt; font-weight: bold; color: #2b2b2b; }
+.panel_section_title .panel_section_action { margin-left: auto; font-weight: normal; }
+
+/* 情報の並び(版・起動した日時など)。ラベルと値の組を、幅に応じて折り返す */
+.info_grid              { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px 18px; padding: 8px 14px 12px; }
+.info_label             { font-size: 8.5pt; color: #6a7178; }
+.info_value             { font-size: 10.5pt; color: #2b2b2b; word-break: break-all; }
+
+/* 利用者ごとのセッションのカード(管理の画面のセッションのタブ)。切断するかを判断できる情報量を出す */
+.session_list           { display: flex; flex-direction: column; gap: 10px; padding: 10px 14px 14px; }
+.session_card           { border: 1px solid #e8e8e8; border-radius: 8px; padding: 10px 14px; background-color: #ffffff; }
+.session_head           { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.session_user           { font-size: 12pt; font-weight: bold; color: #2b2b2b; word-break: break-all; }
+.session_meta           { font-size: 10pt; color: #555555; }
+.session_revoke         { margin-left: auto; width: auto; height: auto; line-height: 28px; padding: 2px 18px; font-size: 10pt; }
+.session_table          { width: 100%; border-collapse: collapse; font-size: 9.5pt; margin-top: 8px; }
+.session_table th       { text-align: left; font-weight: normal; color: #6a7178; padding: 4px 8px; border-bottom: 1px solid #eeeeee; white-space: nowrap; }
+.session_table td       { padding: 6px 8px; vertical-align: top; white-space: nowrap; border-bottom: 1px solid #f4f4f4; }
+.session_table td.session_ua { white-space: normal; min-width: 260px; color: #555555; word-break: break-word; }
+.session_keys           { font-size: 9.5pt; color: #555555; margin-top: 8px; }
+
+/* 版の文字。略さず、選んでコピーできるように、等幅で出す */
+.version_text           { font-family: Consolas, "Courier New", monospace; font-size: 9.5pt; color: #2b2b2b; user-select: text; }
+.runtime_text           { font-size: 9pt; color: #555555; }
+.runtime_text .version_text { font-size: 9pt; }
+.runtime_sep            { color: #bbbbbb; margin: 0 6px; }
+@media (max-width: 700px) {
+  .tab_label             { padding: 8px 10px 6px; font-size: 10pt; }
+  .tab_label.custom_first { margin-left: 0; }
+  /* 入力が多い絞り込み(監査ログなど)も、幅に収める */
+  .filter_panel .search_form { width: 100%; min-width: 0; }
+  .filter_panel .search_input { min-width: 0 !important; }
+}
