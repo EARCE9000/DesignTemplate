@@ -48,7 +48,7 @@
 		keys: me.getAttribute("data-keys") || "./webapi/apikeys",
 		history: me.getAttribute("data-history") || "./webapi/history",
 		guide: me.getAttribute("data-guide"),
-		service: me.getAttribute("data-service") || document.title.replace(/^【開発モード】/, "").split("|")[0].trim(),
+		service: me.getAttribute("data-service") || document.title.replace(/^【開発モード】/, "").split("|").pop().trim(),   // 題名は「画面の名前 | システムの名前」。後ろを取る
 		login: me.getAttribute("data-login") || "./",
 		demo: me.hasAttribute("data-demo")
 	};

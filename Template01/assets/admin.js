@@ -331,7 +331,7 @@
 
 	AdminServer.prototype.markdown = function (packages) {
 		var s = this.lastStatus || {}, c = this.lastComponents || {components: []};
-		var service = this.root.getAttribute("data-service") || s.service || document.title.replace(/^【開発モード】/, "").split("|")[0].trim();
+		var service = this.root.getAttribute("data-service") || s.service || document.title.replace(/^【開発モード】/, "").split("|").pop().trim();   // 題名は「画面の名前 | システムの名前」。後ろを取る
 		var out = [];
 		out.push("# " + service + " サーバーの状態");
 		out.push("");
