@@ -24,25 +24,25 @@
 <!-- ===== ヘッダ(黒帯・ユーザー情報/ログアウト) ===== -->
 <div class="header">
   <div class="header_title">{{システム名}}</div>
-  <!-- 開発モードのしるし。authDisabled が true のときだけ出す(assets/dev_mode.js)。題字の要素の外に置く -->
+  <!-- 開発モードのしるし。開発モードのときだけ hidden を外し、.header に dev_mode を付ける(見た目は template_icons.html)。題字の要素の外に置く -->
   <span class="dev_mode_badge" hidden title="認証を切って動いている(AUTH_DISABLED)。誰でも管理者として入れる。本番では設定しない"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>開発モード</span>
   <!-- たまにしか使わない機能は右上にアイコンで並べる(title がツールチップになる) -->
   <!-- 並べる順: APIキー → 通知 → 管理 → 操作履歴 → ログアウト(ログアウトは常に右端)。無い機能は詰め、権限のない利用者にはボタンごと出さない -->
   <!-- アイコン出典: Feather Icons (MIT) key / bell / settings / log-out、Lucide (ISC) history — THIRD_PARTY_NOTICES.md 参照 -->
   <div class="header_actions">
     <span class="header_user">{{ユーザー名}}</span>
-    <a href="#" class="header_icon_button" title="APIキー管理" aria-label="APIキー管理" data-open="apikeys">
+    <label for="m_apikeys" class="header_icon_button" title="APIキー管理" aria-label="APIキー管理" style="cursor:pointer;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-    </a>
-    <a href="#" class="header_icon_button" title="通知" aria-label="通知" data-toggle="notify" aria-pressed="true">
+    </label>
+    <a href="#" class="header_icon_button" title="通知" aria-label="通知">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
     </a>
     <a href="template_admin.html" class="header_icon_button" title="管理" aria-label="管理">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </a>
-    <a href="#" class="header_icon_button" title="操作履歴" aria-label="操作履歴" data-open="history">
+    <label for="m_history" class="header_icon_button" title="操作履歴" aria-label="操作履歴" style="cursor:pointer;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>
-    </a>
+    </label>
     <a href="#" class="header_icon_button" title="ログアウト" aria-label="ログアウト">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
     </a>
@@ -246,28 +246,64 @@
       </div>
     </div>
 
-    <div class="item_group" style="min-width:0;">
-      <div class="item_title"><div class="title">知らせ方の部品(assets/ui.js)</div></div>
+    <div class="item_group" style="min-width:0;" id="notice_parts">
+      <div class="item_title"><div class="title">知らせ方の部品(モーダル・ポップアップ・コピー)</div></div>
       <div style="padding:10px 14px;font-size:10pt;color:#444;">
-        押して動きを確かめる。確認とエラーはモーダル(Esc・枠の外・× で閉じる)、ほかの人の操作は右下のポップアップ(約 6 秒で消え、マウスを乗せている間は残る)。
-        ヘッダーのベルで、ポップアップの On / Off(このブラウザに保存)。鍵と時計のアイコンは、APIキーの管理と自分の操作の履歴(assets/account.js)を開く。
+        押すと、開いたときの見た目が出る(JS 不要のチェックボックス方式。枠の外か × で閉じる)。確認とエラーはモーダル、ほかの人の操作は右下のポップアップ。
+        ヘッダーの鍵と時計のアイコンも、ここの APIキーの管理と自分の操作の履歴を開く。
+        <ul style="margin:6px 0 0 1.4em;padding:0;">
+          <li>モーダルは、Esc・枠の外・× で閉じる。開いている間、Tab の移動はモーダルの中に閉じ、閉じたら元の場所へ戻す。重なったときは、いちばん上だけが閉じる。</li>
+          <li>確認のモーダルは、左にキャンセル、右に実行(何をするかを書く。「OK」「はい」にしない)。最初にキャンセルを選んでおく(うっかり Enter を押しても実行しない)。ブラウザの confirm / alert は使わない。</li>
+          <li>右下のポップアップは、約 6 秒で消え、マウスを乗せている間は残る。押すと対象を開く。APIキー経由の操作は、左の線を紫にする。自分が画面で行った操作は出さない。</li>
+          <li>ヘッダーのベルで、ポップアップの On / Off。Off のときは、薄く斜線を引く(<code>header_icon_button is_off</code>)。</li>
+          <li>コピーのボタンは、押したら文字を「コピーしました」に変え、少しして戻す。</li>
+        </ul>
       </div>
-      <div style="padding:0 14px 14px;display:flex;flex-wrap:wrap;gap:8px;">
-        <button type="button" class="search_btn" style="width:auto;height:auto;" onclick="UI.confirm({title:'削除の確認',danger:true,ok:'削除する',body:'「見本の資料」を削除。元に戻せない。'})">確認のモーダル</button>
-        <button type="button" class="search_btn" style="width:auto;height:auto;" onclick="UI.error({body:'保存できなかった。時間をおいて、もう一度。',detail:'HTTP 503 Service Unavailable'})">エラーのモーダル</button>
-        <button type="button" class="search_btn" style="width:auto;height:auto;" onclick="UI.toast({who:'user1@example.com',what:'更新',target:'報告書.md',href:'#'})">ポップアップ</button>
-        <button type="button" class="search_btn" style="width:auto;height:auto;" onclick="UI.toast({who:'admin@example.com',what:'登録',target:'夜間の取り込み結果.csv',viaApiKey:true})">ポップアップ(APIキー経由)</button>
-        <button type="button" class="search_btn" style="width:auto;height:auto;" onclick="UI.copy(this,'コピーの見本')">コピー</button>
-        <button type="button" class="search_btn" style="width:auto;height:auto;" data-open="apikeys">APIキーの管理</button>
-        <button type="button" class="search_btn" style="width:auto;height:auto;" data-open="history">自分の操作の履歴</button>
+      <div style="padding:0 14px 10px;display:flex;flex-wrap:wrap;gap:8px;">
+        <label for="m_confirm" class="search_btn" style="width:auto;height:auto;cursor:pointer;">確認のモーダル</label>
+        <label for="m_error" class="search_btn" style="width:auto;height:auto;cursor:pointer;">エラーのモーダル</label>
+        <label for="m_apikeys" class="search_btn" style="width:auto;height:auto;cursor:pointer;">APIキーの管理</label>
+        <label for="m_apikeys_issued" class="search_btn" style="width:auto;height:auto;cursor:pointer;">APIキーの管理(発行した直後)</label>
+        <label for="m_history" class="search_btn" style="width:auto;height:auto;cursor:pointer;">自分の操作の履歴</label>
+      </div>
+      <div style="padding:0 14px 14px;display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start;">
+        <div>
+          <div class="form_hint" style="margin-bottom:4px;">右下のポップアップ(画面では右下に重ねる。新しい物が下)</div>
+          <div class="toast_stack" style="position:static;width:340px;max-width:100%;">
+            <a href="#" class="toast">
+              <div class="toast_head">user1@example.com</div>
+              <div class="toast_body">「報告書.md」を更新</div>
+            </a>
+            <a href="#" class="toast via_api_key">
+              <div class="toast_head">admin@example.com(APIキー)</div>
+              <div class="toast_body">「夜間の取り込み結果.csv」を登録</div>
+            </a>
+          </div>
+        </div>
+        <div>
+          <div class="form_hint" style="margin-bottom:4px;">コピー(押す前 / 押した直後)</div>
+          <div style="display:flex;gap:8px;">
+            <button type="button" class="search_btn" style="width:auto;height:auto;">コピー</button>
+            <button type="button" class="search_btn" style="width:auto;height:auto;">コピーしました</button>
+          </div>
+        </div>
+        <div>
+          <div class="form_hint" style="margin-bottom:4px;">通知(On / Off)</div>
+          <div class="header" style="border-radius:6px;padding:4px 10px;">
+            <div class="header_actions">
+              <a href="#" class="header_icon_button" title="通知: On(押すと Off)" aria-label="通知" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></a>
+              <a href="#" class="header_icon_button is_off" title="通知: Off(押すと On)" aria-label="通知" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="item_group" style="min-width:0;">
       <div class="item_title"><div class="title">開発モードの表示</div></div>
       <div style="padding:10px 14px;font-size:10pt;color:#444;">
-        開発モード(<code>AUTH_DISABLED=true</code>)で動いているときだけ出す。check_access_token の <code>authDisabled</code> を見て、assets/dev_mode.js が付ける。消す設定は置かない。
-        この画面を <code>?dev_mode=1</code> を付けて開くと、上のヘッダーも開発モードの見た目になる(テンプレートの見本だけの動き)。
+        開発モード(認証なしで入る)で動いているときだけ出す。消す設定は置かない。
+        しるし(<code>dev_mode_badge</code>)は題字の要素の外(題字のすぐ後ろ)に置き、ヘッダーに <code>dev_mode</code> を付けて紫にする。
       </div>
       <div style="padding:0 14px 14px;">
         <div class="header dev_mode" style="border-radius:6px;">
@@ -279,6 +315,157 @@
       </div>
     </div>
 
+
+    <!-- ===== 知らせ方の部品のモーダル(JS 不要の見本)。modal_toggle の後ろの modal_overlay がすべて開くので、1 つずつ div で囲む ===== -->
+
+    <div>
+      <input type="checkbox" id="m_confirm" class="modal_toggle" hidden>
+      <div class="modal_overlay">
+        <label for="m_confirm" class="modal_backdrop"></label>
+        <div class="modal_box" role="dialog" aria-modal="true">
+          <div class="modal_title danger"><span>削除の確認</span><label for="m_confirm" class="modal_close" title="閉じる" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></label></div>
+          <div class="modal_body">「見本の資料」を削除。元に戻せない。</div>
+          <div class="modal_actions"><label for="m_confirm" class="cancel_button" style="display:block;height:40px;padding:2px 30px;font-size:14pt;line-height:34px;text-align:center;border-radius:10px;cursor:pointer;">キャンセル</label><button type="button" class="caution_button">削除する</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <input type="checkbox" id="m_error" class="modal_toggle" hidden>
+      <div class="modal_overlay">
+        <label for="m_error" class="modal_backdrop"></label>
+        <div class="modal_box" role="dialog" aria-modal="true">
+          <div class="modal_title danger"><span><svg class="state_icon error" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>エラー</span><label for="m_error" class="modal_close" title="閉じる" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></label></div>
+          <div class="modal_body">
+            保存できなかった。
+            <pre class="modal_detail">HTTP 503 Service Unavailable</pre>
+          </div>
+          <div class="modal_actions"><label for="m_error" class="entry_button" style="display:block;height:40px;padding:2px 30px;font-size:14pt;line-height:34px;text-align:center;border-radius:10px;cursor:pointer;">閉じる</label></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <input type="checkbox" id="m_apikeys" class="modal_toggle" hidden>
+      <div class="modal_overlay">
+        <label for="m_apikeys" class="modal_backdrop"></label>
+        <div class="modal_box modal_wide" role="dialog" aria-modal="true">
+          <div class="modal_title"><span>APIキーの管理</span><label for="m_apikeys" class="modal_close" title="閉じる" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></label></div>
+          <div class="modal_body">
+            <div>
+              <div class="key_form">
+                <label>
+                  期限
+                  <select class="search_input"><option value="today" selected="">当日限り(既定)</option><option value="30d">30 日</option><option value="90d">90 日</option><option value="1y">1 年</option><option value="none">無期限(readonly だけ。イントラネットのサーバー間の通信用)</option></select>
+                </label>
+                <label>
+                  権限
+                  <select class="search_input"><option value="readonly" selected="">読み取り専用</option><option value="readwrite">読み書き</option></select>
+                </label>
+                <label class="key_form_memo">用途のメモ <input type="text" class="search_input" maxlength="100" placeholder="例) AI エージェント用"></label>
+                <button type="button" class="entry_button key_issue">発行</button>
+              </div>
+              <div class="key_form_hint">失効: 2026-10-24 16:15:28</div>
+            </div>
+            <div>
+              <div class="data_table_wrap">
+                <table class="data_table">
+                  <thead>
+                    <tr><th>メモ</th><th>権限</th><th>発行日時</th><th>有効期限</th><th>最終利用</th><th>操作</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>夜間の取り込み</td><td>読み取り専用</td><td style="white-space:nowrap">2026-09-14 04:15:05</td><td style="white-space:nowrap"><span class="status_badge pending">無期限</span></td><td style="white-space:nowrap">2026-10-24 01:15:05</td><td class="row_actions"><button type="button" class="icon_button danger" title="削除" aria-label="削除"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></td></tr>
+                    <tr><td>AI エージェント用</td><td>読み書き</td><td style="white-space:nowrap">2026-10-22 04:15:05</td><td style="white-space:nowrap">2027-01-20 04:15:05<div class="runtime_text">あと 88 日</div></td><td style="white-space:nowrap">2026-10-24 03:55:05</td><td class="row_actions"><button type="button" class="icon_button danger" title="削除" aria-label="削除"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></td></tr>
+                    <tr><td><span class="null_val">メモなし</span></td><td>読み取り専用</td><td style="white-space:nowrap">2026-10-23 23:15:05</td><td style="white-space:nowrap">2026-10-24 10:15:05<div class="runtime_text">あと 6 時間</div></td><td style="white-space:nowrap"><span class="null_val">なし</span></td><td class="row_actions"><button type="button" class="icon_button danger" title="削除" aria-label="削除"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></td></tr>
+                    <tr class="row_expired"><td>古い作業用</td><td>読み書き</td><td style="white-space:nowrap">2026-07-16 04:15:05</td><td style="white-space:nowrap">2026-10-14 04:15:05<div class="runtime_text">期限切れ</div></td><td style="white-space:nowrap">2026-10-12 04:15:05</td><td class="row_actions"><button type="button" class="icon_button danger" title="削除" aria-label="削除"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <input type="checkbox" id="m_apikeys_issued" class="modal_toggle" hidden>
+      <div class="modal_overlay">
+        <label for="m_apikeys_issued" class="modal_backdrop"></label>
+        <div class="modal_box modal_wide" role="dialog" aria-modal="true">
+          <div class="modal_title"><span>APIキーの管理</span><label for="m_apikeys_issued" class="modal_close" title="閉じる" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></label></div>
+          <div class="modal_body">
+            <div>
+              <div class="key_form">
+                <label>
+                  期限
+                  <select class="search_input"><option value="today">当日限り(既定)</option><option value="30d">30 日</option><option value="90d">90 日</option><option value="1y" selected="">1 年</option><option value="none" disabled="">無期限(readonly だけ。イントラネットのサーバー間の通信用)</option></select>
+                </label>
+                <label>
+                  権限
+                  <select class="search_input"><option value="readonly">読み取り専用</option><option value="readwrite" selected="">読み書き</option></select>
+                </label>
+                <label class="key_form_memo">用途のメモ <input type="text" class="search_input" maxlength="100" placeholder="例) AI エージェント用"></label>
+                <button type="button" class="entry_button key_issue">発行</button>
+              </div>
+              <div class="key_form_hint">失効: 2027-10-24 04:15:50<span class="key_warn"><svg class="state_icon warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>長い期限。漏れたときの被害が長く続く。切れる前に発行し直す</span></div>
+            </div>
+            <div>
+              <div class="key_issued">
+                <div><b>発行しました。このキーは二度と表示されないので、必ずコピーしてください。</b></div>
+                <div class="key_value version_text">svc_15f853kcgjlc134lkv1x5q</div>
+                <div class="runtime_text">有効期限: 2027-10-24 04:15:51 / 権限: 読み書き</div>
+                <div class="key_issued_actions"><button type="button" class="search_btn">APIキーをコピー</button><button type="button" class="search_btn primary">AIチャット貼り付け用にコピー</button></div>
+              </div>
+            </div>
+            <div>
+              <div class="data_table_wrap">
+                <table class="data_table">
+                  <thead>
+                    <tr><th>メモ</th><th>権限</th><th>発行日時</th><th>有効期限</th><th>最終利用</th><th>操作</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>夜間の取り込み</td><td>読み取り専用</td><td style="white-space:nowrap">2026-09-14 04:15:05</td><td style="white-space:nowrap"><span class="status_badge pending">無期限</span></td><td style="white-space:nowrap">2026-10-24 01:15:05</td><td class="row_actions"><button type="button" class="icon_button danger" title="削除" aria-label="削除"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></td></tr>
+                    <tr><td>AI エージェント用</td><td>読み書き</td><td style="white-space:nowrap">2026-10-24 04:15:51</td><td style="white-space:nowrap">2027-10-24 04:15:51<div class="runtime_text">あと 365 日</div></td><td style="white-space:nowrap"><span class="null_val">なし</span></td><td class="row_actions"><button type="button" class="icon_button danger" title="削除" aria-label="削除"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></td></tr>
+                    <tr><td>AI エージェント用</td><td>読み書き</td><td style="white-space:nowrap">2026-10-22 04:15:05</td><td style="white-space:nowrap">2027-01-20 04:15:05<div class="runtime_text">あと 88 日</div></td><td style="white-space:nowrap">2026-10-24 03:55:05</td><td class="row_actions"><button type="button" class="icon_button danger" title="削除" aria-label="削除"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></td></tr>
+                    <tr><td><span class="null_val">メモなし</span></td><td>読み取り専用</td><td style="white-space:nowrap">2026-10-23 23:15:05</td><td style="white-space:nowrap">2026-10-24 10:15:05<div class="runtime_text">あと 6 時間</div></td><td style="white-space:nowrap"><span class="null_val">なし</span></td><td class="row_actions"><button type="button" class="icon_button danger" title="削除" aria-label="削除"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></td></tr>
+                    <tr class="row_expired"><td>古い作業用</td><td>読み書き</td><td style="white-space:nowrap">2026-07-16 04:15:05</td><td style="white-space:nowrap">2026-10-14 04:15:05<div class="runtime_text">期限切れ</div></td><td style="white-space:nowrap">2026-10-12 04:15:05</td><td class="row_actions"><button type="button" class="icon_button danger" title="削除" aria-label="削除"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <input type="checkbox" id="m_history" class="modal_toggle" hidden>
+      <div class="modal_overlay">
+        <label for="m_history" class="modal_backdrop"></label>
+        <div class="modal_box modal_wide" role="dialog" aria-modal="true">
+          <div class="modal_title"><span>自分の操作の履歴</span><label for="m_history" class="modal_close" title="閉じる" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></label></div>
+          <div class="modal_body">
+            <div class="runtime_text" style="margin-bottom:6px">自分の分だけ(新しい順)。全員の分は、管理者が管理の画面の「監査ログ」で見る。</div>
+            <div>
+              <div class="data_table_wrap">
+                <table class="data_table">
+                  <thead>
+                    <tr><th>日時</th><th>操作</th><th>対象</th><th>結果</th><th>経路</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td style="white-space:nowrap">2026-10-24 04:00:05</td><td>登録</td><td><a href="template_detail.html">report.html</a></td><td><span class="status_badge completed">Success</span></td><td>APIキー</td></tr>
+                    <tr><td style="white-space:nowrap">2026-10-24 02:15:05</td><td>APIキーの発行</td><td>AI エージェント用</td><td><span class="status_badge completed">Success</span></td><td>画面</td></tr>
+                    <tr class="row_failed"><td style="white-space:nowrap">2026-10-24 01:15:05</td><td>削除</td><td>old.md</td><td><span class="status_badge failed">Denied</span></td><td>APIキー</td></tr>
+                    <tr><td style="white-space:nowrap">2026-10-23 23:15:05</td><td>ログイン</td><td>―</td><td><span class="status_badge completed">Success</span></td><td>画面</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -287,8 +474,5 @@
   <span class="footer_version">Ver. {{バージョン}}</span>
 </div>
 
-<script src="./assets/ui.js"></script>
-<script src="./assets/account.js" data-keys="./webapi/apikeys" data-history="./webapi/history" data-guide="./webapi/usage.md" data-demo></script>
-<script src="./assets/dev_mode.js" data-check="./webapi/check_access_token" data-demo></script>
 </body>
 </html>

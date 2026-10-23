@@ -2,7 +2,7 @@
 <!--
   テンプレート: 管理機能の画面 (タブ: 利用者 / セッション / 監査ログ / サーバー + サービスが足すタブ)
   用途: 管理者だけが使う画面。共通のタブは、どのサービスでも同じ順・同じ中身にする。
-  4 つのタブは assets/admin.js が、共通の WebAPI の応答から描く(ここでは見本の JSON から描く)。
+  見た目と並べ方の見本。中身は見本のデータを書いた物で、データの取り方・動かし方は、サービスで作る。
 
   Copyright (c) 2026 EARCE.NET (code & design)
   License: MIT License - see LICENSE
@@ -22,23 +22,23 @@
 
 <div class="header">
   <div class="header_title">{{システム名}}</div>
-  <!-- 開発モードのしるし。authDisabled が true のときだけ出す(assets/dev_mode.js)。題字の要素の外に置く -->
+  <!-- 開発モードのしるし。開発モードのときだけ hidden を外し、.header に dev_mode を付ける(見た目は template_icons.html)。題字の要素の外に置く -->
   <span class="dev_mode_badge" hidden title="認証を切って動いている(AUTH_DISABLED)。誰でも管理者として入れる。本番では設定しない"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>開発モード</span>
   <!-- たまにしか使わない機能は右上にアイコンで並べる(title がツールチップになる) -->
   <!-- 並べる順: APIキー → 通知 → 管理 → 操作履歴 → ログアウト(ログアウトは常に右端)。無い機能は詰め、権限のない利用者にはボタンごと出さない -->
   <!-- アイコン出典: Feather Icons (MIT) key / bell / settings / log-out、Lucide (ISC) history — THIRD_PARTY_NOTICES.md 参照 -->
   <div class="header_actions">
     <span class="header_user">{{ユーザー名}}</span>
-    <a href="#" class="header_icon_button" title="APIキー管理" aria-label="APIキー管理" data-open="apikeys">
+    <a href="template_icons.html#notice_parts" class="header_icon_button" title="APIキー管理" aria-label="APIキー管理">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
     </a>
-    <a href="#" class="header_icon_button" title="通知" aria-label="通知" data-toggle="notify" aria-pressed="true">
+    <a href="#" class="header_icon_button" title="通知" aria-label="通知">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
     </a>
     <a href="template_admin.html" class="header_icon_button" title="管理" aria-label="管理">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </a>
-    <a href="#" class="header_icon_button" title="操作履歴" aria-label="操作履歴" data-open="history">
+    <a href="template_icons.html#notice_parts" class="header_icon_button" title="操作履歴" aria-label="操作履歴">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>
     </a>
     <a href="#" class="header_icon_button" title="ログアウト" aria-label="ログアウト">
@@ -56,11 +56,12 @@
   <div class="flex_main" style="min-width:0;max-width:100%;">
 
     <!--
-      管理機能の画面。管理者(admin)にだけ、ヘッダーの歯車から出す。出さないだけでなく、WebAPI も 403 を返す。
+      管理機能の画面。管理者(admin)にだけ、ヘッダーの歯車から出す。ほかの画面とは別のページにする。
       共通のタブ(利用者 / セッション / 監査ログ / サーバー)は、どのサービスでも同じ順・同じ中身にする。
       サービスの機能に応じたタブ(変換サービス、外部連携、データベースの点検など)は、共通のタブの後ろに足してよい(custom_first で区切る)。
       共通のタブの中身を、足したタブへ移さない。足したタブも、このテンプレートの部品で作る。
       タブの切り替えは JS 不要(ラジオボタン)。サービスで URL に残したいときは ?tab= にしてよい。
+      切断の確認のモーダルは JS 不要(チェックボックス方式。「切断する」を押すと開く)。
     -->
     <div class="item_group" style="min-width:0;">
       <div class="item_title">
@@ -83,11 +84,33 @@
               <li><b>閲覧のみ</b>: 読み取りだけ</li>
             </ul>
           </div>
-          <!--
-            利用者の一覧と、追加・権限の変更・削除は、assets/admin.js が、共通の WebAPI(GET / POST {base}、PUT / DELETE {base}/{email})の応答から描く。
-            サービスでは data-sample を消し、data-base="./webapi/admin/users" と data-login(401 のときに移る先)を付ける。
-          -->
-          <div class="admin_users" data-sample="admin_users_sample"></div>
+          <!-- 上に追加の欄、下に一覧。自分の行には削除を出さない(削除は右端のゴミ箱から確認のモーダル) -->
+          <div class="admin_users">
+          <form class="filter_panel">
+            <div class="search_form">
+              <span class="filter_label">メールアドレス</span>
+              <input type="email" class="search_input" placeholder="user@example.com" required="">
+              <span class="filter_label">権限</span>
+              <select class="search_input" style="min-width:8em"><option value="admin">管理者</option><option value="readwrite" selected="">編集可</option><option value="readonly">閲覧のみ</option></select>
+              <button type="submit" class="search_btn">＋ 追加</button>
+            </div>
+          </form>
+          <div class="result_meta"><span>3 人(管理者 1 人)</span><span style="margin-left:auto"><a href="#" style="font-size:9pt;color:#187FF5;text-decoration:none;"><svg class="inline_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>読み直す</a></span></div>
+          <div>
+            <div class="data_table_wrap">
+              <table class="data_table">
+                <thead>
+                  <tr><th>メールアドレス</th><th>権限</th><th>追加日時</th><th>追加した人</th><th>最終ログイン</th><th>操作</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>admin@example.com <span class="status_badge processing">自分</span></td><td><span class="status_badge processing">管理者</span></td><td style="white-space:nowrap">2026-10-01 10:12:00</td><td>ADMIN_EMAIL(最初の管理者)</td><td style="white-space:nowrap">2026-10-22 21:54:38</td><td class="row_actions"><a href="#" class="icon_button" title="権限を変える" aria-label="権限を変える"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></a></td></tr>
+                  <tr><td>user1@example.com</td><td><span class="status_badge completed">編集可</span></td><td style="white-space:nowrap">2026-10-05 14:30:00</td><td>admin@example.com</td><td style="white-space:nowrap">2026-10-23 08:12:05</td><td class="row_actions"><a href="#" class="icon_button" title="権限を変える" aria-label="権限を変える"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></a><a href="#" class="icon_button danger" title="削除" aria-label="削除"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></a></td></tr>
+                  <tr><td>viewer@example.com</td><td><span class="status_badge unknown">閲覧のみ</span></td><td style="white-space:nowrap">2026-10-09 09:02:00</td><td>admin@example.com</td><td style="white-space:nowrap"><span class="null_val">不明</span></td><td class="row_actions"><a href="#" class="icon_button" title="権限を変える" aria-label="権限を変える"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></a><a href="#" class="icon_button danger" title="削除" aria-label="削除"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></a></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          </div>
         </div>
 
         <!-- ===================== セッション ===================== -->
@@ -108,11 +131,59 @@
             </ul>
             <svg class="state_icon warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><b>切断だけでは防げないこと</b>: パスワードの漏れは、IdP でパスワードを変更。入れなくするには、「利用者」のタブで台帳から削除。
           </div>
-          <!--
-            利用者ごとのカードと、切断・切断の履歴は、assets/admin.js が、共通の WebAPI(GET {base}、GET {base}/history、POST {base}/revoke)の応答から描く。
-            サービスでは data-sample を消し、data-base="./webapi/admin/sessions" と data-login(401 のときに移る先)を付ける。
-          -->
-          <div class="admin_sessions" data-sample="admin_sessions_sample"></div>
+          <!-- 利用者ごとのカード。記録していない値は「不明」(null_val)。下に切断の履歴 -->
+          <div class="admin_sessions">
+          <div class="result_meta"><span>セッションか APIキーを持つ利用者 3 人(最終アクセスの新しい順)</span><span style="margin-left:auto"><a href="#" style="font-size:9pt;color:#187FF5;text-decoration:none;"><svg class="inline_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>読み直す</a></span></div>
+          <div class="session_list">
+            <div class="session_card">
+              <div class="session_head"><span class="session_user">admin@example.com</span> <span class="status_badge processing">自分</span><span class="session_meta">管理者　セッション 1 件 / APIキー 2 件</span><label for="revoke_modal" class="caution_button session_revoke" style="cursor:pointer;border-radius:10px;">切断する</label></div>
+              <div class="data_table_wrap">
+                <table class="session_table">
+                  <thead>
+                    <tr><th></th><th>ログイン</th><th>最終アクセス</th><th>接続元 IP</th><th>ブラウザ等</th><th>期限</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><span class="status_badge processing" title="いま操作しているこの画面。自分を切断しても残る">この画面</span></td><td>2026-10-22 21:54:38</td><td>2026-10-23 12:40:18</td><td>192.0.2.10</td><td class="session_ua">Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36</td><td>2026-10-24 04:40:18</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="session_keys">APIキー 2 件: 手元の作業用(編集可・最終利用 2026-10-08 13:57:12)、AI エージェント用(編集可・最終利用 2026-10-21 22:21:53)</div>
+            </div>
+            <div class="session_card">
+              <div class="session_head"><span class="session_user">user1@example.com</span><span class="session_meta">編集可　セッション 2 件 / APIキー 1 件</span><label for="revoke_modal" class="caution_button session_revoke" style="cursor:pointer;border-radius:10px;">切断する</label></div>
+              <div class="data_table_wrap">
+                <table class="session_table">
+                  <thead>
+                    <tr><th></th><th>ログイン</th><th>最終アクセス</th><th>接続元 IP</th><th>ブラウザ等</th><th>期限</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td></td><td>2026-10-23 08:12:05</td><td>2026-10-23 11:58:44</td><td>198.51.100.24</td><td class="session_ua">Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Mobile/15E148 Safari/604.1</td><td>2026-10-23 19:58:44</td></tr>
+                    <tr><td></td><td><span class="null_val">不明</span></td><td>2026-10-22 09:02:31</td><td><span class="null_val">不明</span></td><td class="session_ua"><span class="null_val">不明</span></td><td>2026-10-22 17:02:31</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="session_keys">APIキー 1 件: 集計の自動化(閲覧のみ・最終利用 2026-10-23 06:00:02)</div>
+            </div>
+            <div class="session_card">
+              <div class="session_head"><span class="session_user">bot@example.com</span><span class="session_meta">閲覧のみ　セッション 0 件 / APIキー 2 件</span><label for="revoke_modal" class="caution_button session_revoke" style="cursor:pointer;border-radius:10px;">切断する</label></div>
+              <div class="session_keys">ログイン中のセッションなし(APIキーだけで使用)。</div>
+              <div class="session_keys">APIキー 2 件: 夜間の取り込み(閲覧のみ・最終利用 2026-10-23 09:15:00)、予備(閲覧のみ・最終利用 なし)</div>
+            </div>
+          </div>
+          <div class="panel_section_title">切断の履歴</div>
+          <div>
+            <div class="data_table_wrap">
+              <table class="data_table">
+                <thead>
+                  <tr><th>日時</th><th>切断した利用者</th><th>切断した人</th><th>止めた物</th><th>切ったセッションの手がかり</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td style="white-space:nowrap">2026-10-20 18:03:00</td><td>user2@example.com</td><td>admin@example.com</td><td style="white-space:nowrap">セッション 2、APIキー 1</td><td class="session_ua">198.51.100.80・Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36<br><span class="runtime_text">ログイン 2026-10-20 09:12:00 / 最終アクセス 2026-10-20 17:58:10</span><hr style="border:0;border-top:1px solid #eee;margin:4px 0">203.0.113.45・curl/8.9.1<br><span class="runtime_text">ログイン 2026-10-20 16:40:31 / 最終アクセス 2026-10-20 18:01:55</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          </div>
         </div>
 
         <!-- ===================== 監査ログ ===================== -->
@@ -120,11 +191,40 @@
         <label for="tab_audit" class="tab_label">監査ログ</label>
         <div class="tab_panel">
           <div class="panel_note">全員ぶんの操作の記録。自分の分だけなら、ヘッダーの「操作履歴」でも確認可(全員が使用可)。</div>
-          <!--
-            絞り込みと一覧は、assets/admin.js が、共通の WebAPI(GET {base}?range=&user=&action=&target=&before=)の応答から描く。
-            サービスでは data-sample を消し、data-base="./webapi/admin/audit" と data-login(401 のときに移る先)を付ける。
-          -->
-          <div class="admin_audit" data-sample="admin_audit_sample"></div>
+          <!-- 上に絞り込み(期間・利用者・操作・対象)、下に新しい順の一覧。結果は Success / Denied / Error -->
+          <div class="admin_audit">
+          <form class="filter_panel">
+            <div class="filter_group"><span class="filter_label">期間</span><a href="#" class="range_btn">直近24時間</a><a href="#" class="range_btn active">直近7日間</a><a href="#" class="range_btn">直近30日間</a></div>
+            <div class="search_form">
+              <span class="filter_label">利用者</span>
+              <input type="text" class="search_input" placeholder="メールアドレスの一部">
+              <span class="filter_label">操作</span>
+              <select class="search_input" style="min-width:9em"><option value="" selected="">全部</option><option value="login">ログイン</option><option value="upload">登録</option><option value="delete">削除</option><option value="apikey_issue">APIキーの発行</option><option value="session_revoke">切断</option><option value="setting_change">設定の変更</option></select>
+              <span class="filter_label">対象</span>
+              <input type="text" class="search_input" placeholder="ID や名前の一部">
+              <button type="submit" class="search_btn">検索</button>
+            </div>
+          </form>
+          <div class="result_meta"><span>6 件(新しい順。1 回に 200 件まで)</span></div>
+          <div>
+            <div class="data_table_wrap">
+              <table class="data_table">
+                <thead>
+                  <tr><th>日時</th><th>利用者</th><th>操作</th><th>対象</th><th>結果</th><th>経路</th><th>IP</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td style="white-space:nowrap">2026-10-23 12:40:11</td><td>admin@example.com</td><td>ログイン</td><td>―</td><td><span class="status_badge completed">Success</span></td><td>画面</td><td>192.0.2.10</td></tr>
+                  <tr><td style="white-space:nowrap">2026-10-23 12:05:40</td><td>admin@example.com</td><td>設定の変更</td><td>API の回数の上限(ログインしていない呼び出し)</td><td><span class="status_badge completed">Success</span></td><td>画面</td><td>192.0.2.10</td></tr>
+                  <tr><td style="white-space:nowrap">2026-10-23 11:58:02</td><td>user1@example.com</td><td>登録</td><td>report.html</td><td><span class="status_badge completed">Success</span></td><td>APIキー(readwrite)</td><td>198.51.100.24</td></tr>
+                  <tr class="row_failed"><td style="white-space:nowrap">2026-10-23 10:21:47</td><td>user1@example.com</td><td>削除</td><td>old.md</td><td><span class="status_badge failed">Denied</span></td><td>APIキー(readonly)</td><td>198.51.100.24</td></tr>
+                  <tr class="row_failed"><td style="white-space:nowrap">2026-10-22 23:10:05</td><td>unknown@example.net</td><td>ログイン</td><td>―</td><td><span class="status_badge failed">Denied</span></td><td>画面</td><td>203.0.113.200</td></tr>
+                  <tr><td style="white-space:nowrap">2026-10-20 18:03:10</td><td>admin@example.com</td><td>切断</td><td>user2@example.com</td><td><span class="status_badge completed">Success</span></td><td>画面</td><td>192.0.2.10</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div style="padding:8px 14px"></div>
+          </div>
         </div>
 
         <!-- ===================== サーバー ===================== -->
@@ -136,14 +236,48 @@
             部品の脆弱性が見つかったときは、「稼働中の部品の版」と「部品表」で、当てはまるかを確認(版は略さず表示。脆弱性の知らせと、そのまま見比べ可)。
           </div>
           <!--
-            共通の WebAPI({base}、{base}/components、{base}/packages?q=)を読んで、assets/admin.js が描く。
-            サービスでは data-sample を消し、data-base="./webapi/server-status" と data-login(401 のときに移る先)を付ける。
-            並びは、上に「設定(管理者が変更可)」(このサーバー全体の共通の設定 = API の回数の上限 → サービスが足す物 = 機能の On/Off、サービスの設定の節)、下に「確認(表示だけ)」(このサーバー、接続の確認、セキュリティ設定、稼働中の部品の版、ライブラリ)。
-            サービスが足す相手(外部連携など)は、components[] に足せば、そのまま出る(details の項目も出る)。
+            並びは、上に「設定(管理者が変更可)」(このサーバー全体の共通の設定 = API の回数の上限 → サービスが足す物 = 機能の On/Off、サービスの設定の節)、
+            下に「確認(表示だけ)」(このサーバー → 接続の確認 → セキュリティ設定 → 稼働中の部品の版 → ライブラリ)。版は略さず、コピーできる文字で出す。
+            いちばん上に、画面の中身を Markdown で書き出す欄(コピー / ダウンロード)。
           -->
-          <div class="admin_server" data-sample="admin_server_sample">
-            <!-- サービスが足す設定の節の例。admin_server_extra を付けて、この要素の中に書くと、「設定(管理者が変更可)」の中(機能の On/Off の下)に差し込まれる。
-                 変更の操作(切り替え、上限の変更など)は、ここに書く。状態の表示は、その下に共通のスクリプトが描く -->
+          <div class="admin_server">
+          <div class="export_bar">
+            <span class="runtime_text">この画面の中身を Markdown で書き出す(LLM での点検や、報告に使う)</span>
+            <label class="runtime_text"><input type="checkbox"> 部品表の全部も入れる</label>
+            <button type="button" class="search_btn">Markdown でコピー</button>
+            <button type="button" class="search_btn">Markdown でダウンロード</button>
+          </div>
+          <div class="panel_group">設定(管理者が変更可)<span class="panel_section_action"><a href="#" style="font-size:9pt;color:#187FF5;text-decoration:none;"><svg class="inline_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>再確認</a></span></div>
+          <div class="panel_section_title">API の回数の上限<span class="panel_section_action runtime_text">5 分あたりの回数</span></div>
+          <div>
+            <div class="data_table_wrap">
+              <table class="data_table">
+                <thead>
+                  <tr><th>対象</th><th>上限</th><th>出どころ</th><th>操作</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>ログインした人・APIキー(利用者ごと)</td><td style="white-space:nowrap"><input type="number" class="search_input" style="width:8em" min="100" max="100000" value="1000"> 回<div class="runtime_text">100 〜 100000</div></td><td class="runtime_text">環境変数 RATE_LIMIT_AUTHENTICATED</td><td style="white-space:nowrap"><button type="button" class="search_btn">保存</button></td></tr>
+                  <tr><td>ログインしていない呼び出し(IP ごと)</td><td style="white-space:nowrap"><input type="number" class="search_input" style="width:8em" min="10" max="10000" value="200"> 回<div class="runtime_text">10 〜 10000</div></td><td class="runtime_text">この画面で変更(admin@example.com・2026-10-23 12:05:40)</td><td style="white-space:nowrap"><button type="button" class="search_btn">保存</button> <button type="button" class="search_btn">既定に戻す</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel_section_title">機能の On/Off</div>
+          <div>
+            <div class="data_table_wrap">
+              <table class="data_table">
+                <thead>
+                  <tr><th>機能</th><th>状態</th><th>補足</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>画面案(モックアップ)の登録</td><td><label class="toggle_switch"><input type="checkbox" checked=""><span class="toggle_track"></span><span class="toggle_label"><span class="toggle_on">On</span><span class="toggle_off">Off</span></span></label></td><td class="runtime_text">切り替えはすぐに反映、再起動は不要(複数台でも全台に反映)。監査ログに記録</td></tr>
+                  <tr><td>PDF でダウンロード</td><td><label class="toggle_switch"><input type="checkbox"><span class="toggle_track"></span><span class="toggle_label"><span class="toggle_on">On</span><span class="toggle_off">Off</span></span></label></td><td class="runtime_text">変換のサービスを使う構成で使用</td></tr>
+                  <tr><td>意味検索</td><td><span class="status_badge unknown">Off</span></td><td class="runtime_text">検索のサービスの接続先(環境変数)が要る。構成で決まる(ここでは変更不可)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div>
             <div class="admin_server_extra">
               <div class="panel_section_title">外部連携(ボード)の設定(サービスが足した節の例)</div>
               <div style="padding:4px 14px 10px;">
@@ -157,6 +291,136 @@
                 <div class="form_hint">保存はすぐに反映。変更は監査ログに記録。</div>
               </div>
             </div>
+          </div>
+          <div class="panel_group">確認(表示だけ)</div>
+          <div class="panel_section_title">このサーバー</div>
+          <div class="info_grid">
+            <div>
+              <div class="info_label">版</div>
+              <div class="info_value"><span class="version_text">20261023.0930</span></div>
+            </div>
+            <div>
+              <div class="info_label">ビルド</div>
+              <div class="info_value"><span class="version_text">20261023_093000</span></div>
+            </div>
+            <div>
+              <div class="info_label">リビジョン</div>
+              <div class="info_value"><span class="version_text">1a2b3c4d5e6f</span></div>
+            </div>
+            <div>
+              <div class="info_label">ビルド日時</div>
+              <div class="info_value">2026-10-23 09:30:00</div>
+            </div>
+            <div>
+              <div class="info_label">起動日時</div>
+              <div class="info_value">2026-10-23 09:41:12</div>
+            </div>
+            <div>
+              <div class="info_label">稼働時間</div>
+              <div class="info_value">3 時間 2 分</div>
+            </div>
+            <div>
+              <div class="info_label">データベース</div>
+              <div class="info_value">sqlite</div>
+            </div>
+            <div>
+              <div class="info_label">同梱の AI 向けクライアント</div>
+              <div class="info_value">1.5.0</div>
+            </div>
+          </div>
+          <div>
+            <div class="data_table_wrap">
+              <table class="data_table">
+                <thead>
+                  <tr><th>DB のファイル</th><th>大きさ</th><th></th></tr>
+                </thead>
+                <tbody>
+                  <tr><td class="version_text">service_a_v3.sqlite</td><td>46.0 MB</td><td><b>使用中</b></td></tr>
+                  <tr><td class="version_text">service_a_v2.sqlite</td><td>39.2 MB</td><td>旧版(切り戻し用に保管)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel_section_title">接続の確認<span class="panel_section_action runtime_text">確認日時 2026-10-23 12:43:05</span></div>
+          <div>
+            <div class="data_table_wrap">
+              <table class="data_table">
+                <thead>
+                  <tr><th>接続先</th><th>状態</th><th>応答時間</th><th>最終成功</th><th>補足</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>データベース</td><td><span class="status_badge completed">Connected</span></td><td style="white-space:nowrap">1 ms</td><td style="white-space:nowrap">2026-10-23 12:43:05</td><td></td></tr>
+                  <tr><td>ファイルの置き場</td><td><span class="status_badge completed">Connected</span></td><td style="white-space:nowrap">31 ms</td><td style="white-space:nowrap">2026-10-23 12:43:05</td><td></td></tr>
+                  <tr><td>IdP</td><td><span class="status_badge completed">Connected</span></td><td style="white-space:nowrap">120 ms</td><td style="white-space:nowrap">2026-10-23 12:43:05</td><td></td></tr>
+                  <tr><td>変換のサービス</td><td><span class="status_badge completed">Connected</span></td><td style="white-space:nowrap">18 ms</td><td style="white-space:nowrap">2026-10-23 12:43:05</td><td></td></tr>
+                  <tr class="row_failed"><td>検索のサービス</td><td><span class="status_badge failed">Error</span></td><td style="white-space:nowrap">時間切れ</td><td style="white-space:nowrap">2026-10-23 12:31:40</td><td>応答なし(5 秒で時間切れ)</td></tr>
+                  <tr><td>外部連携(ボード)</td><td><span class="status_badge completed">Connected</span></td><td style="white-space:nowrap">240 ms</td><td style="white-space:nowrap">2026-10-23 12:43:05</td><td></td></tr>
+                  <tr><td>メールの送り先</td><td><span class="status_badge unknown">Not set</span></td><td style="white-space:nowrap">―</td><td style="white-space:nowrap">―</td><td>この機能は未使用</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel_section_title">セキュリティ設定</div>
+          <div>
+            <div class="data_table_wrap">
+              <table class="data_table">
+                <thead>
+                  <tr><th>項目</th><th>現在の値</th><th>状態</th><th>補足</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>認証の方式</td><td>OIDC(IdP でログイン)</td><td><span class="status_badge completed">OK</span></td><td class="runtime_text">開発モード(AUTH_DISABLED)ではない</td></tr>
+                  <tr><td>回数の上限を切る設定(RATE_LIMIT_DISABLED)</td><td>未使用</td><td><span class="status_badge completed">OK</span></td><td class="runtime_text">テスト用。本番では使用しない</td></tr>
+                  <tr><td>セッションの寿命</td><td>16 時間</td><td></td><td class="runtime_text">SESSION_MAX_AGE_HOURS</td></tr>
+                  <tr><td>APIキーの最長の期限</td><td>1 年</td><td></td><td class="runtime_text">無期限は readonly だけ</td></tr>
+                  <tr><td>無期限の APIキー</td><td>1 件(readonly)</td><td><span class="status_badge pending">Warning</span></td><td class="runtime_text">未使用なら失効</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel_section_title">稼働中の部品の版</div>
+          <div>
+            <div class="data_table_wrap">
+              <table class="data_table">
+                <thead>
+                  <tr><th>部品</th><th>状態</th><th>製品と版</th><th>土台・詳細</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>本体</td><td><span class="status_badge completed">Running</span></td><td>service_a <span class="version_text">20261023.0930</span></td><td><span class="runtime_text">Node.js <span class="version_text">24.11.0</span><span class="runtime_sep">/</span>OpenSSL <span class="version_text">3.5.4</span><span class="runtime_sep">/</span><span class="version_text">Debian GNU/Linux 13 (trixie)</span><span class="runtime_sep">/</span><span class="version_text">x64</span><br>V8 <span class="version_text">13.6.233.10</span><span class="runtime_sep">/</span>libuv <span class="version_text">1.51.0</span><span class="runtime_sep">/</span>カーネル <span class="version_text">6.12.48</span><span class="runtime_sep">/</span>CPU <span class="version_text">4 コア</span><br>メモリ 使用 144.0 MB(サーバー全体 7.7 GB)</span></td></tr>
+                  <tr><td>データベース</td><td><span class="status_badge completed">Connected</span></td><td>SQLite(本体に同梱) <span class="version_text">3.50.4</span></td><td>―</td></tr>
+                  <tr><td>ファイルの置き場</td><td><span class="status_badge completed">Connected</span></td><td>オブジェクトストレージ <span class="null_val">不明</span></td><td>―</td></tr>
+                  <tr><td>IdP</td><td><span class="status_badge completed">Connected</span></td><td>OIDC <span class="null_val">不明</span></td><td>―</td></tr>
+                  <tr><td>変換のサービス</td><td><span class="status_badge completed">Connected</span></td><td>LibreOffice <span class="version_text">25.8.2.2</span><div class="runtime_text">API <span class="version_text">1</span></div></td><td><span class="runtime_text">Node.js <span class="version_text">24.11.0</span><span class="runtime_sep">/</span>OpenSSL <span class="version_text">3.5.4</span><span class="runtime_sep">/</span><span class="version_text">Debian GNU/Linux 13 (trixie)</span></span></td></tr>
+                  <tr><td>検索のサービス</td><td><span class="status_badge failed">Error</span></td><td><span class="null_val">不明</span></td><td><span class="runtime_text">応答なし(5 秒で時間切れ)</span></td></tr>
+                  <tr><td>外部連携(ボード)</td><td><span class="status_badge completed">Connected</span></td><td>外のサービス <span class="null_val">不明</span><div class="runtime_text">連携したアカウント: admin@example.com<br>トークンの期限: 2026-11-20</div></td><td>―</td></tr>
+                  <tr><td>メールの送り先</td><td><span class="status_badge unknown">Not set</span></td><td>―</td><td>―</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel_section_title">ライブラリ(部品表)<span class="panel_section_action runtime_text">入っている部品 412 個(node_modules/.package-lock.json)</span></div>
+          <div class="filter_panel">
+            <div class="search_form"><span class="filter_label">部品の名前</span><input type="search" class="search_input" placeholder="例) openssl、express" autocomplete="off"></div>
+          </div>
+          <div>
+            <div class="result_meta" style="border:0">直接使用のライブラリ 6 個。名前の入力で、部品表の全体から検索(入れ子に入った別の版も表示)。</div>
+            <div style="max-width:560px">
+              <div class="data_table_wrap">
+                <table class="data_table">
+                  <thead>
+                    <tr><th>部品</th><th>版</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td class="version_text">express</td><td><span class="version_text">5.1.0</span></td></tr>
+                    <tr><td class="version_text">openid-client</td><td><span class="version_text">6.8.1</span></td></tr>
+                    <tr><td class="version_text">express-session</td><td><span class="version_text">1.18.2</span></td></tr>
+                    <tr><td class="version_text">better-sqlite3</td><td><span class="version_text">12.4.1</span></td></tr>
+                    <tr><td class="version_text">pg</td><td><span class="version_text">8.16.3</span></td></tr>
+                    <tr><td class="version_text">pino</td><td><span class="version_text">9.12.0</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
           </div>
         </div>
 
@@ -187,587 +451,24 @@
       </div>
     </div>
 
-    <!-- 確認のモーダル(削除・切断)は、admin.js が出す(左にキャンセル、右に実行) -->
+    <!-- ===== 切断の確認のモーダル(左にキャンセル、右に実行。止まる物と、元に戻せない物を書く) ===== -->
+    <input type="checkbox" id="revoke_modal" class="modal_toggle" hidden>
+    <div class="modal_overlay">
+      <label for="revoke_modal" class="modal_backdrop"></label>
+      <div class="modal_box" role="dialog" aria-modal="true">
+        <div class="modal_title danger"><span>切断の確認</span><label for="revoke_modal" class="modal_close" title="閉じる" aria-label="閉じる"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></label></div>
+        <div class="modal_body">user1@example.com を切断。セッション 2 件と APIキー 1 件が止まる。</div>
+        <div class="modal_actions"><label for="revoke_modal" class="cancel_button" style="display:block;height:40px;padding:2px 30px;font-size:14pt;line-height:34px;text-align:center;border-radius:10px;cursor:pointer;">キャンセル</label><button type="button" class="caution_button">切断する</button></div>
+      </div>
+    </div>
 
   </div>
 </div>
-
-<!-- 見本のデータ(共通の WebAPI の応答の形)。サービスでは使わない -->
-<script type="application/json" id="admin_users_sample">
-{
- "self": "admin@example.com",
- "roles": [
-  {
-   "value": "admin",
-   "label": "管理者"
-  },
-  {
-   "value": "readwrite",
-   "label": "編集可"
-  },
-  {
-   "value": "readonly",
-   "label": "閲覧のみ"
-  }
- ],
- "users": [
-  {
-   "email": "admin@example.com",
-   "role": "admin",
-   "addedBy": "ADMIN_EMAIL(最初の管理者)",
-   "addedAt": "2026-10-01T10:12:00+09:00",
-   "lastLoginAt": "2026-10-22T21:54:38+09:00"
-  },
-  {
-   "email": "user1@example.com",
-   "role": "readwrite",
-   "addedBy": "admin@example.com",
-   "addedAt": "2026-10-05T14:30:00+09:00",
-   "lastLoginAt": "2026-10-23T08:12:05+09:00"
-  },
-  {
-   "email": "viewer@example.com",
-   "role": "readonly",
-   "addedBy": "admin@example.com",
-   "addedAt": "2026-10-09T09:02:00+09:00",
-   "lastLoginAt": null
-  }
- ]
-}
-</script>
-<script type="application/json" id="admin_sessions_sample">
-{
- "self": "admin@example.com",
- "users": [
-  {
-   "user": "admin@example.com",
-   "role": "admin",
-   "isSelf": true,
-   "sessions": [
-    {
-     "id": "s1",
-     "loginAt": "2026-10-22T21:54:38+09:00",
-     "lastSeenAt": "2026-10-23T12:40:18+09:00",
-     "ip": "192.0.2.10",
-     "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
-     "expiresAt": "2026-10-24T04:40:18+09:00",
-     "current": true
-    }
-   ],
-   "apiKeys": [
-    {
-     "label": "手元の作業用",
-     "role": "readwrite",
-     "lastUsedAt": "2026-10-08T13:57:12+09:00"
-    },
-    {
-     "label": "AI エージェント用",
-     "role": "readwrite",
-     "lastUsedAt": "2026-10-21T22:21:53+09:00"
-    }
-   ]
-  },
-  {
-   "user": "user1@example.com",
-   "role": "readwrite",
-   "isSelf": false,
-   "sessions": [
-    {
-     "id": "s2",
-     "loginAt": "2026-10-23T08:12:05+09:00",
-     "lastSeenAt": "2026-10-23T11:58:44+09:00",
-     "ip": "198.51.100.24",
-     "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Mobile/15E148 Safari/604.1",
-     "expiresAt": "2026-10-23T19:58:44+09:00",
-     "current": false
-    },
-    {
-     "id": "s3",
-     "loginAt": null,
-     "lastSeenAt": "2026-10-22T09:02:31+09:00",
-     "ip": null,
-     "userAgent": null,
-     "expiresAt": "2026-10-22T17:02:31+09:00",
-     "current": false
-    }
-   ],
-   "apiKeys": [
-    {
-     "label": "集計の自動化",
-     "role": "readonly",
-     "lastUsedAt": "2026-10-23T06:00:02+09:00"
-    }
-   ]
-  },
-  {
-   "user": "bot@example.com",
-   "role": "readonly",
-   "isSelf": false,
-   "sessions": [],
-   "apiKeys": [
-    {
-     "label": "夜間の取り込み",
-     "role": "readonly",
-     "lastUsedAt": "2026-10-23T09:15:00+09:00"
-    },
-    {
-     "label": "予備",
-     "role": "readonly",
-     "lastUsedAt": null
-    }
-   ]
-  }
- ],
- "history": [
-  {
-   "at": "2026-10-20T18:03:00+09:00",
-   "by": "admin@example.com",
-   "targetUser": "user2@example.com",
-   "sessions": 2,
-   "apiKeys": 1,
-   "sessionDetails": [
-    {
-     "loginAt": "2026-10-20T09:12:00+09:00",
-     "lastSeenAt": "2026-10-20T17:58:10+09:00",
-     "ip": "198.51.100.80",
-     "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
-    },
-    {
-     "loginAt": "2026-10-20T16:40:31+09:00",
-     "lastSeenAt": "2026-10-20T18:01:55+09:00",
-     "ip": "203.0.113.45",
-     "userAgent": "curl/8.9.1"
-    }
-   ]
-  }
- ]
-}
-</script>
-<script type="application/json" id="admin_audit_sample">
-{
- "limit": 200,
- "actions": [
-  {
-   "value": "login",
-   "label": "ログイン"
-  },
-  {
-   "value": "upload",
-   "label": "登録"
-  },
-  {
-   "value": "delete",
-   "label": "削除"
-  },
-  {
-   "value": "apikey_issue",
-   "label": "APIキーの発行"
-  },
-  {
-   "value": "session_revoke",
-   "label": "切断"
-  },
-  {
-   "value": "setting_change",
-   "label": "設定の変更"
-  }
- ],
- "entries": [
-  {
-   "id": 6,
-   "at": "2026-10-23T12:40:11+09:00",
-   "user": "admin@example.com",
-   "action": "login",
-   "target": null,
-   "result": "success",
-   "via": "screen",
-   "ip": "192.0.2.10"
-  },
-  {
-   "id": 5,
-   "at": "2026-10-23T12:05:40+09:00",
-   "user": "admin@example.com",
-   "action": "setting_change",
-   "target": "API の回数の上限(ログインしていない呼び出し)",
-   "result": "success",
-   "via": "screen",
-   "ip": "192.0.2.10"
-  },
-  {
-   "id": 4,
-   "at": "2026-10-23T11:58:02+09:00",
-   "user": "user1@example.com",
-   "action": "upload",
-   "target": "report.html",
-   "result": "success",
-   "via": "apikey",
-   "keyRole": "readwrite",
-   "ip": "198.51.100.24"
-  },
-  {
-   "id": 3,
-   "at": "2026-10-23T10:21:47+09:00",
-   "user": "user1@example.com",
-   "action": "delete",
-   "target": "old.md",
-   "result": "denied",
-   "via": "apikey",
-   "keyRole": "readonly",
-   "ip": "198.51.100.24"
-  },
-  {
-   "id": 2,
-   "at": "2026-10-22T23:10:05+09:00",
-   "user": "unknown@example.net",
-   "action": "login",
-   "target": null,
-   "result": "denied",
-   "via": "screen",
-   "ip": "203.0.113.200"
-  },
-  {
-   "id": 1,
-   "at": "2026-10-20T18:03:10+09:00",
-   "user": "admin@example.com",
-   "action": "session_revoke",
-   "target": "user2@example.com",
-   "result": "success",
-   "via": "screen",
-   "ip": "192.0.2.10"
-  }
- ]
-}
-</script>
-<!-- サーバーのタブの見本のデータ(共通の WebAPI の応答の形)。サービスでは使わない -->
-<script type="application/json" id="admin_server_sample">
-{
- "status": {
-  "service": "service_a",
-  "version": "20261023.0930",
-  "build": "20261023_093000",
-  "revision": "1a2b3c4d5e6f",
-  "builtAt": "2026-10-23T09:30:00+09:00",
-  "startedAt": "2026-10-23T09:41:12+09:00",
-  "uptimeSeconds": 10920,
-  "database": {
-   "backend": "sqlite",
-   "files": [
-    {
-     "name": "service_a_v3.sqlite",
-     "current": true,
-     "sizeBytes": 48234496
-    },
-    {
-     "name": "service_a_v2.sqlite",
-     "current": false,
-     "sizeBytes": 41123840
-    }
-   ]
-  },
-  "extra": [
-   {
-    "label": "同梱の AI 向けクライアント",
-    "value": "1.5.0"
-   }
-  ],
-  "rateLimit": {
-   "windowMinutes": 5,
-   "disabled": false,
-   "authenticated": {
-    "limit": 1000,
-    "source": "env",
-    "env": "RATE_LIMIT_AUTHENTICATED",
-    "min": 100,
-    "max": 100000
-   },
-   "anonymous": {
-    "limit": 200,
-    "source": "setting",
-    "env": "RATE_LIMIT_ANONYMOUS",
-    "min": 10,
-    "max": 10000,
-    "updatedBy": "admin@example.com",
-    "updatedAt": "2026-10-23T12:05:40+09:00"
-   }
-  },
-  "security": [
-   {
-    "label": "認証の方式",
-    "value": "OIDC(IdP でログイン)",
-    "state": "ok",
-    "note": "開発モード(AUTH_DISABLED)ではない"
-   },
-   {
-    "label": "回数の上限を切る設定(RATE_LIMIT_DISABLED)",
-    "value": "未使用",
-    "state": "ok",
-    "note": "テスト用。本番では使用しない"
-   },
-   {
-    "label": "セッションの寿命",
-    "value": "16 時間",
-    "state": null,
-    "note": "SESSION_MAX_AGE_HOURS"
-   },
-   {
-    "label": "APIキーの最長の期限",
-    "value": "1 年",
-    "state": null,
-    "note": "無期限は readonly だけ"
-   },
-   {
-    "label": "無期限の APIキー",
-    "value": "1 件(readonly)",
-    "state": "warn",
-    "note": "未使用なら失効"
-   }
-  ],
-  "features": [
-   {
-    "key": "mockups",
-    "name": "画面案(モックアップ)の登録",
-    "enabled": true,
-    "editable": true,
-    "note": "切り替えはすぐに反映、再起動は不要(複数台でも全台に反映)。監査ログに記録"
-   },
-   {
-    "key": "pdf_export",
-    "name": "PDF でダウンロード",
-    "enabled": false,
-    "editable": true,
-    "note": "変換のサービスを使う構成で使用"
-   },
-   {
-    "key": "semantic_search",
-    "name": "意味検索",
-    "enabled": false,
-    "editable": false,
-    "note": "検索のサービスの接続先(環境変数)が要る"
-   }
-  ]
- },
- "components": {
-  "checkedAt": "2026-10-23T12:43:05+09:00",
-  "components": [
-   {
-    "key": "app",
-    "name": "本体",
-    "configured": true,
-    "reachable": true,
-    "product": "service_a",
-    "version": "20261023.0930",
-    "runtime": {
-     "node": "24.11.0",
-     "v8": "13.6.233.10",
-     "openssl": "3.5.4",
-     "uv": "1.51.0",
-     "os": "Debian GNU/Linux 13 (trixie)",
-     "kernel": "6.12.48",
-     "arch": "x64",
-     "cpus": 4,
-     "memory": {
-      "rssBytes": 151000000,
-      "totalBytes": 8300000000
-     }
-    }
-   },
-   {
-    "key": "database",
-    "name": "データベース",
-    "configured": true,
-    "reachable": true,
-    "latencyMs": 1,
-    "lastSuccessAt": "2026-10-23T12:43:05+09:00",
-    "product": "SQLite(本体に同梱)",
-    "version": "3.50.4"
-   },
-   {
-    "key": "storage",
-    "name": "ファイルの置き場",
-    "configured": true,
-    "reachable": true,
-    "latencyMs": 31,
-    "lastSuccessAt": "2026-10-23T12:43:05+09:00",
-    "product": "オブジェクトストレージ",
-    "version": null
-   },
-   {
-    "key": "idp",
-    "name": "IdP",
-    "configured": true,
-    "reachable": true,
-    "latencyMs": 120,
-    "lastSuccessAt": "2026-10-23T12:43:05+09:00",
-    "product": "OIDC",
-    "version": null
-   },
-   {
-    "key": "converter",
-    "name": "変換のサービス",
-    "configured": true,
-    "reachable": true,
-    "latencyMs": 18,
-    "lastSuccessAt": "2026-10-23T12:43:05+09:00",
-    "product": "LibreOffice",
-    "version": "25.8.2.2",
-    "apiVersion": "1",
-    "runtime": {
-     "node": "24.11.0",
-     "openssl": "3.5.4",
-     "os": "Debian GNU/Linux 13 (trixie)"
-    }
-   },
-   {
-    "key": "search",
-    "name": "検索のサービス",
-    "configured": true,
-    "reachable": false,
-    "lastSuccessAt": "2026-10-23T12:31:40+09:00",
-    "error": "応答なし(5 秒で時間切れ)"
-   },
-   {
-    "key": "board",
-    "name": "外部連携(ボード)",
-    "configured": true,
-    "reachable": true,
-    "latencyMs": 240,
-    "lastSuccessAt": "2026-10-23T12:43:05+09:00",
-    "product": "外のサービス",
-    "version": null,
-    "details": [
-     {
-      "label": "連携したアカウント",
-      "value": "admin@example.com"
-     },
-     {
-      "label": "トークンの期限",
-      "value": "2026-11-20"
-     }
-    ]
-   },
-   {
-    "key": "mail",
-    "name": "メールの送り先",
-    "configured": false
-   }
-  ],
-  "dependencies": [
-   {
-    "name": "express",
-    "version": "5.1.0"
-   },
-   {
-    "name": "openid-client",
-    "version": "6.8.1"
-   },
-   {
-    "name": "express-session",
-    "version": "1.18.2"
-   },
-   {
-    "name": "better-sqlite3",
-    "version": "12.4.1"
-   },
-   {
-    "name": "pg",
-    "version": "8.16.3"
-   },
-   {
-    "name": "pino",
-    "version": "9.12.0"
-   }
-  ],
-  "packageCount": 412,
-  "packageSource": "node_modules/.package-lock.json"
- },
- "packages": {
-  "source": "node_modules/.package-lock.json",
-  "packages": [
-   {
-    "name": "better-sqlite3",
-    "version": "12.4.1",
-    "direct": true,
-    "path": "node_modules/better-sqlite3"
-   },
-   {
-    "name": "cookie",
-    "version": "0.7.2",
-    "direct": false,
-    "path": "node_modules/cookie"
-   },
-   {
-    "name": "cookie",
-    "version": "0.7.1",
-    "direct": false,
-    "path": "node_modules/express-session/node_modules/cookie"
-   },
-   {
-    "name": "express",
-    "version": "5.1.0",
-    "direct": true,
-    "path": "node_modules/express"
-   },
-   {
-    "name": "express-session",
-    "version": "1.18.2",
-    "direct": true,
-    "path": "node_modules/express-session"
-   },
-   {
-    "name": "jose",
-    "version": "6.1.0",
-    "direct": false,
-    "path": "node_modules/jose"
-   },
-   {
-    "name": "oauth4webapi",
-    "version": "3.8.2",
-    "direct": false,
-    "path": "node_modules/oauth4webapi"
-   },
-   {
-    "name": "openid-client",
-    "version": "6.8.1",
-    "direct": true,
-    "path": "node_modules/openid-client"
-   },
-   {
-    "name": "pg",
-    "version": "8.16.3",
-    "direct": true,
-    "path": "node_modules/pg"
-   },
-   {
-    "name": "pino",
-    "version": "9.12.0",
-    "direct": true,
-    "path": "node_modules/pino"
-   },
-   {
-    "name": "semver",
-    "version": "7.7.2",
-    "direct": false,
-    "path": "node_modules/semver"
-   },
-   {
-    "name": "semver",
-    "version": "6.3.1",
-    "direct": false,
-    "path": "node_modules/make-dir/node_modules/semver"
-   }
-  ]
- }
-}
-</script>
 
 <div class="footer">
   <span class="footer_copyright">&copy; {{年}} {{会社名}}</span>
   <span class="footer_version">Ver. {{バージョン}}</span>
 </div>
 
-<script src="./assets/ui.js"></script>
-<script src="./assets/account.js" data-keys="./webapi/apikeys" data-history="./webapi/history" data-guide="./webapi/usage.md" data-demo></script>
-<script src="./assets/dev_mode.js" data-check="./webapi/check_access_token" data-demo></script>
-<script src="./assets/admin.js"></script>
 </body>
 </html>
