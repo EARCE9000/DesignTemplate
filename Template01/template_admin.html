@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<!--
+  テンプレート: 管理機能の画面 (タブ: 利用者 / セッション / 監査ログ / サーバー + サービスが足すタブ)
+  用途: 管理者だけが使う画面。共通のタブは、どのサービスでも同じ順・同じ中身にする。
+  4 つのタブは assets/admin.js が、共通の WebAPI の応答から描く(ここでは見本の JSON から描く)。
+
+  Copyright (c) 2026 EARCE.NET (code & design)
+  License: MIT License - see LICENSE
+  Source: https://github.com/EARCE9000/DesignTemplate (published on GitHub)
+-->
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>管理 | ToolKit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="./assets/flexbox.css" type="text/css">
+<link rel="stylesheet" href="./assets/design.css" type="text/css">
+<link rel="stylesheet" href="./assets/components.css" type="text/css">
+</head>
+<body>
+
+<div class="header">
+  <div class="header_title">{{システム名}}</div>
+  <!-- 開発モードのしるし。authDisabled が true のときだけ出す(assets/dev_mode.js)。題字の要素の外に置く -->
+  <span class="dev_mode_badge" hidden title="認証を切って動いている(AUTH_DISABLED)。誰でも管理者として入れる。本番では設定しない"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>開発モード</span>
+  <!-- たまにしか使わない機能は右上にアイコンで並べる(title がツールチップになる) -->
+  <!-- 並べる順: APIキー → 通知 → 管理 → 操作履歴 → ログアウト(ログアウトは常に右端)。無い機能は詰め、権限のない利用者にはボタンごと出さない -->
+  <!-- アイコン出典: Feather Icons (MIT) key / bell / settings / log-out、Lucide (ISC) history — THIRD_PARTY_NOTICES.md 参照 -->
+  <div class="header_actions">
+    <span class="header_user">{{ユーザー名}}</span>
+    <a href="#" class="header_icon_button" title="APIキー管理" aria-label="APIキー管理">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+    </a>
+    <a href="#" class="header_icon_button" title="通知" aria-label="通知">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </a>
+    <a href="template_admin.html" class="header_icon_button" title="管理" aria-label="管理">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </a>
+    <a href="#" class="header_icon_button" title="操作履歴" aria-label="操作履歴">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>
+    </a>
+    <a href="#" class="header_icon_button" title="ログアウト" aria-label="ログアウト">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    </a>
+  </div>
+</div>
+
+<div class="flex_menubar">
+  <a href="template_menu.html"><svg class="inline_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>ホーム</a>
+</div>
+
+<div class="flex_container">
+  <!-- min-width:0 で、タブの中の広い表を、表ごとの横スクロールに任せる(ページ全体を横に広げない) -->
+  <div class="flex_main" style="min-width:0;max-width:100%;">
+
+    <!--
+      管理機能の画面。管理者(admin)にだけ、ヘッダーの歯車から出す。出さないだけでなく、WebAPI も 403 を返す。
+      共通のタブ(利用者 / セッション / 監査ログ / サーバー)は、どのサービスでも同じ順・同じ中身にする。
+      サービスの機能に応じたタブ(変換サービス、外部連携、データベースの点検など)は、共通のタブの後ろに足してよい(custom_first で区切る)。
+      共通のタブの中身を、足したタブへ移さない。足したタブも、このテンプレートの部品で作る。
+      タブの切り替えは JS 不要(ラジオボタン)。サービスで URL に残したいときは ?tab= にしてよい。
+    -->
+    <div class="item_group" style="min-width:0;">
+      <div class="item_title">
+        <div class="title">管理</div>
+        <!-- 元の画面へ戻るリンクを、右の端に置く -->
+        <a href="template_menu.html" class="cancel_button" style="margin-left:auto;align-self:center;font-size:10pt;line-height:26px;height:auto;width:auto;padding:2px 14px;text-decoration:none;">元の画面へ戻る</a>
+      </div>
+
+      <div class="tab_set">
+
+        <!-- ===================== 利用者 ===================== -->
+        <input type="radio" name="admin_tab" id="tab_users" class="tab_toggle" checked>
+        <label for="tab_users" class="tab_label">利用者</label>
+        <div class="tab_panel">
+          <div class="panel_note">
+            ログインできるのは、台帳に登録したメールアドレスの利用者だけ(台帳に無い利用者は、IdP でログインできても入れない)。
+            <ul>
+              <li><b>管理者</b>: この管理の画面を使用可(利用者の追加・権限の変更・削除、切断)</li>
+              <li><b>編集可</b>: 読み書き可</li>
+              <li><b>閲覧のみ</b>: 読み取りだけ</li>
+            </ul>
+          </div>
+          <!--
+            利用者の一覧と、追加・権限の変更・削除は、assets/admin.js が、共通の WebAPI(GET / POST {base}、PUT / DELETE {base}/{email})の応答から描く。
+            サービスでは data-sample を消し、data-base="./webapi/admin/users" と data-login(401 のときに移る先)を付ける。
+          -->
+          <div class="admin_users" data-sample="admin_users_sample"></div>
+        </div>
+
+        <!-- ===================== セッション ===================== -->
+        <!--
+          利用者ごとに 1 枚のカード。切断するかを、ここだけで判断できる情報量を出す:
+          ログイン・最終アクセス・接続元 IP・ブラウザ等(User-Agent を略さず)・期限、いま見ている画面の印、APIキーの名前と権限と最終利用。
+          カードの右上は、文字の付いたボタン「切断する」(場所があるので、アイコンにしない)。押すと確認のモーダル。
+        -->
+        <input type="radio" name="admin_tab" id="tab_sessions" class="tab_toggle">
+        <label for="tab_sessions" class="tab_label">セッション</label>
+        <div class="tab_panel">
+          <div class="panel_note">
+            不正なアクセスが疑われるときに、利用者を<b>まとめて切断</b>。切断で次の物が一式で止まり、認証からやり直し。
+            <ul>
+              <li>ログイン中のセッション(全部の端末・ブラウザ)</li>
+              <li>その利用者が発行した APIキー(<b>元に戻せない</b>。必要なら、本人が発行し直す)</li>
+              <li>開いている画面への知らせ(SSE)。開いている画面は、ログインの画面へ戻る</li>
+            </ul>
+            <svg class="state_icon warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><b>切断だけでは防げないこと</b>: パスワードの漏れは、IdP でパスワードを変更。入れなくするには、「利用者」のタブで台帳から削除。
+          </div>
+          <!--
+            利用者ごとのカードと、切断・切断の履歴は、assets/admin.js が、共通の WebAPI(GET {base}、GET {base}/history、POST {base}/revoke)の応答から描く。
+            サービスでは data-sample を消し、data-base="./webapi/admin/sessions" と data-login(401 のときに移る先)を付ける。
+          -->
+          <div class="admin_sessions" data-sample="admin_sessions_sample"></div>
+        </div>
+
+        <!-- ===================== 監査ログ ===================== -->
+        <input type="radio" name="admin_tab" id="tab_audit" class="tab_toggle">
+        <label for="tab_audit" class="tab_label">監査ログ</label>
+        <div class="tab_panel">
+          <div class="panel_note">全員ぶんの操作の記録。自分の分だけなら、ヘッダーの「操作履歴」でも確認可(全員が使用可)。</div>
+          <!--
+            絞り込みと一覧は、assets/admin.js が、共通の WebAPI(GET {base}?range=&user=&action=&target=&before=)の応答から描く。
+            サービスでは data-sample を消し、data-base="./webapi/admin/audit" と data-login(401 のときに移る先)を付ける。
+          -->
+          <div class="admin_audit" data-sample="admin_audit_sample"></div>
+        </div>
+
+        <!-- ===================== サーバー ===================== -->
+        <input type="radio" name="admin_tab" id="tab_server" class="tab_toggle">
+        <label for="tab_server" class="tab_label">サーバー</label>
+        <div class="tab_panel">
+          <div class="panel_note">
+            <b>上で設定の変更、下で状態の確認。</b>設定はすぐに反映し、監査ログに記録。<b>ビルド日時</b>はイメージを作った時刻、<b>起動日時</b>はこのコンテナが起動した時刻。
+            部品の脆弱性が見つかったときは、「稼働中の部品の版」と「部品表」で、当てはまるかを確認(版は略さず表示。脆弱性の知らせと、そのまま見比べ可)。
+          </div>
+          <!--
+            共通の WebAPI({base}、{base}/components、{base}/packages?q=)を読んで、assets/admin.js が描く。
+            サービスでは data-sample を消し、data-base="./webapi/server-status" と data-login(401 のときに移る先)を付ける。
+            並びは、上に「設定(管理者が変更可)」(このサーバー全体の共通の設定 = API の回数の上限 → サービスが足す物 = 機能の On/Off、サービスの設定の節)、下に「確認(表示だけ)」(このサーバー、接続の確認、セキュリティ設定、稼働中の部品の版、ライブラリ)。
+            サービスが足す相手(外部連携など)は、components[] に足せば、そのまま出る(details の項目も出る)。
+          -->
+          <div class="admin_server" data-sample="admin_server_sample">
+            <!-- サービスが足す設定の節の例。admin_server_extra を付けて、この要素の中に書くと、「設定(管理者が変更可)」の中(機能の On/Off の下)に差し込まれる。
+                 変更の操作(切り替え、上限の変更など)は、ここに書く。状態の表示は、その下に共通のスクリプトが描く -->
+            <div class="admin_server_extra">
+              <div class="panel_section_title">外部連携(ボード)の設定(サービスが足した節の例)</div>
+              <div style="padding:4px 14px 10px;">
+                <div class="form_row">
+                  <div class="form_field">
+                    <div class="form_label">書き出し先のボード</div>
+                    <div class="form_value"><input type="text" class="search_input" style="width:100%;max-width:28em;" value="https://board.example.com/b/AbCdEf"></div>
+                  </div>
+                </div>
+                <button type="button" class="search_btn">保存</button>
+                <div class="form_hint">保存はすぐに反映。変更は監査ログに記録。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================== サービスが足したタブの例 ===================== -->
+        <input type="radio" name="admin_tab" id="tab_custom" class="tab_toggle">
+        <label for="tab_custom" class="tab_label custom_first">変換サービス</label>
+        <div class="tab_panel">
+          <div class="panel_note">
+            <b>サービスが、自分の機能に応じて足すタブの例。</b>共通のタブの後ろに、区切りを入れて並べる。
+            例: 変換のサービスの状態と、変換に失敗した物のやり直し。外部のサービスとの連携の設定。データベースの点検(重い確認はボタンで開始)。
+          </div>
+          <div class="result_meta">
+            <span>変換のサービス <span class="status_badge completed">Connected</span> LibreOffice <span class="version_text">25.8.2.2</span></span>
+            <a href="#" style="margin-left:auto;font-size:9pt;color:#187FF5;text-decoration:none;"><svg class="inline_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>確かめ直す</a>
+          </div>
+          <div class="panel_section_title">変換に失敗した物</div>
+          <div class="data_table_wrap">
+            <table class="data_table">
+              <thead><tr><th>名前</th><th>失敗した日時</th><th>理由</th><th>操作</th></tr></thead>
+              <tbody>
+                <tr><td>budget.xlsx</td><td style="white-space:nowrap;">2026-10-22 21:10</td><td>変換のサービスへの接続失敗</td>
+                  <td class="row_actions"><a href="#" class="icon_button" title="やり直す" aria-label="やり直す"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></a></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 確認のモーダル(削除・切断)は、admin.js が出す(左にキャンセル、右に実行) -->
+
+  </div>
+</div>
+
+<!-- 見本のデータ(共通の WebAPI の応答の形)。サービスでは使わない -->
+<script type="application/json" id="admin_users_sample">
+{
+ "self": "admin@example.com",
+ "roles": [
+  {
+   "value": "admin",
+   "label": "管理者"
+  },
+  {
+   "value": "readwrite",
+   "label": "編集可"
+  },
+  {
+   "value": "readonly",
+   "label": "閲覧のみ"
+  }
+ ],
+ "users": [
+  {
+   "email": "admin@example.com",
+   "role": "admin",
+   "addedBy": "ADMIN_EMAIL(最初の管理者)",
+   "addedAt": "2026-10-01T10:12:00+09:00",
+   "lastLoginAt": "2026-10-22T21:54:38+09:00"
+  },
+  {
+   "email": "user1@example.com",
+   "role": "readwrite",
+   "addedBy": "admin@example.com",
+   "addedAt": "2026-10-05T14:30:00+09:00",
+   "lastLoginAt": "2026-10-23T08:12:05+09:00"
+  },
+  {
+   "email": "viewer@example.com",
+   "role": "readonly",
+   "addedBy": "admin@example.com",
+   "addedAt": "2026-10-09T09:02:00+09:00",
+   "lastLoginAt": null
+  }
+ ]
+}
+</script>
+<script type="application/json" id="admin_sessions_sample">
+{
+ "self": "admin@example.com",
+ "users": [
+  {
+   "user": "admin@example.com",
+   "role": "admin",
+   "isSelf": true,
+   "sessions": [
+    {
+     "id": "s1",
+     "loginAt": "2026-10-22T21:54:38+09:00",
+     "lastSeenAt": "2026-10-23T12:40:18+09:00",
+     "ip": "192.0.2.10",
+     "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+     "expiresAt": "2026-10-24T04:40:18+09:00",
+     "current": true
+    }
+   ],
+   "apiKeys": [
+    {
+     "label": "手元の作業用",
+     "role": "readwrite",
+     "lastUsedAt": "2026-10-08T13:57:12+09:00"
+    },
+    {
+     "label": "AI エージェント用",
+     "role": "readwrite",
+     "lastUsedAt": "2026-10-21T22:21:53+09:00"
+    }
+   ]
+  },
+  {
+   "user": "user1@example.com",
+   "role": "readwrite",
+   "isSelf": false,
+   "sessions": [
+    {
+     "id": "s2",
+     "loginAt": "2026-10-23T08:12:05+09:00",
+     "lastSeenAt": "2026-10-23T11:58:44+09:00",
+     "ip": "198.51.100.24",
+     "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Mobile/15E148 Safari/604.1",
+     "expiresAt": "2026-10-23T19:58:44+09:00",
+     "current": false
+    },
+    {
+     "id": "s3",
+     "loginAt": null,
+     "lastSeenAt": "2026-10-22T09:02:31+09:00",
+     "ip": null,
+     "userAgent": null,
+     "expiresAt": "2026-10-22T17:02:31+09:00",
+     "current": false
+    }
+   ],
+   "apiKeys": [
+    {
+     "label": "集計の自動化",
+     "role": "readonly",
+     "lastUsedAt": "2026-10-23T06:00:02+09:00"
+    }
+   ]
+  },
+  {
+   "user": "bot@example.com",
+   "role": "readonly",
+   "isSelf": false,
+   "sessions": [],
+   "apiKeys": [
+    {
+     "label": "夜間の取り込み",
+     "role": "readonly",
+     "lastUsedAt": "2026-10-23T09:15:00+09:00"
+    },
+    {
+     "label": "予備",
+     "role": "readonly",
+     "lastUsedAt": null
+    }
+   ]
+  }
+ ],
+ "history": [
+  {
+   "at": "2026-10-20T18:03:00+09:00",
+   "by": "admin@example.com",
+   "targetUser": "user2@example.com",
+   "sessions": 2,
+   "apiKeys": 1,
+   "sessionDetails": [
+    {
+     "loginAt": "2026-10-20T09:12:00+09:00",
+     "lastSeenAt": "2026-10-20T17:58:10+09:00",
+     "ip": "198.51.100.80",
+     "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+    },
+    {
+     "loginAt": "2026-10-20T16:40:31+09:00",
+     "lastSeenAt": "2026-10-20T18:01:55+09:00",
+     "ip": "203.0.113.45",
+     "userAgent": "curl/8.9.1"
+    }
+   ]
+  }
+ ]
+}
+</script>
+<script type="application/json" id="admin_audit_sample">
+{
+ "limit": 200,
+ "actions": [
+  {
+   "value": "login",
+   "label": "ログイン"
+  },
+  {
+   "value": "upload",
+   "label": "登録"
+  },
+  {
+   "value": "delete",
+   "label": "削除"
+  },
+  {
+   "value": "apikey_issue",
+   "label": "APIキーの発行"
+  },
+  {
+   "value": "session_revoke",
+   "label": "切断"
+  },
+  {
+   "value": "setting_change",
+   "label": "設定の変更"
+  }
+ ],
+ "entries": [
+  {
+   "id": 6,
+   "at": "2026-10-23T12:40:11+09:00",
+   "user": "admin@example.com",
+   "action": "login",
+   "target": null,
+   "result": "success",
+   "via": "screen",
+   "ip": "192.0.2.10"
+  },
+  {
+   "id": 5,
+   "at": "2026-10-23T12:05:40+09:00",
+   "user": "admin@example.com",
+   "action": "setting_change",
+   "target": "API の回数の上限(ログインしていない呼び出し)",
+   "result": "success",
+   "via": "screen",
+   "ip": "192.0.2.10"
+  },
+  {
+   "id": 4,
+   "at": "2026-10-23T11:58:02+09:00",
+   "user": "user1@example.com",
+   "action": "upload",
+   "target": "report.html",
+   "result": "success",
+   "via": "apikey",
+   "keyRole": "readwrite",
+   "ip": "198.51.100.24"
+  },
+  {
+   "id": 3,
+   "at": "2026-10-23T10:21:47+09:00",
+   "user": "user1@example.com",
+   "action": "delete",
+   "target": "old.md",
+   "result": "denied",
+   "via": "apikey",
+   "keyRole": "readonly",
+   "ip": "198.51.100.24"
+  },
+  {
+   "id": 2,
+   "at": "2026-10-22T23:10:05+09:00",
+   "user": "unknown@example.net",
+   "action": "login",
+   "target": null,
+   "result": "denied",
+   "via": "screen",
+   "ip": "203.0.113.200"
+  },
+  {
+   "id": 1,
+   "at": "2026-10-20T18:03:10+09:00",
+   "user": "admin@example.com",
+   "action": "session_revoke",
+   "target": "user2@example.com",
+   "result": "success",
+   "via": "screen",
+   "ip": "192.0.2.10"
+  }
+ ]
+}
+</script>
+<!-- サーバーのタブの見本のデータ(共通の WebAPI の応答の形)。サービスでは使わない -->
+<script type="application/json" id="admin_server_sample">
+{
+ "status": {
+  "service": "service_a",
+  "version": "20261023.0930",
+  "build": "20261023_093000",
+  "revision": "1a2b3c4d5e6f",
+  "builtAt": "2026-10-23T09:30:00+09:00",
+  "startedAt": "2026-10-23T09:41:12+09:00",
+  "uptimeSeconds": 10920,
+  "database": {
+   "backend": "sqlite",
+   "files": [
+    {
+     "name": "service_a_v3.sqlite",
+     "current": true,
+     "sizeBytes": 48234496
+    },
+    {
+     "name": "service_a_v2.sqlite",
+     "current": false,
+     "sizeBytes": 41123840
+    }
+   ]
+  },
+  "extra": [
+   {
+    "label": "同梱の AI 向けクライアント",
+    "value": "1.5.0"
+   }
+  ],
+  "rateLimit": {
+   "windowMinutes": 5,
+   "disabled": false,
+   "authenticated": {
+    "limit": 1000,
+    "source": "env",
+    "env": "RATE_LIMIT_AUTHENTICATED",
+    "min": 100,
+    "max": 100000
+   },
+   "anonymous": {
+    "limit": 200,
+    "source": "setting",
+    "env": "RATE_LIMIT_ANONYMOUS",
+    "min": 10,
+    "max": 10000,
+    "updatedBy": "admin@example.com",
+    "updatedAt": "2026-10-23T12:05:40+09:00"
+   }
+  },
+  "security": [
+   {
+    "label": "認証の方式",
+    "value": "OIDC(IdP でログイン)",
+    "state": "ok",
+    "note": "開発モード(AUTH_DISABLED)ではない"
+   },
+   {
+    "label": "回数の上限を切る設定(RATE_LIMIT_DISABLED)",
+    "value": "未使用",
+    "state": "ok",
+    "note": "テスト用。本番では使用しない"
+   },
+   {
+    "label": "セッションの寿命",
+    "value": "16 時間",
+    "state": null,
+    "note": "SESSION_MAX_AGE_HOURS"
+   },
+   {
+    "label": "APIキーの最長の期限",
+    "value": "1 年",
+    "state": null,
+    "note": "無期限は readonly だけ"
+   },
+   {
+    "label": "無期限の APIキー",
+    "value": "1 件(readonly)",
+    "state": "warn",
+    "note": "未使用なら失効"
+   }
+  ],
+  "features": [
+   {
+    "key": "mockups",
+    "name": "画面案(モックアップ)の登録",
+    "enabled": true,
+    "editable": true,
+    "note": "切り替えはすぐに反映、再起動は不要(複数台でも全台に反映)。監査ログに記録"
+   },
+   {
+    "key": "pdf_export",
+    "name": "PDF でダウンロード",
+    "enabled": false,
+    "editable": true,
+    "note": "変換のサービスを使う構成で使用"
+   },
+   {
+    "key": "semantic_search",
+    "name": "意味検索",
+    "enabled": false,
+    "editable": false,
+    "note": "検索のサービスの接続先(環境変数)が要る"
+   }
+  ]
+ },
+ "components": {
+  "checkedAt": "2026-10-23T12:43:05+09:00",
+  "components": [
+   {
+    "key": "app",
+    "name": "本体",
+    "configured": true,
+    "reachable": true,
+    "product": "service_a",
+    "version": "20261023.0930",
+    "runtime": {
+     "node": "24.11.0",
+     "v8": "13.6.233.10",
+     "openssl": "3.5.4",
+     "uv": "1.51.0",
+     "os": "Debian GNU/Linux 13 (trixie)",
+     "kernel": "6.12.48",
+     "arch": "x64",
+     "cpus": 4,
+     "memory": {
+      "rssBytes": 151000000,
+      "totalBytes": 8300000000
+     }
+    }
+   },
+   {
+    "key": "database",
+    "name": "データベース",
+    "configured": true,
+    "reachable": true,
+    "latencyMs": 1,
+    "lastSuccessAt": "2026-10-23T12:43:05+09:00",
+    "product": "SQLite(本体に同梱)",
+    "version": "3.50.4"
+   },
+   {
+    "key": "storage",
+    "name": "ファイルの置き場",
+    "configured": true,
+    "reachable": true,
+    "latencyMs": 31,
+    "lastSuccessAt": "2026-10-23T12:43:05+09:00",
+    "product": "オブジェクトストレージ",
+    "version": null
+   },
+   {
+    "key": "idp",
+    "name": "IdP",
+    "configured": true,
+    "reachable": true,
+    "latencyMs": 120,
+    "lastSuccessAt": "2026-10-23T12:43:05+09:00",
+    "product": "OIDC",
+    "version": null
+   },
+   {
+    "key": "converter",
+    "name": "変換のサービス",
+    "configured": true,
+    "reachable": true,
+    "latencyMs": 18,
+    "lastSuccessAt": "2026-10-23T12:43:05+09:00",
+    "product": "LibreOffice",
+    "version": "25.8.2.2",
+    "apiVersion": "1",
+    "runtime": {
+     "node": "24.11.0",
+     "openssl": "3.5.4",
+     "os": "Debian GNU/Linux 13 (trixie)"
+    }
+   },
+   {
+    "key": "search",
+    "name": "検索のサービス",
+    "configured": true,
+    "reachable": false,
+    "lastSuccessAt": "2026-10-23T12:31:40+09:00",
+    "error": "応答なし(5 秒で時間切れ)"
+   },
+   {
+    "key": "board",
+    "name": "外部連携(ボード)",
+    "configured": true,
+    "reachable": true,
+    "latencyMs": 240,
+    "lastSuccessAt": "2026-10-23T12:43:05+09:00",
+    "product": "外のサービス",
+    "version": null,
+    "details": [
+     {
+      "label": "連携したアカウント",
+      "value": "admin@example.com"
+     },
+     {
+      "label": "トークンの期限",
+      "value": "2026-11-20"
+     }
+    ]
+   },
+   {
+    "key": "mail",
+    "name": "メールの送り先",
+    "configured": false
+   }
+  ],
+  "dependencies": [
+   {
+    "name": "express",
+    "version": "5.1.0"
+   },
+   {
+    "name": "openid-client",
+    "version": "6.8.1"
+   },
+   {
+    "name": "express-session",
+    "version": "1.18.2"
+   },
+   {
+    "name": "better-sqlite3",
+    "version": "12.4.1"
+   },
+   {
+    "name": "pg",
+    "version": "8.16.3"
+   },
+   {
+    "name": "pino",
+    "version": "9.12.0"
+   }
+  ],
+  "packageCount": 412,
+  "packageSource": "node_modules/.package-lock.json"
+ },
+ "packages": {
+  "source": "node_modules/.package-lock.json",
+  "packages": [
+   {
+    "name": "better-sqlite3",
+    "version": "12.4.1",
+    "direct": true,
+    "path": "node_modules/better-sqlite3"
+   },
+   {
+    "name": "cookie",
+    "version": "0.7.2",
+    "direct": false,
+    "path": "node_modules/cookie"
+   },
+   {
+    "name": "cookie",
+    "version": "0.7.1",
+    "direct": false,
+    "path": "node_modules/express-session/node_modules/cookie"
+   },
+   {
+    "name": "express",
+    "version": "5.1.0",
+    "direct": true,
+    "path": "node_modules/express"
+   },
+   {
+    "name": "express-session",
+    "version": "1.18.2",
+    "direct": true,
+    "path": "node_modules/express-session"
+   },
+   {
+    "name": "jose",
+    "version": "6.1.0",
+    "direct": false,
+    "path": "node_modules/jose"
+   },
+   {
+    "name": "oauth4webapi",
+    "version": "3.8.2",
+    "direct": false,
+    "path": "node_modules/oauth4webapi"
+   },
+   {
+    "name": "openid-client",
+    "version": "6.8.1",
+    "direct": true,
+    "path": "node_modules/openid-client"
+   },
+   {
+    "name": "pg",
+    "version": "8.16.3",
+    "direct": true,
+    "path": "node_modules/pg"
+   },
+   {
+    "name": "pino",
+    "version": "9.12.0",
+    "direct": true,
+    "path": "node_modules/pino"
+   },
+   {
+    "name": "semver",
+    "version": "7.7.2",
+    "direct": false,
+    "path": "node_modules/semver"
+   },
+   {
+    "name": "semver",
+    "version": "6.3.1",
+    "direct": false,
+    "path": "node_modules/make-dir/node_modules/semver"
+   }
+  ]
+ }
+}
+</script>
+
+<div class="footer">
+  <span class="footer_copyright">&copy; {{年}} {{会社名}}</span>
+  <span class="footer_version">Ver. {{バージョン}}</span>
+</div>
+
+<script src="./assets/dev_mode.js" data-check="./webapi/check_access_token" data-demo></script>
+<script src="./assets/admin.js"></script>
+</body>
+</html>

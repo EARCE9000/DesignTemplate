@@ -15,6 +15,7 @@
 >   - 検索・絞り込み一覧 → `template_list.html`
 >   - Queueレベルの簡易登録(少項目・上入力/下直近一覧) → `template_form_simple.html`
 >   - 単票の登録/編集(多項目・セクション分け・2カラム) → `template_form.html`
+>   - 管理機能の画面(管理者だけ) → `template_admin.html`
 > - 独自の色や角丸を新設せず、下記トークン/クラスの範囲で構成する。
 
 ---
@@ -27,7 +28,9 @@ _template/
 │   ├─ flexbox.css       レイアウト土台(box-sizing, flex骨格) ※変更しない
 │   ├─ design.css        基本スタイル(ヘッダ/メニューバー/ボタン/item_group) ※変更しない
 │   ├─ components.css    共通部品(バッジ/テーブル/フォーム/フィルタ/タイル/モーダル/カード 等)
-│   └─ dropzone.js       ファイルD&Dの共通挙動(全 .dropzone を自動初期化)
+│   ├─ dropzone.js       ファイルD&Dの共通挙動(全 .dropzone を自動初期化)
+│   ├─ admin.js          管理機能の画面(利用者/セッション/監査ログ/サーバー)を、共通の WebAPI の応答から描く
+│   └─ dev_mode.js       開発モード(認証なし)で動いていることを、しるし・ヘッダーの色・タブの題名で出す
 ├─ template_menu.html         メニュー画面
 ├─ template_list.html         一覧+絞り込み+検索(空状態の例も内包)
 ├─ template_form_simple.html  簡易登録(Queueレベル): 上で入力・下で直近一覧
@@ -37,6 +40,7 @@ _template/
 ├─ template_monitor.html      状態モニタ/ダッシュボード: カード+ステータス+自動更新
 ├─ template_status.html       状態画面: 完了/エラー(403/404/500の例)
 ├─ template_icons.html        アイコン一覧(SVG のコピー元)と、使い方の決まり
+├─ template_admin.html        管理機能の画面: 共通のタブ(利用者/セッション/監査ログ/サーバー)+サービスが足すタブ
 └─ AI_GUIDE.md                このファイル
 ```
 
@@ -44,6 +48,7 @@ _template/
 - 一覧 `template_list.html` → 行の「詳細」→ `template_detail.html` → 「編集」→ `template_form.html`（→確認→完了）／「削除」→ 詳細内のモーダル。
 - 登録: `template_form.html` → `template_form_confirm.html` → `template_status.html`（完了）。
 - 監視系は `template_monitor.html`、結果/エラー表示は `template_status.html`。
+- 管理機能は `template_admin.html`。**入口は右上の歯車(`header_icon_button` の「管理」)だけ**にし、メニューバーには出さない(メニューバーはホームだけ)。
 
 CSSは3枚を**この順**で読み込む（後勝ちで上書きするため順序が重要）:
 
@@ -247,6 +252,77 @@ CSSは3枚を**この順**で読み込む（後勝ちで上書きするため順
   </div>
 </div>
 ```
+
+### タブ(JS不要)
+1つのページの中を切り替える。ラジオボタン方式(モーダルと同じ考え方)。ラベルは上に横並び、選んだタブの中身だけが下に出る。
+```html
+<div class="tab_set">
+  <input type="radio" name="t" id="t1" class="tab_toggle" checked><label for="t1" class="tab_label">利用者</label>
+  <div class="tab_panel"> … </div>
+  <input type="radio" name="t" id="t2" class="tab_toggle"><label for="t2" class="tab_label">サーバー</label>
+  <div class="tab_panel"> … </div>
+  <!-- サービスが足したタブは、共通のタブの後ろに。先頭のラベルに custom_first を付けると区切りが入る -->
+  <input type="radio" name="t" id="t3" class="tab_toggle"><label for="t3" class="tab_label custom_first">変換サービス</label>
+  <div class="tab_panel"> … </div>
+</div>
+```
+- タブの中の説明は `panel_note`、節の見出しは `panel_section_title`(右端に操作を置くなら `panel_section_action`)。
+- 版・日時などのラベルと値の組は `info_grid`(`info_label` + `info_value`)。版の文字は `version_text`(等幅。略さず、コピーできる文字で)。
+- サービスで URL に残したいときは、JS で `?tab=` に切り替えてよい。
+- 広い表を持つタブを置く画面は、`flex_main` に `style="min-width:0;max-width:100%;"` を付ける(表ごとの横スクロールに任せ、ページ全体を横に広げない)。
+
+### 管理機能の画面(`template_admin.html`)
+- 管理者(admin)にだけ出す。出さないだけでなく、WebAPI も 403 を返す。入口は右上の歯車だけ。メニューバーには出さない。
+- **共通のタブ**は、どのサービスでも同じ順・同じ中身にする: **利用者 → セッション → 監査ログ → サーバー**。
+- **サービスが足すタブ**(変換サービス、外部連携、データベースの点検など)は、共通のタブの後ろに `custom_first` で区切って並べる。共通のタブの中身を、足したタブへ移さない。
+- 利用者の削除は、行の右端のゴミ箱(`icon_button danger`)から確認のモーダルを開く。
+- **セッションのタブは、利用者ごとのカード**(`session_card`)にする。切断するかを判断できるよう、次を出す: 利用者・自分か・権限・セッションと APIキーの数、セッションごとの**ログイン・最終アクセス・接続元 IP・ブラウザ等(User-Agent を略さず)・期限**と「この画面」の印、APIキーごとの**名前・権限・最終利用**。カードの右上に文字のボタン「切断する」(`caution_button session_revoke`)を置き、確認のモーダルに、止まる物と元に戻せない物を書く。
+- **管理の情報は、どのサービスでも同じ形の WebAPI で返し、見せ方は `assets/admin.js` が受け持つ**(サービスはデータを返すだけ)。タブごとに要素を置く:
+```html
+<div class="admin_users"    data-base="./webapi/admin/users"    data-login="./"></div>
+<div class="admin_sessions" data-base="./webapi/admin/sessions" data-login="./"></div>
+<div class="admin_audit"    data-base="./webapi/admin/audit"    data-login="./"></div>
+<div class="admin_server"   data-base="./webapi/server-status"  data-login="./"></div>
+<script src="./assets/admin.js"></script>
+```
+  - 各タブの WebAPI の形は、`admin.js` の中と、共通アーキテクチャ(構成の資料 6.3・6.4)に書いてある。確認のモーダル(削除・切断)も、`admin.js` が出す。
+  - **管理の画面は、ほかの画面とは別のページにする**(`components.css` などはページ全体に効くので、既存の画面の中に埋め込まない)。
+  - **管理者でない人には、このページを出さない**(サービスが先に権限を確かめ、`admin.js` を読み込まない)。取りこぼして 403 が返ったときは、ページの上に 1 つだけ知らせが出る。
+  - タブの中の物は、そのタブを開いたときに読む(サーバーのタブの、相手への問い合わせを、見ないときに走らせない)。JS でタブを切り替えたら `AdminUI.refresh()` を呼ぶ。すぐ読みたい物には `data-load="eager"`。
+  - 独自のタブの確認のモーダルは `AdminUI.confirm({title, body, ok, danger})`(Promise で true / false)を使う。
+  - 利用者: 一覧・追加・権限の変更・削除。自分の行には削除を出さない。最後の管理者を外す・下げるのは、サーバーが 409 で断る。
+  - セッション: 利用者ごとのカード、切断、切断の履歴。記録していない値は「不明」。
+  - 監査ログ: 期間・利用者・操作・対象で絞り込み、新しい順。続きがあれば「さらに読む」。結果は Success / Denied / Error。
+- 「サーバー」のタブ:
+  - 共通の WebAPI を 3 つ呼ぶ: `{base}`(版・起動した日時・DB)、`{base}/components`(本体・DB・つながっている相手の、状態と製品と版と土台)、`{base}/packages?q=`(部品表を名前で探す)。応答の形は、共通アーキテクチャ(構成の資料 6.3)に従う。
+  - 401 のときは `data-login` へ移る(画面の中の認証切れは、必ずログインの画面へ戻す)。
+  - 出す物は、セキュリティの点検(部品の脆弱性、設定の抜け)のときに、この画面だけで判断できる量にする: このサーバー(版・ビルド・リビジョン・日時・DB とそのファイル)、**セキュリティ設定**(`{base}` の `security: [{label, value, state, note}]`。認証の方式・開発モードでないこと・回数の上限とその出どころ・セッションの寿命・APIキーの最長の期限など)、**機能の On/Off**(`features: [{key, name, enabled, editable, note}]`)、つながりの確認、動いている部品の版(本体は V8・カーネル・CPU・メモリまで)、直接使っているライブラリと部品表。
+  - サービスごとの足し方: `{base}` の `extra: [{label, value}]` で「このサーバー」に項目を足す。`components[]` にサービス独自の相手(外部連携など)を足すと、そのまま 1 行で出る(`details: [{label, value}]` も出る)。知らない項目は読み飛ばす。
+  - 並びは、**上に「設定(管理者が変更可)」**(このサーバー全体の共通の設定 = API の回数の上限 → サービスが機能に応じて足す物 = 機能の On/Off、サービスの設定の節)、**下に「確認(表示だけ)」**(このサーバー → 接続の確認 → セキュリティ設定 → 稼働中の部品の版 → ライブラリ)。見出しは `panel_group`。
+  - API の回数の上限: `{base}` の `rateLimit`(`windowMinutes`、`disabled`、`authenticated` / `anonymous` ごとに `limit`・`source`・`env`・`min`・`max`)。その場で変えられる(`PUT {base}/rate-limit` に `{authenticated: 回数}` などを送り、新しい `rateLimit` を返す)。
+  - 機能の On/Off: `features` の `editable: true` の機能は、その場で切り替えるスイッチになる(`PUT {base}/features/{key}` に `{enabled}` を送る。失敗したら元に戻す)。構成で決まる機能は、表示だけ。
+  - サービスの設定の節(回数の上限の変更など)は、`class="admin_server_extra"` を付けて `admin_server` の要素の中に書く。スクリプトが、機能の On/Off の下に差し込む。
+  - テンプレートでは `data-sample` で、ページに埋めた見本の JSON から描いている。
+
+### 開発モードの表示(`assets/dev_mode.js`)
+開発モード(`AUTH_DISABLED=true`。認証なしで入る)で動いているときだけ、次の 3 つを一緒に出す。消す設定は置かない。
+- 題字の横のしるし `dev_mode_badge`(黄の札・太字・三角の印「開発モード」。ツールチップに理由)
+- ヘッダーの紫 `.header.dev_mode`
+- ブラウザのタブの題名の先頭の【開発モード】
+
+```html
+<div class="header">
+  <div class="header_title">{{システム名}}</div>
+  <span class="dev_mode_badge" hidden title="認証を切って動いている(AUTH_DISABLED)。誰でも管理者として入れる。本番では設定しない"><svg>…</svg>開発モード</span>
+  <div class="header_actions"> … </div>
+</div>
+…
+<script src="./assets/dev_mode.js" data-check="./webapi/check_access_token"></script>
+```
+- **しるしは、題字の要素の外**(題字のすぐ後ろ)に置く。題字の中に入れると、隠していても題字の文字に「開発モード」が混ざる。
+- サーバーは `check_access_token` の応答に `authDisabled`(true / false)を入れる。`data-check` を付けると、読み込んだときに確かめて出す。すでに呼んでいる画面は `DevMode.apply(res.authDisabled === true)`。
+- 画面の側で、ホスト名などから開発かどうかを推測しない。確かめられなかったときは、何も出さない。
+- テンプレートの見本は `?dev_mode=1` で見た目を確かめられる(`data-demo` の付いた見本だけの動き。サービスでは `data-demo` を付けない)。
 
 ### 状態モニタ カード
 ```html
