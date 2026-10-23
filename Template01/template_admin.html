@@ -244,14 +244,15 @@
           -->
           <div class="admin_server" data-sample="admin_server_sample"></div>
 
-          <!-- サービスが足す節の例。共通の節の後ろに置く -->
-          <div class="panel_section_title">機能の On/Off(サービスが足した節の例)</div>
+          <!-- サービスが足す節の例。共通の節(admin_server の要素)の後ろに置く。変更の操作は、ここに書く -->
+          <div class="panel_section_title">機能の切り替え(サービスが足した節の例)</div>
           <div style="padding:4px 14px 14px;">
             <label class="toggle_switch">
               <input type="checkbox" checked>
               <span class="toggle_track"></span>
               <span class="toggle_label">画面案(モックアップ)の登録を受け付ける</span>
             </label>
+            <div class="form_hint">切り替えはすぐ効き、再起動は要りません(複数台でも全台に効きます)。切り替えたことは、監査ログに残ります。</div>
           </div>
         </div>
 
@@ -320,17 +321,86 @@
  "status": {
   "service": "service_a",
   "version": "20261023.0930",
-  "revision": "1a2b3c4",
+  "build": "20261023_093000",
+  "revision": "1a2b3c4d5e6f",
   "builtAt": "2026-10-23T09:30:00+09:00",
   "startedAt": "2026-10-23T09:41:12+09:00",
   "uptimeSeconds": 10920,
   "database": {
-   "backend": "postgres"
+   "backend": "sqlite",
+   "files": [
+    {
+     "name": "service_a_v3.sqlite",
+     "current": true,
+     "sizeBytes": 48234496
+    },
+    {
+     "name": "service_a_v2.sqlite",
+     "current": false,
+     "sizeBytes": 41123840
+    }
+   ]
   },
   "extra": [
    {
     "label": "同梱の AI 向けクライアント",
     "value": "1.5.0"
+   }
+  ],
+  "security": [
+   {
+    "label": "認証の方式",
+    "value": "OIDC(IdP でログイン)",
+    "state": "ok",
+    "note": "開発モード(AUTH_DISABLED)ではない"
+   },
+   {
+    "label": "回数の上限(ログインした人・APIキー)",
+    "value": "5 分で 1,000 回(利用者ごと)",
+    "state": "ok",
+    "note": "環境変数 RATE_LIMIT_AUTHENTICATED の値"
+   },
+   {
+    "label": "回数の上限(ログインしていない呼び出し)",
+    "value": "5 分で 300 回(IP ごと)",
+    "state": "ok",
+    "note": "既定の値"
+   },
+   {
+    "label": "回数の上限を切る設定(RATE_LIMIT_DISABLED)",
+    "value": "使っていない",
+    "state": "ok",
+    "note": "テスト用。本番では使わない"
+   },
+   {
+    "label": "セッションの寿命",
+    "value": "16 時間",
+    "state": null,
+    "note": "SESSION_MAX_AGE_HOURS"
+   },
+   {
+    "label": "APIキーの最長の期限",
+    "value": "1 年",
+    "state": null,
+    "note": "無期限は readonly だけ"
+   },
+   {
+    "label": "無期限の APIキー",
+    "value": "1 件(readonly)",
+    "state": "warn",
+    "note": "使っていないなら失効させる"
+   }
+  ],
+  "features": [
+   {
+    "name": "画面案(モックアップ)の登録",
+    "enabled": true,
+    "note": "管理の画面から切り替えられる。すぐ効く"
+   },
+   {
+    "name": "意味検索",
+    "enabled": false,
+    "note": "検索のサービスを使う構成でだけ開ける"
    }
   ]
  },
@@ -364,10 +434,10 @@
     "name": "データベース",
     "configured": true,
     "reachable": true,
-    "latencyMs": 4,
+    "latencyMs": 1,
     "lastSuccessAt": "2026-10-23T12:43:05+09:00",
-    "product": "PostgreSQL",
-    "version": "17.6"
+    "product": "SQLite(本体に同梱)",
+    "version": "3.50.4"
    },
    {
     "key": "storage",

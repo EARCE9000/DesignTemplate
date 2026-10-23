@@ -4,11 +4,14 @@
  * License: MIT License - see LICENSE
  * Source: https://github.com/EARCE9000/DesignTemplate (published on GitHub)
  *
- * 共通アーキテクチャ(構成 6.2・6.3 / 画面 8.1・8.2)で決めた WebAPI の応答を読んで、次の 4 つを描く。
- *   1. このサーバー(版・ビルドした日時・起動した日時・動いている時間・DB の種類。サービスが足した項目)
- *   2. つながりの確認(つながる先ごとに、状態・掛かった時間・最後に成功・補足)
- *   3. 動いている部品の版(本体・DB・つながっている相手の、製品と版と土台)
- *   4. 部品表(直接使っている部品と、名前で探す一覧)
+ * 共通アーキテクチャ(構成 6.2・6.3 / 画面 8.1・8.2)で決めた WebAPI の応答を読んで、次を描く。
+ * 守りの点検(部品の脆弱性、設定の抜け)のときに、この画面だけで判断できる情報量にする。
+ *   1. このサーバー(版・ビルド・リビジョン・ビルドした日時・起動した日時・動いている時間・DB の種類と、DB のファイル)
+ *   2. 守りの設定(認証の方式、回数の上限、セッションの寿命、APIキーの最長の期限 など)
+ *   3. 機能の On/Off
+ *   4. つながりの確認(つながる先ごとに、状態・掛かった時間・最後に成功・補足)
+ *   5. 動いている部品の版(本体・DB・つながっている相手の、製品と版と土台。本体は V8・カーネル・CPU・メモリまで)
+ *   6. 直接使っている部品と、部品表(名前で探す。入れ子に入った別の版も)
  *
  * 使い方(サービスの画面):
  *   <div class="admin_server" data-base="./webapi/server-status" data-login="./"></div>
@@ -22,9 +25,11 @@
  *
  * サービスごとの足し方(カスタム化):
  *   - status.extra: [{label, value}] … 「このサーバー」に項目を足す
+ *   - status.security: [{label, value, state, note}] … 守りの設定の行。state は ok / warn / bad / 省略
+ *   - status.features: [{name, enabled, note}] … 機能の On/Off(ここでは読むだけ。切り替えはサービスの節で)
  *   - components[] にサービス独自の相手を足してよい(key は重ならない名前)。
  *     details: [{label, value}] を付けると、補足の欄にそのまま出す。知らない項目は読み飛ばす
- *   - この 4 つの後ろに、サービスが自分の節(機能の On/Off、回数の上限など)を足してよい
+ *   - この要素の後ろに、サービスが自分の節(上限の変更、機能の切り替えなど)を足してよい
  *     (この要素の外に書く。このスクリプトは、この要素の中しか書き換えない)
  */
 (function () {
@@ -37,9 +42,11 @@
 		unreachable: ["failed", "届かない"],
 		unconfigured: ["unknown", "未設定"]
 	};
-	// 土台の並び。左から順に、あるものだけを出す
-	var RUNTIME_KEYS = [["node", "Node.js"], ["python", "Python"], ["php", "PHP"], ["java", "Java"], ["openssl", "OpenSSL"], ["os", ""]];
-	var RUNTIME_MORE = [["v8", "V8"], ["uv", "libuv"], ["kernel", "カーネル"], ["arch", "CPU の種類"], ["cpus", "CPU の数"]];
+	var LEVEL = {ok: ["completed", "良い"], warn: ["pending", "注意"], bad: ["failed", "危ない"]};
+	// 土台の 1 行目。左から順に、あるものだけを出す
+	var RUNTIME_KEYS = [["node", "Node.js"], ["python", "Python"], ["php", "PHP"], ["java", "Java"], ["openssl", "OpenSSL"], ["os", ""], ["arch", ""]];
+	// 土台の 2 行目(本体は、ここまで出す)
+	var RUNTIME_MORE = [["v8", "V8"], ["uv", "libuv"], ["kernel", "カーネル"], ["cpus", "CPU"]];
 
 	function esc(value) {
 		return String(value == null ? "" : value).replace(/[&<>"']/g, function (c) {
@@ -55,7 +62,7 @@
 		var d = new Date(iso);
 		if (isNaN(d.getTime())) return esc(iso);
 		var p = function (n) { return (n < 10 ? "0" : "") + n; };
-		return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes());
+		return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes()) + ":" + p(d.getSeconds());
 	}
 	function uptime(seconds) {
 		if (seconds == null) return "―";
@@ -63,14 +70,13 @@
 		return (d ? d + " 日 " : "") + (d || h ? h + " 時間 " : "") + m + " 分";
 	}
 	function bytes(n) {
-		if (n == null) return "";
+		if (n == null) return "―";
 		var units = ["B", "KB", "MB", "GB", "TB"], i = 0;
 		while (n >= 1024 && i < units.length - 1) { n /= 1024; i += 1; }
 		return (i ? n.toFixed(1) : n) + " " + units[i];
 	}
-	function badge(state) {
-		var s = STATE[state];
-		return "<span class=\"status_badge " + s[0] + "\">" + s[1] + "</span>";
+	function badge(pair) {
+		return "<span class=\"status_badge " + pair[0] + "\">" + pair[1] + "</span>";
 	}
 	function stateOf(c) {
 		if (c == null) return "checking";
@@ -78,31 +84,32 @@
 		if (c.reachable === false) return "unreachable";
 		return c.key === "app" ? "running" : "reachable";
 	}
-	function runtimeLine(rt) {
-		if (!rt) return "―";
-		var parts = [];
-		RUNTIME_KEYS.forEach(function (k) {
-			if (rt[k[0]] != null) parts.push((k[1] ? esc(k[1]) + " " : "") + "<span class=\"version_text\">" + esc(rt[k[0]]) + "</span>");
-		});
-		return parts.length ? "<span class=\"runtime_text\">" + parts.join("<span class=\"runtime_sep\">｜</span>") + "</span>" : "―";
+	function table(head, rows, empty) {
+		return "<div class=\"data_table_wrap\"><table class=\"data_table\"><thead><tr>" + head.map(function (h) { return "<th>" + h + "</th>"; }).join("") +
+			"</tr></thead><tbody>" + (rows.join("") || "<tr><td colspan=\"" + head.length + "\" class=\"runtime_text\">" + (empty || "ありません") + "</td></tr>") + "</tbody></table></div>";
 	}
-	function runtimeMore(rt) {
-		if (!rt) return "";
-		var rows = [];
-		RUNTIME_MORE.forEach(function (k) {
-			if (rt[k[0]] != null) rows.push(esc(k[1]) + ": <span class=\"version_text\">" + esc(rt[k[0]]) + "</span>");
+	function runtimeCell(c) {
+		var rt = c.runtime;
+		if (rt === null) return "<span class=\"runtime_text\">(この相手は返しません。相手を新しい版にすると出ます)</span>";
+		if (!rt) return "―";
+		var first = [];
+		RUNTIME_KEYS.forEach(function (k) {
+			if (rt[k[0]] != null) first.push((k[1] ? esc(k[1]) + " " : "") + "<span class=\"version_text\">" + esc(rt[k[0]]) + "</span>");
 		});
-		if (rt.memory) {
-			rows.push("メモリ: 使用 " + esc(bytes(rt.memory.rssBytes)) + (rt.memory.totalBytes ? " / 全体 " + esc(bytes(rt.memory.totalBytes)) : ""));
-		}
-		return rows.length ? "<details><summary class=\"runtime_text\">詳しく</summary><div class=\"runtime_text\">" + rows.join("<br>") + "</div></details>" : "";
+		var lines = [first.join("<span class=\"runtime_sep\">/</span>")];
+		var more = [];
+		RUNTIME_MORE.forEach(function (k) {
+			if (rt[k[0]] != null) more.push(esc(k[1]) + " <span class=\"version_text\">" + esc(rt[k[0]]) + (k[0] === "cpus" ? " コア" : "") + "</span>");
+		});
+		if (more.length) lines.push(more.join("<span class=\"runtime_sep\">/</span>"));
+		if (rt.memory) lines.push("メモリ 使用 " + esc(bytes(rt.memory.rssBytes)) + (rt.memory.totalBytes ? "(サーバー全体 " + esc(bytes(rt.memory.totalBytes)) + ")" : ""));
+		return "<span class=\"runtime_text\">" + lines.join("<br>") + "</span>";
 	}
 	function detailsText(c) {
 		var rows = [];
-		if (c.error) rows.push(esc(c.error));
 		if (c.apiVersion != null) rows.push("API " + ver(c.apiVersion));
 		(c.modules || []).forEach(function (m) {
-			rows.push(esc(m.name) + (m.model ? ": " + esc(m.model) : "") + (m.version ? " " + ver(m.version) : ""));
+			rows.push("モジュール " + esc(m.name) + (m.model ? "(" + esc(m.model) + ")" : "") + (m.version ? " " + ver(m.version) : ""));
 		});
 		(c.details || []).forEach(function (d) { rows.push(esc(d.label) + ": " + esc(d.value)); });
 		return rows.join("<br>");
@@ -119,6 +126,7 @@
 			this.sample = node ? JSON.parse(node.textContent) : null;
 		}
 		this.searchTimer = null;
+		this.deps = [];
 	}
 
 	AdminServer.prototype.get = function (path) {
@@ -147,19 +155,21 @@
 	};
 
 	AdminServer.prototype.render = function () {
+		var REF = "<svg class=\"inline_icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">" +
+			"<polyline points=\"23 4 23 10 17 10\"/><polyline points=\"1 20 1 14 7 14\"/><path d=\"M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15\"/></svg>";
 		this.root.innerHTML =
-			"<div class=\"panel_section_title\">このサーバー<span class=\"panel_section_action\"><a href=\"#\" data-act=\"reload\" style=\"font-size:9pt;color:#187FF5;text-decoration:none;\"><svg class=\"inline_icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"23 4 23 10 17 10\"/><polyline points=\"1 20 1 14 7 14\"/><path d=\"M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15\"/></svg>調べ直す</a></span></div>" +
+			"<div class=\"panel_section_title\">このサーバー<span class=\"panel_section_action\"><a href=\"#\" data-act=\"reload\" style=\"font-size:9pt;color:#187FF5;text-decoration:none;\">" + REF + "調べ直す</a></span></div>" +
 			"<div class=\"info_grid\" data-part=\"status\"></div>" +
-			"<div class=\"panel_section_title\">つながりの確認<span class=\"panel_section_action result_meta\" style=\"border:0;padding:0\" data-part=\"checked\"></span></div>" +
-			"<div class=\"data_table_wrap\"><table class=\"data_table\"><thead><tr><th>つながる先</th><th>状態</th><th>掛かった時間</th><th>最後に成功</th><th>補足</th></tr></thead><tbody data-part=\"connections\"></tbody></table></div>" +
-			"<div class=\"panel_section_title\">動いている部品の版</div>" +
-			"<div class=\"data_table_wrap\"><table class=\"data_table\"><thead><tr><th>部品</th><th>状態</th><th>製品と版</th><th>土台</th></tr></thead><tbody data-part=\"components\"></tbody></table></div>" +
-			"<div class=\"panel_section_title\">直接使っている部品<span class=\"panel_section_action runtime_text\" data-part=\"pkgcount\"></span></div>" +
-			"<div class=\"info_grid\" data-part=\"deps\"></div>" +
-			"<div class=\"panel_section_title\">部品表(名前で探す)</div>" +
+			"<div data-part=\"dbfiles\"></div>" +
+			"<div class=\"panel_section_title\">守りの設定</div><div data-part=\"security\"></div>" +
+			"<div class=\"panel_section_title\">機能の On/Off</div><div data-part=\"features\"></div>" +
+			"<div class=\"panel_section_title\">つながりの確認<span class=\"panel_section_action runtime_text\" data-part=\"checked\"></span></div>" +
+			"<div data-part=\"connections\"></div>" +
+			"<div class=\"panel_section_title\">動いている部品の版</div><div data-part=\"components\"></div>" +
+			"<div class=\"panel_section_title\">ライブラリ(部品表)<span class=\"panel_section_action runtime_text\" data-part=\"pkgcount\"></span></div>" +
 			"<div class=\"filter_panel\"><div class=\"search_form\"><span class=\"filter_label\">部品の名前</span>" +
 			"<input type=\"search\" class=\"search_input\" data-part=\"q\" placeholder=\"例) openssl、express\" autocomplete=\"off\"></div></div>" +
-			"<div class=\"data_table_wrap\"><table class=\"data_table\"><thead><tr><th>名前</th><th>版</th><th>直接</th><th>入っている場所</th></tr></thead><tbody data-part=\"packages\"></tbody></table></div>";
+			"<div data-part=\"packages\"></div>";
 		var self = this;
 		this.root.querySelector("[data-act=reload]").addEventListener("click", function (e) { e.preventDefault(); self.load(); });
 		this.root.querySelector("[data-part=q]").addEventListener("input", function (e) {
@@ -171,70 +181,88 @@
 
 	AdminServer.prototype.part = function (name) { return this.root.querySelector("[data-part=" + name + "]"); };
 
+	AdminServer.prototype.fail = function (names, err) {
+		var self = this;
+		names.forEach(function (n) { self.part(n).innerHTML = "<div class=\"msg_error\">読めませんでした: " + esc(err.message) + "</div>"; });
+	};
+
 	AdminServer.prototype.load = function () {
 		var self = this;
-		// 本体の版を先に出す。相手への問い合わせの結果は、あとから出す(全部がそろうまで待たせない)
-		this.get("").then(function (s) { self.showStatus(s); }, function (err) { self.part("status").innerHTML = "<div class=\"msg_error\">読めませんでした: " + esc(err.message) + "</div>"; });
+		// 本体の情報を先に出す。相手への問い合わせの結果は、あとから出す(全部がそろうまで待たせない)
+		this.get("").then(function (s) { self.showStatus(s); }, function (err) { self.fail(["status"], err); });
 		this.showComponents(null);
-		this.get("/components").then(function (c) { self.showComponents(c); }, function (err) {
-			self.part("components").innerHTML = "<tr><td colspan=\"4\"><div class=\"msg_error\">読めませんでした: " + esc(err.message) + "</div></td></tr>";
-			self.part("connections").innerHTML = "";
-		});
-		this.loadPackages(this.part("q").value.trim());
+		this.get("/components").then(function (c) { self.showComponents(c); }, function (err) { self.fail(["connections", "components"], err); });
 	};
 
 	AdminServer.prototype.showStatus = function (s) {
 		var items = [
-			["版", ver(s.version)], ["ビルドした日時", esc(when(s.builtAt))], ["リビジョン", s.revision ? ver(s.revision) : "―"],
-			["起動した日時", esc(when(s.startedAt))], ["動いている時間", esc(uptime(s.uptimeSeconds))],
+			["版", ver(s.version)], ["ビルド", s.build ? ver(s.build) : "―"], ["リビジョン", s.revision ? ver(s.revision) : "―"],
+			["ビルドした日時", esc(when(s.builtAt))], ["起動した日時", esc(when(s.startedAt))], ["動いている時間", esc(uptime(s.uptimeSeconds))],
 			["データベース", esc(s.database && s.database.backend ? s.database.backend : "―")]
 		];
 		(s.extra || []).forEach(function (e) { items.push([esc(e.label), esc(e.value)]); });
 		this.part("status").innerHTML = items.map(function (i) {
 			return "<div><div class=\"info_label\">" + i[0] + "</div><div class=\"info_value\">" + i[1] + "</div></div>";
 		}).join("");
+
+		var files = s.database && s.database.files;
+		this.part("dbfiles").innerHTML = files && files.length ? table(["DB のファイル", "大きさ", ""], files.map(function (f) {
+			return "<tr><td class=\"version_text\">" + esc(f.name) + "</td><td>" + esc(bytes(f.sizeBytes)) + "</td><td>" + (f.current ? "<b>使用中</b>" : "前の版(戻すために残している)") + "</td></tr>";
+		})) : "";
+
+		this.part("security").innerHTML = table(["項目", "いまの値", "状態", "補足"], (s.security || []).map(function (r) {
+			return "<tr" + (r.state === "bad" ? " class=\"row_failed\"" : "") + "><td>" + esc(r.label) + "</td><td>" + esc(r.value) + "</td><td>" +
+				(LEVEL[r.state] ? badge(LEVEL[r.state]) : "") + "</td><td class=\"runtime_text\">" + esc(r.note || "") + "</td></tr>";
+		}), "このサービスは、守りの設定を返していません");
+
+		this.part("features").innerHTML = table(["機能", "状態", "補足"], (s.features || []).map(function (f) {
+			return "<tr><td>" + esc(f.name) + "</td><td>" + (f.enabled ? badge(["completed", "On"]) : badge(["unknown", "Off"])) + "</td><td class=\"runtime_text\">" + esc(f.note || "") + "</td></tr>";
+		}), "切り替えられる機能はありません");
 	};
 
 	AdminServer.prototype.showComponents = function (data) {
 		var list = data ? data.components : [{key: "app", name: "本体"}];
 		this.part("checked").textContent = data ? "調べた時刻 " + when(data.checkedAt) : "確認中…";
-		this.part("connections").innerHTML = list.filter(function (c) { return c.key !== "app"; }).map(function (c) {
-			var st = stateOf(c);
-			return "<tr><td>" + esc(c.name) + "</td><td>" + badge(st) + "</td>" +
-				"<td style=\"white-space:nowrap\">" + (st === "unconfigured" ? "―" : c.latencyMs != null ? esc(c.latencyMs) + " ms" : c.reachable === false ? "時間切れ・失敗" : "―") + "</td>" +
-				"<td style=\"white-space:nowrap\">" + esc(when(c.lastSuccessAt)) + "</td>" +
-				"<td>" + (st === "unconfigured" ? "この機能は使っていません" : (c.error ? esc(c.error) : "")) + "</td></tr>";
-		}).join("") || (data ? "" : "<tr><td colspan=\"5\">" + badge("checking") + "</td></tr>");
-		this.part("components").innerHTML = list.map(function (c) {
+		this.part("connections").innerHTML = table(["つながる先", "状態", "掛かった時間", "最後に成功", "補足"],
+			data ? list.filter(function (c) { return c.key !== "app"; }).map(function (c) {
+				var st = stateOf(c);
+				return "<tr" + (st === "unreachable" ? " class=\"row_failed\"" : "") + "><td>" + esc(c.name) + "</td><td>" + badge(STATE[st]) + "</td>" +
+					"<td style=\"white-space:nowrap\">" + (st === "unconfigured" ? "―" : c.latencyMs != null ? esc(c.latencyMs) + " ms" : c.reachable === false ? "時間切れ・失敗" : "―") + "</td>" +
+					"<td style=\"white-space:nowrap\">" + esc(when(c.lastSuccessAt)) + "</td>" +
+					"<td>" + (st === "unconfigured" ? "この機能は使っていません" : esc(c.error || "")) + "</td></tr>";
+			}) : ["<tr><td colspan=\"5\">" + badge(STATE.checking) + "</td></tr>"]);
+		this.part("components").innerHTML = table(["部品", "状態", "製品と版", "土台・詳しく"], list.map(function (c) {
 			var st = stateOf(data ? c : null);
+			if (!data) return "<tr><td>" + esc(c.name) + "</td><td>" + badge(STATE[st]) + "</td><td></td><td></td></tr>";
 			var product = st === "unconfigured" ? "―" : (c.product ? esc(c.product) + " " : "") + ver(c.version);
-			var extra = data ? detailsText(c) : "";
-			return "<tr><td>" + esc(c.name) + "</td><td>" + badge(st) + "</td>" +
-				"<td>" + (data ? product : "") + (extra ? "<div class=\"runtime_text\">" + extra + "</div>" : "") + "</td>" +
-				"<td>" + (data ? runtimeLine(c.runtime) + runtimeMore(c.runtime) : "") + "</td></tr>";
-		}).join("");
+			var extra = detailsText(c);
+			return "<tr><td>" + esc(c.name) + "</td><td>" + badge(STATE[st]) + "</td>" +
+				"<td>" + product + (extra ? "<div class=\"runtime_text\">" + extra + "</div>" : "") + "</td>" +
+				"<td>" + (st === "unconfigured" ? "―" : st === "unreachable" ? "<span class=\"runtime_text\">" + esc(c.error || "応答がありません") + "</span>" : runtimeCell(c)) + "</td></tr>";
+		}));
 		if (data) {
-			this.part("pkgcount").textContent = data.packageCount != null ? "入っている部品は全部で " + data.packageCount + " 件(" + (data.packageSource || "") + ")" : "";
-			this.part("deps").innerHTML = (data.dependencies || []).map(function (d) {
-				return "<div><div class=\"info_label\">" + esc(d.name) + "</div><div class=\"info_value\">" + ver(d.version) + "</div></div>";
-			}).join("") || "<div class=\"runtime_text\">ありません</div>";
+			this.part("pkgcount").textContent = data.packageCount != null ? "入っている部品 " + data.packageCount + " 個(" + (data.packageSource || "") + ")" : "";
+			this.deps = data.dependencies || [];
+			this.loadPackages(this.part("q").value.trim());
 		}
 	};
 
 	AdminServer.prototype.loadPackages = function (q) {
 		var self = this;
-		var body = this.part("packages");
+		var box = this.part("packages");
 		if (q === "") {
-			body.innerHTML = "<tr><td colspan=\"4\" class=\"runtime_text\">名前の一部を入れると、入っている部品を探します(入れ子に入った、別の版も出ます)。</td></tr>";
+			// 探す言葉が無ければ、直接使っているライブラリを出す
+			box.innerHTML = "<div class=\"result_meta\" style=\"border:0\">直接使っているライブラリ(" + this.deps.length + " 個)。名前を入れると、入れ子に入った別の版も含めて、全部から探します。</div>" +
+				table(["部品", "版"], this.deps.map(function (d) { return "<tr><td class=\"version_text\">" + esc(d.name) + "</td><td>" + ver(d.version) + "</td></tr>"; }));
 			return;
 		}
 		this.get("/packages?q=" + encodeURIComponent(q)).then(function (r) {
-			body.innerHTML = r.packages.map(function (p) {
-				return "<tr><td>" + esc(p.name) + "</td><td>" + ver(p.version) + "</td><td>" + (p.direct ? "直接" : "") + "</td><td class=\"runtime_text\">" + esc(p.path || "") + "</td></tr>";
-			}).join("") || "<tr><td colspan=\"4\" class=\"runtime_text\">「" + esc(q) + "」を含む部品は、入っていません。</td></tr>";
-		}, function (err) {
-			body.innerHTML = "<tr><td colspan=\"4\"><div class=\"msg_error\">読めませんでした: " + esc(err.message) + "</div></td></tr>";
-		});
+			if (self.part("q").value.trim() !== q) return;
+			box.innerHTML = "<div class=\"result_meta\" style=\"border:0\">「" + esc(q) + "」を含む部品 " + r.count + " 個(全 " + r.total + " 個中)</div>" +
+				table(["部品", "版", "直接", "場所"], r.packages.map(function (p) {
+					return "<tr><td class=\"version_text\">" + esc(p.name) + "</td><td>" + ver(p.version) + "</td><td>" + (p.direct ? "直接" : "") + "</td><td class=\"version_text\">" + esc(p.path || "") + "</td></tr>";
+				}), "「" + esc(q) + "」を含む部品は、入っていません");
+		}, function (err) { self.fail(["packages"], err); });
 	};
 
 	function start() {
