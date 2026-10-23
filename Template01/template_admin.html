@@ -240,30 +240,24 @@
           <!--
             共通の WebAPI({base}、{base}/components、{base}/packages?q=)を読んで、assets/admin_server.js が描く。
             サービスでは data-sample を消し、data-base="./webapi/server-status" と data-login(401 のときに移る先)を付ける。
-            並びは、上に「設定(管理者が変更可)」(機能の On/Off、サービスの設定の節)、下に「確認(表示だけ)」(このサーバー、接続の確認、セキュリティ設定、稼働中の部品の版、ライブラリ)。
+            並びは、上に「設定(管理者が変更可)」(このサーバー全体の共通の設定 = API の回数の上限 → サービスが足す物 = 機能の On/Off、サービスの設定の節)、下に「確認(表示だけ)」(このサーバー、接続の確認、セキュリティ設定、稼働中の部品の版、ライブラリ)。
             サービスが足す相手(外部連携など)は、components[] に足せば、そのまま出る(details の項目も出る)。
           -->
           <div class="admin_server" data-sample="admin_server_sample">
             <!-- サービスが足す設定の節の例。admin_server_extra を付けて、この要素の中に書くと、「設定(管理者が変更可)」の中(機能の On/Off の下)に差し込まれる。
                  変更の操作(切り替え、上限の変更など)は、ここに書く。状態の表示は、その下に共通のスクリプトが描く -->
             <div class="admin_server_extra">
-              <div class="panel_section_title">API の回数の上限(サービスが足した節の例)</div>
-              <div class="data_table_wrap">
-                <table class="data_table">
-                  <thead><tr><th>対象</th><th>5 分あたりの上限</th><th>出どころ</th><th>操作</th></tr></thead>
-                  <tbody>
-                    <tr><td>ログインした人・APIキー(利用者ごと)</td>
-                      <td><input type="number" class="search_input" style="width:8em;" min="100" max="100000" step="100" value="1000"> 回</td>
-                      <td class="runtime_text">環境変数 RATE_LIMIT_AUTHENTICATED</td>
-                      <td style="white-space:nowrap;"><button type="button" class="search_btn">保存</button></td></tr>
-                    <tr><td>ログインしていない呼び出し(IP ごと)</td>
-                      <td><input type="number" class="search_input" style="width:8em;" min="10" max="10000" step="10" value="300"> 回</td>
-                      <td class="runtime_text">既定の値</td>
-                      <td style="white-space:nowrap;"><button type="button" class="search_btn">保存</button></td></tr>
-                  </tbody>
-                </table>
+              <div class="panel_section_title">外部連携(ボード)の設定(サービスが足した節の例)</div>
+              <div style="padding:4px 14px 10px;">
+                <div class="form_row">
+                  <div class="form_field">
+                    <div class="form_label">書き出し先のボード</div>
+                    <div class="form_value"><input type="text" class="search_input" style="width:100%;max-width:28em;" value="https://board.example.com/b/AbCdEf"></div>
+                  </div>
+                </div>
+                <button type="button" class="search_btn">保存</button>
+                <div class="form_hint">保存はすぐに反映。変更は監査ログに記録。</div>
               </div>
-              <div class="form_hint" style="padding:4px 14px 0;">保存はすぐに反映(複数台でも 30 秒以内に全台に反映)。変更は監査ログに記録。</div>
             </div>
           </div>
         </div>
@@ -359,24 +353,30 @@
     "value": "1.5.0"
    }
   ],
+  "rateLimit": {
+   "windowMinutes": 5,
+   "disabled": false,
+   "authenticated": {
+    "limit": 1000,
+    "source": "env",
+    "env": "RATE_LIMIT_AUTHENTICATED",
+    "min": 100,
+    "max": 100000
+   },
+   "anonymous": {
+    "limit": 300,
+    "source": "default",
+    "env": "RATE_LIMIT_ANONYMOUS",
+    "min": 10,
+    "max": 10000
+   }
+  },
   "security": [
    {
     "label": "認証の方式",
     "value": "OIDC(IdP でログイン)",
     "state": "ok",
     "note": "開発モード(AUTH_DISABLED)ではない"
-   },
-   {
-    "label": "回数の上限(ログインした人・APIキー)",
-    "value": "5 分で 1,000 回(利用者ごと)",
-    "state": "ok",
-    "note": "環境変数 RATE_LIMIT_AUTHENTICATED の値"
-   },
-   {
-    "label": "回数の上限(ログインしていない呼び出し)",
-    "value": "5 分で 300 回(IP ごと)",
-    "state": "ok",
-    "note": "既定の値"
    },
    {
     "label": "回数の上限を切る設定(RATE_LIMIT_DISABLED)",

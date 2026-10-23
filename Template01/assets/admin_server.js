@@ -7,15 +7,16 @@
  * 共通アーキテクチャ(構成 6.2・6.3 / 画面 8.1・8.2)で決めた WebAPI の応答を読んで、次を描く。
  * セキュリティの点検(部品の脆弱性、設定の抜け)のときに、この画面だけで判断できる情報量にする。
  * 上に、管理者が変更できる設定。下に、確認するだけの表示を並べる。
- *   設定(管理者が変更可)
- *         1. 機能の On/Off(editable の機能は、その場で切り替え。PUT {base}/features/{key} {enabled})
- *         2. サービスが足した設定の節(class="admin_server_extra" を付けて、この要素の中に書いた物。回数の上限の変更など)
+ *   設定(管理者が変更可)。上に、このサーバー全体の共通の設定。下に、サービスが機能に応じて足す物
+ *         1. API の回数の上限(共通。PUT {base}/rate-limit {authenticated | anonymous: 回数})
+ *         2. 機能の On/Off(editable の機能は、その場で切り替え。PUT {base}/features/{key} {enabled})
+ *         3. サービスが足した設定の節(class="admin_server_extra" を付けて、この要素の中に書いた物)
  *   確認(表示だけ)
- *         3. このサーバー(版・ビルド・リビジョン・ビルド日時・起動日時・稼働時間・DB の種類と、DB のファイル)
- *         4. 接続の確認(接続先ごとに、状態・応答時間・最終成功・補足)
- *         5. セキュリティ設定(認証の方式、回数の上限、セッションの寿命、APIキーの最長の期限 など)
- *         6. 稼働中の部品の版(本体・DB・つながっている相手の、製品と版と土台。本体は V8・カーネル・CPU・メモリまで)
- *         7. 直接使っているライブラリと、部品表(名前で探す。入れ子に入った別の版も)
+ *         4. このサーバー(版・ビルド・リビジョン・ビルド日時・起動日時・稼働時間・DB の種類と、DB のファイル)
+ *         5. 接続の確認(接続先ごとに、状態・応答時間・最終成功・補足)
+ *         6. セキュリティ設定(認証の方式、セッションの寿命、APIキーの最長の期限 など)
+ *         7. 稼働中の部品の版(本体・DB・つながっている相手の、製品と版と土台。本体は V8・カーネル・CPU・メモリまで)
+ *         8. 直接使っているライブラリと、部品表(名前で探す。入れ子に入った別の版も)
  *
  * 使い方(サービスの画面):
  *   <div class="admin_server" data-base="./webapi/server-status" data-login="./"></div>
@@ -28,6 +29,8 @@
  *   <script type="application/json" id="admin_server_sample">{"status": …, "components": …, "packages": …}</script>
  *
  * サービスごとの足し方(カスタム化):
+ *   - status.rateLimit: {windowMinutes, disabled, authenticated: {limit, source, env, min, max, updatedBy, updatedAt}, anonymous: {…}}
+ *     … API の回数の上限(共通)。source は setting(この画面で変更)/ env(環境変数)/ default(既定)
  *   - status.extra: [{label, value}] … 「このサーバー」に項目を足す
  *   - status.security: [{label, value, state, note}] … セキュリティ設定の行。state は ok / warn / bad / 省略
  *   - status.features: [{key, name, enabled, editable, note}] … 機能の On/Off。editable が true なら、ここで切り替えられる
@@ -169,6 +172,8 @@
 		// 上に、管理者が変更できる設定(機能の On/Off、サービスの設定の節)。下に、確認するだけの表示
 		this.root.innerHTML =
 			"<div class=\"panel_group\">設定(管理者が変更可)<span class=\"panel_section_action\"><a href=\"#\" data-act=\"reload\" style=\"font-size:9pt;color:#187FF5;text-decoration:none;\">" + REF + "再確認</a></span></div>" +
+			"<div class=\"panel_section_title\">API の回数の上限<span class=\"panel_section_action runtime_text\" data-part=\"rlwindow\"></span></div>" +
+			"<div data-part=\"ratelimit\"></div>" +
 			"<div class=\"panel_section_title\">機能の On/Off</div>" +
 			"<div data-part=\"features\"></div>" +
 			"<div data-part=\"extras\"></div>" +
@@ -226,6 +231,8 @@
 			return "<tr><td class=\"version_text\">" + esc(f.name) + "</td><td>" + esc(bytes(f.sizeBytes)) + "</td><td>" + (f.current ? "<b>使用中</b>" : "旧版(切り戻し用に保管)") + "</td></tr>";
 		})) : "";
 
+		this.showRateLimit(s.rateLimit);
+
 		this.part("security").innerHTML = table(["項目", "現在の値", "状態", "補足"], (s.security || []).map(function (r) {
 			return "<tr" + (r.state === "bad" ? " class=\"row_failed\"" : "") + "><td>" + esc(r.label) + "</td><td>" + esc(r.value) + "</td><td>" +
 				(LEVEL[r.state] ? badge(LEVEL[r.state]) : "") + "</td><td class=\"runtime_text\">" + esc(r.note || "") + "</td></tr>";
@@ -246,6 +253,55 @@
 		for (var b = 0; b < boxes.length; b += 1) {
 			boxes[b].addEventListener("change", function (e) { self.setFeature(features[Number(e.target.getAttribute("data-feature"))], e.target); });
 		}
+	};
+
+	// API の回数の上限(このサーバー全体の設定)。値ごとに、いまの上限・出どころ・変える欄
+	var RATE_KINDS = [["authenticated", "ログインした人・APIキー(利用者ごと)"], ["anonymous", "ログインしていない呼び出し(IP ごと)"]];
+	AdminServer.prototype.showRateLimit = function (rl) {
+		var self = this;
+		var box = this.part("ratelimit");
+		this.part("rlwindow").textContent = rl && rl.windowMinutes ? rl.windowMinutes + " 分あたりの回数" : "";
+		if (!rl) { box.innerHTML = "<div class=\"runtime_text\" style=\"padding:4px 14px\">回数の上限の返却なし</div>"; return; }
+		var src = function (item) {
+			if (item.source === "setting") return "この画面で変更(" + esc(item.updatedBy || "不明") + "・" + esc(when(item.updatedAt)) + ")";
+			if (item.source === "env") return "環境変数 " + esc(item.env || "");
+			return "既定の値" + (item.env ? "(環境変数 " + esc(item.env) + " で変更可)" : "");
+		};
+		box.innerHTML = (rl.disabled ? "<div class=\"msg_error\" style=\"margin:4px 14px\">いまは回数の上限を切っている(RATE_LIMIT_DISABLED。テスト用)。保存した値は、切るのをやめたときに使う</div>" : "") +
+			table(["対象", "上限", "出どころ", "操作"], RATE_KINDS.filter(function (k) { return rl[k[0]]; }).map(function (k) {
+				var item = rl[k[0]];
+				return "<tr><td>" + esc(k[1]) + "</td>" +
+					"<td style=\"white-space:nowrap\"><input type=\"number\" class=\"search_input\" style=\"width:8em\" data-rate=\"" + k[0] + "\"" +
+					(item.min != null ? " min=\"" + esc(item.min) + "\"" : "") + (item.max != null ? " max=\"" + esc(item.max) + "\"" : "") +
+					" value=\"" + esc(item.limit) + "\"> 回" + (item.min != null ? "<div class=\"runtime_text\">" + esc(item.min) + " 〜 " + esc(item.max) + "</div>" : "") + "</td>" +
+					"<td class=\"runtime_text\" data-rate-note=\"" + k[0] + "\">" + src(item) + "</td>" +
+					"<td style=\"white-space:nowrap\"><button type=\"button\" class=\"search_btn\" data-rate-save=\"" + k[0] + "\">保存</button></td></tr>";
+			}));
+		var buttons = box.querySelectorAll("[data-rate-save]");
+		for (var i = 0; i < buttons.length; i += 1) {
+			buttons[i].addEventListener("click", function (e) { self.saveRateLimit(e.target.getAttribute("data-rate-save")); });
+		}
+	};
+
+	AdminServer.prototype.saveRateLimit = function (kind) {
+		var self = this;
+		var input = this.root.querySelector("[data-rate=\"" + kind + "\"]");
+		var note = this.root.querySelector("[data-rate-note=\"" + kind + "\"]");
+		var value = Number(input.value);
+		if (this.sample) { note.textContent = "見本のため保存しない(" + value + " 回)"; return; }
+		var body = {};
+		body[kind] = value;
+		fetch(this.base + "/rate-limit", {
+			method: "PUT", credentials: "same-origin",
+			headers: {"Content-Type": "application/json", "Accept": "application/json"},
+			body: JSON.stringify(body)
+		}).then(function (res) {
+			if (res.status === 401) { window.location.href = self.login; throw new Error("unauthenticated"); }
+			if (!res.ok) throw new Error("HTTP " + res.status);
+			return res.json();
+		}).then(function (rl) { self.showRateLimit(rl); }, function (err) {
+			note.innerHTML = "<span class=\"msg_error\" style=\"display:inline-block;padding:2px 8px\">保存失敗: " + esc(err.message) + "</span>";
+		});
 	};
 
 	AdminServer.prototype.setFeature = function (feature, input) {
