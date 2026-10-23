@@ -36,13 +36,13 @@
 	"use strict";
 
 	var STATE = {
-		checking: ["processing", "確認中"],
-		running: ["completed", "動いている"],
-		reachable: ["completed", "届く"],
-		unreachable: ["failed", "届かない"],
-		unconfigured: ["unknown", "未設定"]
+		checking: ["processing", "Checking"],
+		running: ["completed", "Running"],
+		reachable: ["completed", "Connected"],
+		unreachable: ["failed", "Error"],
+		unconfigured: ["unknown", "Not set"]
 	};
-	var LEVEL = {ok: ["completed", "良い"], warn: ["pending", "注意"], bad: ["failed", "危ない"]};
+	var LEVEL = {ok: ["completed", "OK"], warn: ["pending", "Warning"], bad: ["failed", "Critical"]};
 	// 土台の 1 行目。左から順に、あるものだけを出す
 	var RUNTIME_KEYS = [["node", "Node.js"], ["python", "Python"], ["php", "PHP"], ["java", "Java"], ["openssl", "OpenSSL"], ["os", ""], ["arch", ""]];
 	// 土台の 2 行目(本体は、ここまで出す)
@@ -55,7 +55,7 @@
 	}
 	function ver(value) {
 		// 版は略さず、そのままの文字で出す。取れない版は「分からない」
-		return value == null || value === "" ? "<span class=\"null_val\">分からない</span>" : "<span class=\"version_text\">" + esc(value) + "</span>";
+		return value == null || value === "" ? "<span class=\"null_val\">不明</span>" : "<span class=\"version_text\">" + esc(value) + "</span>";
 	}
 	function when(iso) {
 		if (!iso) return "―";
@@ -86,11 +86,11 @@
 	}
 	function table(head, rows, empty) {
 		return "<div class=\"data_table_wrap\"><table class=\"data_table\"><thead><tr>" + head.map(function (h) { return "<th>" + h + "</th>"; }).join("") +
-			"</tr></thead><tbody>" + (rows.join("") || "<tr><td colspan=\"" + head.length + "\" class=\"runtime_text\">" + (empty || "ありません") + "</td></tr>") + "</tbody></table></div>";
+			"</tr></thead><tbody>" + (rows.join("") || "<tr><td colspan=\"" + head.length + "\" class=\"runtime_text\">" + (empty || "なし") + "</td></tr>") + "</tbody></table></div>";
 	}
 	function runtimeCell(c) {
 		var rt = c.runtime;
-		if (rt === null) return "<span class=\"runtime_text\">(この相手は返しません。相手を新しい版にすると出ます)</span>";
+		if (rt === null) return "<span class=\"runtime_text\">(この相手は未対応。相手の更新で表示)</span>";
 		if (!rt) return "―";
 		var first = [];
 		RUNTIME_KEYS.forEach(function (k) {
@@ -158,14 +158,14 @@
 		var REF = "<svg class=\"inline_icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">" +
 			"<polyline points=\"23 4 23 10 17 10\"/><polyline points=\"1 20 1 14 7 14\"/><path d=\"M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15\"/></svg>";
 		this.root.innerHTML =
-			"<div class=\"panel_section_title\">このサーバー<span class=\"panel_section_action\"><a href=\"#\" data-act=\"reload\" style=\"font-size:9pt;color:#187FF5;text-decoration:none;\">" + REF + "調べ直す</a></span></div>" +
+			"<div class=\"panel_section_title\">このサーバー<span class=\"panel_section_action\"><a href=\"#\" data-act=\"reload\" style=\"font-size:9pt;color:#187FF5;text-decoration:none;\">" + REF + "再確認</a></span></div>" +
 			"<div class=\"info_grid\" data-part=\"status\"></div>" +
 			"<div data-part=\"dbfiles\"></div>" +
 			"<div class=\"panel_section_title\">守りの設定</div><div data-part=\"security\"></div>" +
 			"<div class=\"panel_section_title\">機能の On/Off</div><div data-part=\"features\"></div>" +
-			"<div class=\"panel_section_title\">つながりの確認<span class=\"panel_section_action runtime_text\" data-part=\"checked\"></span></div>" +
+			"<div class=\"panel_section_title\">接続の確認<span class=\"panel_section_action runtime_text\" data-part=\"checked\"></span></div>" +
 			"<div data-part=\"connections\"></div>" +
-			"<div class=\"panel_section_title\">動いている部品の版</div><div data-part=\"components\"></div>" +
+			"<div class=\"panel_section_title\">稼働中の部品の版</div><div data-part=\"components\"></div>" +
 			"<div class=\"panel_section_title\">ライブラリ(部品表)<span class=\"panel_section_action runtime_text\" data-part=\"pkgcount\"></span></div>" +
 			"<div class=\"filter_panel\"><div class=\"search_form\"><span class=\"filter_label\">部品の名前</span>" +
 			"<input type=\"search\" class=\"search_input\" data-part=\"q\" placeholder=\"例) openssl、express\" autocomplete=\"off\"></div></div>" +
@@ -183,7 +183,7 @@
 
 	AdminServer.prototype.fail = function (names, err) {
 		var self = this;
-		names.forEach(function (n) { self.part(n).innerHTML = "<div class=\"msg_error\">読めませんでした: " + esc(err.message) + "</div>"; });
+		names.forEach(function (n) { self.part(n).innerHTML = "<div class=\"msg_error\">取得失敗: " + esc(err.message) + "</div>"; });
 	};
 
 	AdminServer.prototype.load = function () {
@@ -197,7 +197,7 @@
 	AdminServer.prototype.showStatus = function (s) {
 		var items = [
 			["版", ver(s.version)], ["ビルド", s.build ? ver(s.build) : "―"], ["リビジョン", s.revision ? ver(s.revision) : "―"],
-			["ビルドした日時", esc(when(s.builtAt))], ["起動した日時", esc(when(s.startedAt))], ["動いている時間", esc(uptime(s.uptimeSeconds))],
+			["ビルド日時", esc(when(s.builtAt))], ["起動日時", esc(when(s.startedAt))], ["稼働時間", esc(uptime(s.uptimeSeconds))],
 			["データベース", esc(s.database && s.database.backend ? s.database.backend : "―")]
 		];
 		(s.extra || []).forEach(function (e) { items.push([esc(e.label), esc(e.value)]); });
@@ -207,38 +207,38 @@
 
 		var files = s.database && s.database.files;
 		this.part("dbfiles").innerHTML = files && files.length ? table(["DB のファイル", "大きさ", ""], files.map(function (f) {
-			return "<tr><td class=\"version_text\">" + esc(f.name) + "</td><td>" + esc(bytes(f.sizeBytes)) + "</td><td>" + (f.current ? "<b>使用中</b>" : "前の版(戻すために残している)") + "</td></tr>";
+			return "<tr><td class=\"version_text\">" + esc(f.name) + "</td><td>" + esc(bytes(f.sizeBytes)) + "</td><td>" + (f.current ? "<b>使用中</b>" : "旧版(切り戻し用に保管)") + "</td></tr>";
 		})) : "";
 
-		this.part("security").innerHTML = table(["項目", "いまの値", "状態", "補足"], (s.security || []).map(function (r) {
+		this.part("security").innerHTML = table(["項目", "現在の値", "状態", "補足"], (s.security || []).map(function (r) {
 			return "<tr" + (r.state === "bad" ? " class=\"row_failed\"" : "") + "><td>" + esc(r.label) + "</td><td>" + esc(r.value) + "</td><td>" +
 				(LEVEL[r.state] ? badge(LEVEL[r.state]) : "") + "</td><td class=\"runtime_text\">" + esc(r.note || "") + "</td></tr>";
-		}), "このサービスは、守りの設定を返していません");
+		}), "守りの設定の返却なし");
 
 		this.part("features").innerHTML = table(["機能", "状態", "補足"], (s.features || []).map(function (f) {
 			return "<tr><td>" + esc(f.name) + "</td><td>" + (f.enabled ? badge(["completed", "On"]) : badge(["unknown", "Off"])) + "</td><td class=\"runtime_text\">" + esc(f.note || "") + "</td></tr>";
-		}), "切り替えられる機能はありません");
+		}), "切り替え可能な機能なし");
 	};
 
 	AdminServer.prototype.showComponents = function (data) {
 		var list = data ? data.components : [{key: "app", name: "本体"}];
-		this.part("checked").textContent = data ? "調べた時刻 " + when(data.checkedAt) : "確認中…";
-		this.part("connections").innerHTML = table(["つながる先", "状態", "掛かった時間", "最後に成功", "補足"],
+		this.part("checked").textContent = data ? "確認日時 " + when(data.checkedAt) : "Checking…";
+		this.part("connections").innerHTML = table(["接続先", "状態", "応答時間", "最終成功", "補足"],
 			data ? list.filter(function (c) { return c.key !== "app"; }).map(function (c) {
 				var st = stateOf(c);
 				return "<tr" + (st === "unreachable" ? " class=\"row_failed\"" : "") + "><td>" + esc(c.name) + "</td><td>" + badge(STATE[st]) + "</td>" +
-					"<td style=\"white-space:nowrap\">" + (st === "unconfigured" ? "―" : c.latencyMs != null ? esc(c.latencyMs) + " ms" : c.reachable === false ? "時間切れ・失敗" : "―") + "</td>" +
+					"<td style=\"white-space:nowrap\">" + (st === "unconfigured" ? "―" : c.latencyMs != null ? esc(c.latencyMs) + " ms" : c.reachable === false ? "時間切れ" : "―") + "</td>" +
 					"<td style=\"white-space:nowrap\">" + esc(when(c.lastSuccessAt)) + "</td>" +
-					"<td>" + (st === "unconfigured" ? "この機能は使っていません" : esc(c.error || "")) + "</td></tr>";
+					"<td>" + (st === "unconfigured" ? "この機能は未使用" : esc(c.error || "")) + "</td></tr>";
 			}) : ["<tr><td colspan=\"5\">" + badge(STATE.checking) + "</td></tr>"]);
-		this.part("components").innerHTML = table(["部品", "状態", "製品と版", "土台・詳しく"], list.map(function (c) {
+		this.part("components").innerHTML = table(["部品", "状態", "製品と版", "土台・詳細"], list.map(function (c) {
 			var st = stateOf(data ? c : null);
 			if (!data) return "<tr><td>" + esc(c.name) + "</td><td>" + badge(STATE[st]) + "</td><td></td><td></td></tr>";
 			var product = st === "unconfigured" ? "―" : (c.product ? esc(c.product) + " " : "") + ver(c.version);
 			var extra = detailsText(c);
 			return "<tr><td>" + esc(c.name) + "</td><td>" + badge(STATE[st]) + "</td>" +
 				"<td>" + product + (extra ? "<div class=\"runtime_text\">" + extra + "</div>" : "") + "</td>" +
-				"<td>" + (st === "unconfigured" ? "―" : st === "unreachable" ? "<span class=\"runtime_text\">" + esc(c.error || "応答がありません") + "</span>" : runtimeCell(c)) + "</td></tr>";
+				"<td>" + (st === "unconfigured" ? "―" : st === "unreachable" ? "<span class=\"runtime_text\">" + esc(c.error || "応答なし") + "</span>" : runtimeCell(c)) + "</td></tr>";
 		}));
 		if (data) {
 			this.part("pkgcount").textContent = data.packageCount != null ? "入っている部品 " + data.packageCount + " 個(" + (data.packageSource || "") + ")" : "";
@@ -252,7 +252,7 @@
 		var box = this.part("packages");
 		if (q === "") {
 			// 探す言葉が無ければ、直接使っているライブラリを出す
-			box.innerHTML = "<div class=\"result_meta\" style=\"border:0\">直接使っているライブラリ(" + this.deps.length + " 個)。名前を入れると、入れ子に入った別の版も含めて、全部から探します。</div>" +
+			box.innerHTML = "<div class=\"result_meta\" style=\"border:0\">直接使用のライブラリ " + this.deps.length + " 個。名前の入力で、部品表の全体から検索(入れ子に入った別の版も表示)。</div>" +
 				table(["部品", "版"], this.deps.map(function (d) { return "<tr><td class=\"version_text\">" + esc(d.name) + "</td><td>" + ver(d.version) + "</td></tr>"; }));
 			return;
 		}
@@ -261,7 +261,7 @@
 			box.innerHTML = "<div class=\"result_meta\" style=\"border:0\">「" + esc(q) + "」を含む部品 " + r.count + " 個(全 " + r.total + " 個中)</div>" +
 				table(["部品", "版", "直接", "場所"], r.packages.map(function (p) {
 					return "<tr><td class=\"version_text\">" + esc(p.name) + "</td><td>" + ver(p.version) + "</td><td>" + (p.direct ? "直接" : "") + "</td><td class=\"version_text\">" + esc(p.path || "") + "</td></tr>";
-				}), "「" + esc(q) + "」を含む部品は、入っていません");
+				}), "「" + esc(q) + "」を含む部品なし");
 		}, function (err) { self.fail(["packages"], err); });
 	};
 

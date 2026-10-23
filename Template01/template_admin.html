@@ -74,11 +74,11 @@
         <label for="tab_users" class="tab_label">利用者</label>
         <div class="tab_panel">
           <div class="panel_note">
-            台帳に登録したメールアドレスの利用者だけが、ログインできます(台帳に無い利用者は、IdP でログインできても入れません)。
+            ログインできるのは、台帳に登録したメールアドレスの利用者だけ(台帳に無い利用者は、IdP でログインできても入れない)。
             <ul>
-              <li><b>管理者</b>: この管理の画面を使える(利用者の追加・権限の変更・削除、切断)</li>
-              <li><b>編集可</b>: 読み書きができる</li>
-              <li><b>閲覧のみ</b>: 読むだけ</li>
+              <li><b>管理者</b>: この管理の画面を使用可(利用者の追加・権限の変更・削除、切断)</li>
+              <li><b>編集可</b>: 読み書き可</li>
+              <li><b>閲覧のみ</b>: 読み取りだけ</li>
             </ul>
           </div>
           <form method="post" action="{{利用者を足す先}}" class="filter_panel">
@@ -119,16 +119,16 @@
         <label for="tab_sessions" class="tab_label">セッション</label>
         <div class="tab_panel">
           <div class="panel_note">
-            不正なアクセスが疑われるとき、利用者を<b>まとめて切断</b>します。切断すると、次の物が一式で止まり、認証からやり直しになります。
+            不正なアクセスが疑われるときに、利用者を<b>まとめて切断</b>。切断で次の物が一式で止まり、認証からやり直し。
             <ul>
               <li>ログイン中のセッション(全部の端末・ブラウザ)</li>
-              <li>その利用者が発行した APIキー(<b>元に戻せません</b>。要るなら、本人が発行し直します)</li>
-              <li>開いている画面への知らせ(SSE)。開いている画面は、ログインの画面へ戻ります</li>
+              <li>その利用者が発行した APIキー(<b>元に戻せない</b>。必要なら、本人が発行し直す)</li>
+              <li>開いている画面への知らせ(SSE)。開いている画面は、ログインの画面へ戻る</li>
             </ul>
-            <svg class="state_icon warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><b>切断だけでは防げないこと</b>: パスワードが漏れているなら、IdP でパスワードを変えてください。入れなくするには、「利用者」のタブで台帳から外してください。
+            <svg class="state_icon warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><b>切断だけでは防げないこと</b>: パスワードの漏れは、IdP でパスワードを変更。入れなくするには、「利用者」のタブで台帳から削除。
           </div>
           <div class="result_meta">
-            <span>セッションか APIキーを持っている利用者 3 人(最終アクセスの新しい順)</span>
+            <span>セッションか APIキーを持つ利用者 3 人(最終アクセスの新しい順)</span>
             <a href="#" style="margin-left:auto;font-size:9pt;color:#187FF5;text-decoration:none;"><svg class="inline_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>読み直す</a>
           </div>
           <div class="session_list">
@@ -171,8 +171,8 @@
               <span class="session_meta">閲覧のみ　セッション 0 件 / APIキー 2 件</span>
               <label for="revoke_modal" class="caution_button session_revoke" style="cursor:pointer;">切断する</label>
             </div>
-          <div class="session_keys">ログイン中のセッションは、ありません(APIキーだけで使っています)。</div>
-            <div class="session_keys">APIキー 2 件: 夜間の取り込み(閲覧のみ・最終利用 2026-10-23 09:15:00)、予備(閲覧のみ・最終利用 使っていない)</div>
+          <div class="session_keys">ログイン中のセッションなし(APIキーだけで使用)。</div>
+            <div class="session_keys">APIキー 2 件: 夜間の取り込み(閲覧のみ・最終利用 2026-10-23 09:15:00)、予備(閲覧のみ・最終利用 なし)</div>
           </div>
           </div>
           <div class="panel_section_title">切断の履歴</div>
@@ -190,7 +190,7 @@
         <input type="radio" name="admin_tab" id="tab_audit" class="tab_toggle">
         <label for="tab_audit" class="tab_label">監査ログ</label>
         <div class="tab_panel">
-          <div class="panel_note">全員ぶんの操作の記録です。自分の分だけなら、ヘッダーの「操作履歴」でも見られます(全員が使えます)。</div>
+          <div class="panel_note">全員ぶんの操作の記録。自分の分だけなら、ヘッダーの「操作履歴」でも確認可(全員が使用可)。</div>
           <form method="get" action="template_admin.html" class="filter_panel">
             <div class="filter_group">
               <span class="filter_label">期間</span>
@@ -215,15 +215,15 @@
               <button type="submit" class="search_btn">検索</button>
             </div>
           </form>
-          <div class="result_meta"><span>4 件表示(新しい順。上限 500 件)</span></div>
+          <div class="result_meta"><span>4 件(新しい順。上限 500 件)</span></div>
           <div class="data_table_wrap">
             <table class="data_table">
               <thead><tr><th>日時</th><th>利用者</th><th>操作</th><th>対象</th><th>結果</th><th>経路</th><th>IP</th></tr></thead>
               <tbody>
-                <tr><td style="white-space:nowrap;">2026-10-23 12:40:11</td><td>admin@example.com</td><td>ログイン</td><td>―</td><td><span class="status_badge completed">成功</span></td><td>画面</td><td>192.0.2.10</td></tr>
-                <tr><td style="white-space:nowrap;">2026-10-23 11:58:02</td><td>user1@example.com</td><td>登録</td><td>report.html</td><td><span class="status_badge completed">成功</span></td><td>APIキー</td><td>198.51.100.24</td></tr>
-                <tr class="row_failed"><td style="white-space:nowrap;">2026-10-23 10:21:47</td><td>user1@example.com</td><td>削除</td><td>old.md</td><td><span class="status_badge failed">断った</span></td><td>APIキー(readonly)</td><td>198.51.100.24</td></tr>
-                <tr><td style="white-space:nowrap;">2026-10-20 18:03:10</td><td>admin@example.com</td><td>切断</td><td>user2@example.com</td><td><span class="status_badge completed">成功</span></td><td>画面</td><td>192.0.2.10</td></tr>
+                <tr><td style="white-space:nowrap;">2026-10-23 12:40:11</td><td>admin@example.com</td><td>ログイン</td><td>―</td><td><span class="status_badge completed">Success</span></td><td>画面</td><td>192.0.2.10</td></tr>
+                <tr><td style="white-space:nowrap;">2026-10-23 11:58:02</td><td>user1@example.com</td><td>登録</td><td>report.html</td><td><span class="status_badge completed">Success</span></td><td>APIキー</td><td>198.51.100.24</td></tr>
+                <tr class="row_failed"><td style="white-space:nowrap;">2026-10-23 10:21:47</td><td>user1@example.com</td><td>削除</td><td>old.md</td><td><span class="status_badge failed">Denied</span></td><td>APIキー(readonly)</td><td>198.51.100.24</td></tr>
+                <tr><td style="white-space:nowrap;">2026-10-20 18:03:10</td><td>admin@example.com</td><td>切断</td><td>user2@example.com</td><td><span class="status_badge completed">Success</span></td><td>画面</td><td>192.0.2.10</td></tr>
               </tbody>
             </table>
           </div>
@@ -234,8 +234,8 @@
         <label for="tab_server" class="tab_label">サーバー</label>
         <div class="tab_panel">
           <div class="panel_note">
-            いま動いているサーバーの状態です。<b>ビルドした日時</b>はイメージを作った時刻、<b>起動した日時</b>はこのコンテナが起動した時刻です。
-            部品に脆弱性が見つかったときは、「動いている部品の版」と「部品表」で、当てはまるかを確かめます(版は略さず出しています。そのまま見比べられます)。
+            いま動いているサーバーの状態。<b>ビルド日時</b>はイメージを作った時刻、<b>起動日時</b>はこのコンテナが起動した時刻。
+            部品の脆弱性が見つかったときは、「稼働中の部品の版」と「部品表」で、当てはまるかを確認(版は略さず表示。脆弱性の知らせと、そのまま見比べ可)。
           </div>
           <!--
             共通の WebAPI({base}、{base}/components、{base}/packages?q=)を読んで、assets/admin_server.js が描く。
@@ -252,7 +252,7 @@
               <span class="toggle_track"></span>
               <span class="toggle_label">画面案(モックアップ)の登録を受け付ける</span>
             </label>
-            <div class="form_hint">切り替えはすぐ効き、再起動は要りません(複数台でも全台に効きます)。切り替えたことは、監査ログに残ります。</div>
+            <div class="form_hint">切り替えはすぐに反映、再起動は不要(複数台でも全台に反映)。切り替えは監査ログに記録。</div>
           </div>
         </div>
 
@@ -261,11 +261,11 @@
         <label for="tab_custom" class="tab_label custom_first">変換サービス</label>
         <div class="tab_panel">
           <div class="panel_note">
-            <b>サービスが、自分の機能に応じて足すタブの例です。</b>共通のタブの後ろに、区切りを入れて並べます。
-            例: 変換のサービスの状態と、変換に失敗した物のやり直し。外部のサービスとの連携の設定。データベースの点検(重い確認はボタンで始める)。
+            <b>サービスが、自分の機能に応じて足すタブの例。</b>共通のタブの後ろに、区切りを入れて並べる。
+            例: 変換のサービスの状態と、変換に失敗した物のやり直し。外部のサービスとの連携の設定。データベースの点検(重い確認はボタンで開始)。
           </div>
           <div class="result_meta">
-            <span>変換のサービス <span class="status_badge completed">届く</span> LibreOffice <span class="version_text">25.8.2.2</span></span>
+            <span>変換のサービス <span class="status_badge completed">Connected</span> LibreOffice <span class="version_text">25.8.2.2</span></span>
             <a href="#" style="margin-left:auto;font-size:9pt;color:#187FF5;text-decoration:none;"><svg class="inline_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>確かめ直す</a>
           </div>
           <div class="panel_section_title">変換に失敗した物</div>
@@ -273,7 +273,7 @@
             <table class="data_table">
               <thead><tr><th>名前</th><th>失敗した日時</th><th>理由</th><th>操作</th></tr></thead>
               <tbody>
-                <tr><td>budget.xlsx</td><td style="white-space:nowrap;">2026-10-22 21:10</td><td>変換のサービスに届かなかった</td>
+                <tr><td>budget.xlsx</td><td style="white-space:nowrap;">2026-10-22 21:10</td><td>変換のサービスへの接続失敗</td>
                   <td class="row_actions"><a href="#" class="icon_button" title="やり直す" aria-label="やり直す"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></a></td></tr>
               </tbody>
             </table>
@@ -290,10 +290,10 @@
       <label for="del_user_modal" class="modal_backdrop"></label>
       <div class="modal_box">
         <div class="modal_title danger">利用者の削除</div>
-        <div class="modal_body">「user1@example.com」を台帳から外します。この利用者は、次からログインできなくなります。ログイン中のセッションも止まります。</div>
+        <div class="modal_body">「user1@example.com」を台帳から削除。この利用者は、次からログイン不可。ログイン中のセッションも停止。</div>
         <div class="modal_actions">
           <label for="del_user_modal" class="cancel_button" style="cursor:pointer;">キャンセル</label>
-          <form method="post" action="{{削除先}}"><button class="caution_button">外す</button></form>
+          <form method="post" action="{{削除先}}"><button class="caution_button">削除する</button></form>
         </div>
       </div>
     </div>
@@ -304,7 +304,7 @@
       <label for="revoke_modal" class="modal_backdrop"></label>
       <div class="modal_box">
         <div class="modal_title danger">利用者の切断</div>
-        <div class="modal_body">「user1@example.com」を切断します。ログイン中のセッション 2 つと、APIキー 1 つが止まります。<b>APIキーは元に戻せません。</b></div>
+        <div class="modal_body">「user1@example.com」を切断。ログイン中のセッション 2 つと、APIキー 1 つが停止。<b>APIキーは元に戻せない。</b></div>
         <div class="modal_actions">
           <label for="revoke_modal" class="cancel_button" style="cursor:pointer;">キャンセル</label>
           <form method="post" action="{{切断の先}}"><button class="caution_button">切断する</button></form>
@@ -368,9 +368,9 @@
    },
    {
     "label": "回数の上限を切る設定(RATE_LIMIT_DISABLED)",
-    "value": "使っていない",
+    "value": "未使用",
     "state": "ok",
-    "note": "テスト用。本番では使わない"
+    "note": "テスト用。本番では使用しない"
    },
    {
     "label": "セッションの寿命",
@@ -388,19 +388,19 @@
     "label": "無期限の APIキー",
     "value": "1 件(readonly)",
     "state": "warn",
-    "note": "使っていないなら失効させる"
+    "note": "未使用なら失効"
    }
   ],
   "features": [
    {
     "name": "画面案(モックアップ)の登録",
     "enabled": true,
-    "note": "管理の画面から切り替えられる。すぐ効く"
+    "note": "管理の画面から切り替え可。すぐに反映"
    },
    {
     "name": "意味検索",
     "enabled": false,
-    "note": "検索のサービスを使う構成でだけ開ける"
+    "note": "検索のサービスを使う構成でだけ使用可"
    }
   ]
  },
@@ -481,7 +481,7 @@
     "configured": true,
     "reachable": false,
     "lastSuccessAt": "2026-10-23T12:31:40+09:00",
-    "error": "応答がありません(5 秒で時間切れ)"
+    "error": "応答なし(5 秒で時間切れ)"
    },
    {
     "key": "board",
