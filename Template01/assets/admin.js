@@ -494,6 +494,7 @@
 
 	// 確認のモーダル。左にキャンセル、右に実行。押すまで待つ(true / false)
 	function confirmModal(opts) {
+		if (window.UI && window.UI.confirm) return window.UI.confirm(opts);   // ui.js があれば、そちら(Esc で閉じる、キーボードの移動を中に閉じる)
 		return new Promise(function (resolve) {
 			var wrap = document.createElement("div");
 			wrap.innerHTML = "<input type=\"checkbox\" class=\"modal_toggle\" hidden checked>" +
