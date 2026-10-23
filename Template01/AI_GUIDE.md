@@ -29,7 +29,7 @@ _template/
 │   ├─ design.css        基本スタイル(ヘッダ/メニューバー/ボタン/item_group) ※変更しない
 │   ├─ components.css    共通部品(バッジ/テーブル/フォーム/フィルタ/タイル/モーダル/カード 等)
 │   ├─ dropzone.js       ファイルD&Dの共通挙動(全 .dropzone を自動初期化)
-│   └─ admin_server.js   管理機能の「サーバー」タブを、共通の WebAPI の応答から描く
+│   └─ admin.js          管理機能の画面(利用者/セッション/監査ログ/サーバー)を、共通の WebAPI の応答から描く
 ├─ template_menu.html         メニュー画面
 ├─ template_list.html         一覧+絞り込み+検索(空状態の例も内包)
 ├─ template_form_simple.html  簡易登録(Queueレベル): 上で入力・下で直近一覧
@@ -276,11 +276,19 @@ CSSは3枚を**この順**で読み込む（後勝ちで上書きするため順
 - **サービスが足すタブ**(変換サービス、外部連携、データベースの点検など)は、共通のタブの後ろに `custom_first` で区切って並べる。共通のタブの中身を、足したタブへ移さない。
 - 利用者の削除は、行の右端のゴミ箱(`icon_button danger`)から確認のモーダルを開く。
 - **セッションのタブは、利用者ごとのカード**(`session_card`)にする。切断するかを判断できるよう、次を出す: 利用者・自分か・権限・セッションと APIキーの数、セッションごとの**ログイン・最終アクセス・接続元 IP・ブラウザ等(User-Agent を略さず)・期限**と「この画面」の印、APIキーごとの**名前・権限・最終利用**。カードの右上に文字のボタン「切断する」(`caution_button session_revoke`)を置き、確認のモーダルに、止まる物と元に戻せない物を書く。
-- 「サーバー」のタブは `assets/admin_server.js` が描く:
+- **管理の情報は、どのサービスでも同じ形の WebAPI で返し、見せ方は `assets/admin.js` が受け持つ**(サービスはデータを返すだけ)。タブごとに要素を置く:
 ```html
-<div class="admin_server" data-base="./webapi/server-status" data-login="./"></div>
-<script src="./assets/admin_server.js"></script>
+<div class="admin_users"    data-base="./webapi/admin/users"    data-login="./"></div>
+<div class="admin_sessions" data-base="./webapi/admin/sessions" data-login="./"></div>
+<div class="admin_audit"    data-base="./webapi/admin/audit"    data-login="./"></div>
+<div class="admin_server"   data-base="./webapi/server-status"  data-login="./"></div>
+<script src="./assets/admin.js"></script>
 ```
+  - 各タブの WebAPI の形は、`admin.js` の中と、共通アーキテクチャ(構成の資料 6.3・6.4)に書いてある。確認のモーダル(削除・切断)も、`admin.js` が出す。
+  - 利用者: 一覧・追加・権限の変更・削除。自分の行には削除を出さない。最後の管理者を外す・下げるのは、サーバーが 409 で断る。
+  - セッション: 利用者ごとのカード、切断、切断の履歴。記録していない値は「不明」。
+  - 監査ログ: 期間・利用者・操作・対象で絞り込み、新しい順。続きがあれば「さらに読む」。結果は Success / Denied / Error。
+- 「サーバー」のタブ:
   - 共通の WebAPI を 3 つ呼ぶ: `{base}`(版・起動した日時・DB)、`{base}/components`(本体・DB・つながっている相手の、状態と製品と版と土台)、`{base}/packages?q=`(部品表を名前で探す)。応答の形は、共通アーキテクチャ(構成の資料 6.3)に従う。
   - 401 のときは `data-login` へ移る(画面の中の認証切れは、必ずログインの画面へ戻す)。
   - 出す物は、セキュリティの点検(部品の脆弱性、設定の抜け)のときに、この画面だけで判断できる量にする: このサーバー(版・ビルド・リビジョン・日時・DB とそのファイル)、**セキュリティ設定**(`{base}` の `security: [{label, value, state, note}]`。認証の方式・開発モードでないこと・回数の上限とその出どころ・セッションの寿命・APIキーの最長の期限など)、**機能の On/Off**(`features: [{key, name, enabled, editable, note}]`)、つながりの確認、動いている部品の版(本体は V8・カーネル・CPU・メモリまで)、直接使っているライブラリと部品表。

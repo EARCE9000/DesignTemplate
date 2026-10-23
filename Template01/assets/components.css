@@ -790,7 +790,10 @@ body {
 .admin_server .data_table td:first-child,
 .admin_server .data_table th        { white-space: nowrap; }
 /* 表の中の「保存」などは、行の高さに合わせて小さく出す(design.css の button の大きさを打ち消す) */
-.admin_server .search_btn           { width: auto; height: auto; line-height: 1.4; margin: 0; }
+.admin_server .search_btn,
+.admin_users .search_btn,
+.admin_sessions .search_btn,
+.admin_audit .search_btn            { width: auto; height: auto; line-height: 1.4; margin: 0; }
 
 /* 版の文字。略さず、選んでコピーできるように、等幅で出す */
 .version_text           { font-family: Consolas, "Courier New", monospace; font-size: 9.5pt; color: #2b2b2b; user-select: text; }
