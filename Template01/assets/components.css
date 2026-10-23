@@ -779,6 +779,11 @@ body {
 .session_table td.session_ua { white-space: normal; min-width: 260px; color: #555555; word-break: break-word; }
 .session_keys           { font-size: 9.5pt; color: #555555; margin-top: 8px; }
 
+/* サーバーのタブの表。狭い幅では、列を詰めて折り返さず、表ごとの横スクロールにする */
+.admin_server .data_table           { min-width: 560px; }
+.admin_server .data_table td:first-child,
+.admin_server .data_table th        { white-space: nowrap; }
+
 /* 版の文字。略さず、選んでコピーできるように、等幅で出す */
 .version_text           { font-family: Consolas, "Courier New", monospace; font-size: 9.5pt; color: #2b2b2b; user-select: text; }
 .runtime_text           { font-size: 9pt; color: #555555; }
