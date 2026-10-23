@@ -5,6 +5,7 @@
  * Source: https://github.com/EARCE9000/DesignTemplate (published on GitHub)
  *
  * 共通アーキテクチャ(画面 4 章・5 章・6 章)の決まりを、そのまま部品にした物。ほかのスクリプト(admin.js、account.js)の土台。
+ * 出す物は、すべて class="ui_scope" の入れ物の中。Template01 でない画面では assets/ui_parts.css を読み込むと、その中にだけ見た目が付く。
  *
  *   UI.confirm({title, body, ok, danger}) → Promise<boolean>
  *       確認のモーダル。左にキャンセル、右に実行(2 つは左右の端に離れる)。最初に選ばれているのはキャンセル。
@@ -48,6 +49,7 @@
 	function openModal(opts) {
 		var back = document.activeElement;
 		var wrap = document.createElement("div");
+		wrap.className = "ui_scope";   // Template01 でない画面では、ui_parts.css がこの中にだけ効く
 		wrap.innerHTML = "<input type=\"checkbox\" class=\"modal_toggle\" hidden checked>" +
 			"<div class=\"modal_overlay\"><div class=\"modal_backdrop\"></div>" +
 			"<div class=\"modal_box" + (opts.wide ? " modal_wide" : "") + "\" role=\"dialog\" aria-modal=\"true\">" +
@@ -130,7 +132,7 @@
 		var s = document.querySelector(".toast_stack");
 		if (!s) {
 			s = document.createElement("div");
-			s.className = "toast_stack";
+			s.className = "toast_stack ui_scope";
 			s.setAttribute("aria-live", "polite");
 			document.body.appendChild(s);
 		}

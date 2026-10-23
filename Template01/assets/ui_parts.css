@@ -1,0 +1,126 @@
+/*!
+ * ui_parts.css : ui.js・account.js(・admin.js の確認のモーダル)が出す部品だけの見た目
+ * Copyright (c) 2026 EARCE.NET (code & design)
+ * License: MIT License - see LICENSE
+ * Source: https://github.com/EARCE9000/DesignTemplate (published on GitHub)
+ *
+ * Template01 の CSS(flexbox.css・design.css・components.css)を読み込めない画面のための物。
+ * あの 3 つは body や素の input・button にも効くので、作りの違う既存の画面には入れられない。
+ * この CSS は、ui.js が出す入れ物(class="ui_scope")の中だけに効く。body・素の要素には効かせない。
+ * 例外は開発モードのしるし(.dev_mode_badge)で、class にだけ効くので、どの画面のヘッダーにも置ける。
+ *
+ * 使い方(Template01 でない画面):
+ *   <link rel="stylesheet" href="./assets/ui_parts.css">
+ *   <script src="./assets/ui.js"></script>
+ *   <script src="./assets/account.js" …></script>
+ * Template01 の画面では、要らない(components.css に同じ物がある)。値は Template01 と同じにしてある。
+ */
+
+/* ---- 入れ物 ---- */
+.ui_scope, .ui_scope * { box-sizing: border-box; }
+.ui_scope { font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; font-size: 10pt; color: #2b2b2b; line-height: 1.5; }
+
+/* ---- モーダル ---- */
+.ui_scope .modal_overlay  { position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.45); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
+.ui_scope .modal_toggle:checked ~ .modal_overlay { display: flex; }
+.ui_scope .modal_backdrop { position: absolute; inset: 0; cursor: default; }
+.ui_scope .modal_box      { position: relative; background-color: #ffffff; border-radius: 10px; width: 100%; max-width: 440px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25); overflow: hidden; }
+.ui_scope .modal_box.modal_wide { width: min(920px, calc(100vw - 24px)); max-width: none; }
+.ui_scope .modal_title    { display: flex; align-items: center; gap: 8px; font-size: 13pt; font-weight: bold; color: #2b2b2b; padding: 14px 18px; border-bottom: 1px solid #eeeeee; margin: 0; }
+.ui_scope .modal_title > span { flex: 1; display: flex; align-items: center; }
+.ui_scope .modal_title.danger { color: #d22222; }
+.ui_scope .modal_body     { padding: 16px 18px; font-size: 11pt; color: #444444; line-height: 1.6; max-height: calc(100vh - 180px); overflow: auto; }
+.ui_scope .modal_actions  { display: flex; gap: 10px; justify-content: space-between; padding: 12px 18px; border-top: 1px solid #eeeeee; background-color: #fafafa; }
+.ui_scope .modal_actions > :only-child { margin-left: auto; }
+.ui_scope .modal_close    { width: 28px; height: 28px; padding: 0; margin: 0; border: 0; background: transparent; color: #6a7178; cursor: pointer; border-radius: 4px;
+                            display: inline-flex; align-items: center; justify-content: center; }
+.ui_scope .modal_close:hover { background-color: #f0f0f0; color: #2b2b2b; }
+.ui_scope .modal_close svg { width: 16px; height: 16px; }
+.ui_scope .modal_detail   { margin: 10px 0 0; padding: 8px 10px; background: #fafafa; border: 1px solid #eeeeee; border-radius: 6px;
+                            font-family: Consolas, "Courier New", monospace; font-size: 9pt; white-space: pre-wrap; word-break: break-all; color: #444444; }
+.ui_scope .modal_note     { margin-top: 14px; padding-top: 12px; border-top: 1px solid #eeeeee; font-size: 10pt; color: #444444; }
+
+/* ---- ボタン ---- */
+.ui_scope button { font-family: inherit; cursor: pointer; }
+.ui_scope .entry_button, .ui_scope .cancel_button, .ui_scope .caution_button {
+  font-size: 11pt; height: 40px; min-width: 8em; padding: 2px 24px; border-radius: 10px; margin: 0; }
+.ui_scope .cancel_button  { color: #2b2b2b; background-color: #ffffff; border: 1px solid #2b2b2b; }
+.ui_scope .entry_button   { color: #ffffff; background-color: #187FF5; border: 1px solid #187FF5; }
+.ui_scope .caution_button { color: #ffffff; background-color: #d22222; border: 1px solid #d22222; }
+.ui_scope .entry_button:hover, .ui_scope .cancel_button:hover, .ui_scope .caution_button:hover { color: #2b2b2b; background-color: #ffa500; border-color: #2b2b2b; }
+.ui_scope .search_btn     { font-size: 9pt; font-weight: bold; padding: 4px 14px; border-radius: 6px; border: 1px solid #d0d0d0; background-color: #ffffff; color: #444444;
+                            white-space: nowrap; line-height: 1.4; height: auto; width: auto; margin: 0; }
+.ui_scope .search_btn:hover { background-color: #fff4e5; border-color: #ee7800; color: #ee7800; }
+.ui_scope .search_btn.primary { background-color: #187FF5; border-color: #187FF5; color: #ffffff; }
+.ui_scope .search_btn.primary:hover { background-color: #0f6ad8; color: #ffffff; }
+.ui_scope .icon_button    { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 26px; padding: 0; margin: 0;
+                            border: 1px solid #d0d0d0; border-radius: 4px; background-color: #ffffff; color: #2b2b2b; vertical-align: middle; }
+.ui_scope .icon_button:hover { border-color: #ee7800; color: #ee7800; background-color: #fff4e5; }
+.ui_scope .icon_button.danger { border-color: #e9a9a9; color: #d22222; }
+.ui_scope .icon_button.danger:hover { border-color: #d22222; color: #ffffff; background-color: #d22222; }
+.ui_scope .icon_button svg { width: 15px; height: 15px; display: block; }
+.ui_scope .row_actions    { white-space: nowrap; text-align: right; }
+
+/* ---- 入力 ---- */
+.ui_scope .search_input   { font-family: inherit; font-size: 10pt; padding: 4px 10px; height: auto; border: 1px solid #d5d5d5; border-radius: 6px; background-color: #ffffff; color: #2b2b2b; }
+.ui_scope .search_input:focus { outline: none; border-color: #ee7800; }
+
+/* ---- 表 ---- */
+.ui_scope .data_table_wrap { overflow-x: auto; }
+.ui_scope .data_table     { width: 100%; border-collapse: collapse; font-size: 10pt; background-color: #ffffff; }
+.ui_scope .data_table thead tr { background-color: #2b2b2b; color: #ffffff; }
+.ui_scope .data_table thead th { padding: 7px 10px; text-align: left; white-space: nowrap; font-weight: bold; font-size: 9pt; }
+.ui_scope .data_table tbody tr { border-bottom: 1px solid #e8e8e8; }
+.ui_scope .data_table tbody tr:hover { background-color: #fff4e5; }
+.ui_scope .data_table tbody td { padding: 6px 10px; vertical-align: middle; }
+.ui_scope .data_table tbody tr.row_failed { background-color: #fff0f0; color: #aa1111; }
+.ui_scope tr.row_expired td { color: #9a9a9a; }
+.ui_scope .data_table a   { color: #187FF5; text-decoration: none; }
+.ui_scope .data_table a:hover { text-decoration: underline; }
+
+/* ---- 文字の部品 ---- */
+.ui_scope .null_val       { color: #b0b0b0; font-style: italic; font-size: 9pt; }
+.ui_scope .runtime_text   { font-size: 9pt; color: #555555; }
+.ui_scope .version_text   { font-family: Consolas, "Courier New", monospace; font-size: 9.5pt; color: #2b2b2b; user-select: text; }
+.ui_scope .status_badge   { display: inline-block; font-size: 8pt; font-weight: bold; border-radius: 4px; padding: 2px 8px; white-space: nowrap; }
+.ui_scope .status_badge.pending    { background-color: #ffe4c0; color: #b05000; }
+.ui_scope .status_badge.processing { background-color: #d0e8ff; color: #1558a0; }
+.ui_scope .status_badge.completed  { background-color: #d0f0d0; color: #1a6e1a; }
+.ui_scope .status_badge.failed     { background-color: #ffd0d0; color: #aa1111; }
+.ui_scope .status_badge.unknown    { background-color: #e8e8e8; color: #555555; }
+.ui_scope .state_icon     { width: 1.1em; height: 1.1em; vertical-align: -0.18em; margin-right: 4px; }
+.ui_scope .state_icon.ok    { color: #1a6e1a; }
+.ui_scope .state_icon.warn  { color: #b05000; }
+.ui_scope .state_icon.error { color: #d22222; }
+.ui_scope .msg_error      { font-size: 11pt; font-weight: bold; color: #d22222; border: 2px solid #ec6d71; border-radius: 6px; padding: 8px 14px; background-color: #fff5f5; }
+.ui_scope .msg_success    { font-size: 11pt; font-weight: bold; color: #1a6e1a; border: 2px solid #5cb85c; border-radius: 6px; padding: 8px 14px; background-color: #f4fbf4; }
+
+/* ---- APIキーの欄(account.js) ---- */
+.ui_scope .key_form       { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 14px; }
+.ui_scope .key_form label { display: flex; flex-direction: column; gap: 3px; font-size: 9pt; color: #555555; }
+.ui_scope .key_form .search_input { width: auto; min-width: 9em; }
+.ui_scope .key_form_memo  { flex: 1; min-width: 12em; }
+.ui_scope .key_form_memo .search_input { width: 100%; }
+.ui_scope .key_issue      { width: auto; height: auto; min-width: 0; padding: 6px 22px; font-size: 10pt; }
+.ui_scope .key_form_hint  { margin: 6px 0 12px; font-size: 9pt; color: #555555; display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.ui_scope .key_warn       { color: #b05000; }
+.ui_scope .key_issued     { margin: 0 0 12px; padding: 10px 12px; border: 1px solid #f5c88a; background-color: #fff8ec; border-radius: 8px; }
+.ui_scope .key_value      { margin: 6px 0; padding: 6px 8px; background: #ffffff; border: 1px solid #e8e8e8; border-radius: 4px; word-break: break-all; user-select: all; }
+.ui_scope .key_issued_actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+
+/* ---- 右下のポップアップ ---- */
+.ui_scope.toast_stack     { position: fixed; right: 16px; bottom: 16px; z-index: 2000; display: flex; flex-direction: column; gap: 8px; width: min(340px, calc(100vw - 32px)); }
+.ui_scope .toast          { display: block; padding: 10px 14px; border-radius: 8px; background-color: #2b2b2b; color: #ffffff; text-decoration: none;
+                            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25); font-size: 10pt; border-left: 4px solid #ee7800; }
+.ui_scope .toast:hover    { background-color: #3a3a3a; }
+.ui_scope .toast.via_api_key { border-left-color: #5a4498; }
+.ui_scope .toast_head     { font-size: 9pt; color: #cfcfcf; margin-bottom: 2px; word-break: break-all; }
+.ui_scope .toast_body     { word-break: break-all; }
+
+/* ---- 開発モードのしるし(どの画面のヘッダーにも置ける。class にだけ効く) ---- */
+.dev_mode_badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: 10px; background-color: #f5a623; color: #1a1a1a;
+                  font-size: 9pt; font-weight: bold; white-space: nowrap; cursor: help; line-height: 1.5; }
+.dev_mode_badge[hidden] { display: none; }
+.dev_mode_badge svg { width: 13px; height: 13px; flex-shrink: 0; }
+/* ヘッダーの紫は、画面の作りに合わせて、ヘッダーの要素に dev_mode を付けて効かせる(Template01 では .header.dev_mode) */
+.dev_mode_header.dev_mode { background-color: #4a1f6e !important; }

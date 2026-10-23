@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<!--
+  見本: Template01 でない画面で、ui.js・account.js の部品を使う
+  Template01 の CSS(flexbox.css・design.css・components.css)は body や素の input・button にも効くので、作りの違う既存の画面には入れられない。
+  その代わりに assets/ui_parts.css を読み込む。部品の入れ物(class="ui_scope")の中にだけ効き、この画面の見た目は変えない。
+
+  Copyright (c) 2026 EARCE.NET (code & design)
+  License: MIT License - see LICENSE
+  Source: https://github.com/EARCE9000/DesignTemplate (published on GitHub)
+-->
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>既存の画面の見本 | ToolKit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="./assets/ui_parts.css">
+<style>
+  /* この画面(既存の画面のつもり)の、独自の見た目。ui_parts.css は、これを変えない */
+  body { margin: 0; font-family: Georgia, serif; background: #f3f1ea; color: #222; }
+  .my_header { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: #22313f; color: #fff; }
+  .my_header h1 { font-size: 16px; margin: 0; }
+  .my_header nav { margin-left: auto; display: flex; gap: 8px; }
+  button { font-size: 18px; padding: 10px 20px; border-radius: 0; border: 2px solid #22313f; background: #fff; }
+  main { padding: 16px; }
+</style>
+</head>
+<body>
+
+<header class="my_header dev_mode_header">
+  <h1>既存の画面(Template01 ではない)</h1>
+  <span class="dev_mode_badge" hidden title="認証を切って動いている(AUTH_DISABLED)。誰でも管理者として入れる。本番では設定しない"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>開発モード</span>
+  <nav>
+    <button type="button" data-open="apikeys">APIキー</button>
+    <button type="button" data-open="history">操作履歴</button>
+    <button type="button" data-toggle="notify">通知</button>
+  </nav>
+</header>
+
+<main>
+  <p>この画面のボタン(角の四角い大きなボタン)は、この画面の CSS のまま。モーダルとポップアップの中だけが、テンプレートの見た目になる。</p>
+  <p>
+    <button type="button" onclick="UI.confirm({title:'削除の確認',danger:true,ok:'削除する',body:'「見本の資料」を削除。元に戻せない。'})">確認のモーダル</button>
+    <button type="button" onclick="UI.error({body:'保存できなかった。',detail:'HTTP 503 Service Unavailable'})">エラーのモーダル</button>
+    <button type="button" onclick="UI.toast({who:'user1@example.com',what:'更新',target:'報告書.md'})">ポップアップ</button>
+  </p>
+  <p>?dev_mode=1 を付けて開くと、しるしとヘッダーの紫(dev_mode_header)が出る。</p>
+</main>
+
+<!-- APIキーの管理の下に出す、サービスの案内(data-keys-note で指定) -->
+<template id="keys_note">
+  <div>AI エージェント(Claude Code など)から使う Skill は、メニューの「ツール」で配っています。</div>
+  <div style="margin-top:8px;"><a class="search_btn" href="#">ツールを開く</a></div>
+</template>
+
+<script src="./assets/ui.js"></script>
+<script src="./assets/account.js" data-keys="./webapi/apikeys" data-history="./webapi/history" data-keys-note="keys_note" data-service="見本のサービス" data-demo></script>
+<script src="./assets/dev_mode.js" data-check="./webapi/check_access_token" data-demo></script>
+<script>
+  // 同じページの中で対象を開く画面は、href の代わりにこれを使う(見本: 押したことだけを知らせる)
+  Account.onTarget = function (entry) { UI.toast({who: "見本", what: "開く", target: entry.target}); };
+</script>
+</body>
+</html>

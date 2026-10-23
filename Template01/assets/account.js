@@ -12,6 +12,9 @@
  *   <script src="./assets/account.js" data-keys="./webapi/apikeys" data-history="./webapi/history"
  *           data-guide="./webapi/usage.md" data-service="サービス名" data-login="./"></script>
  *   data-guide は任意(AI チャット貼り付け用の利用ガイド。<APIキー> と <ベースURL> を置き換えて使う)
+ *   data-keys-note / data-history-note は任意。<template id="…"> の id を入れると、その中身をモーダルの本文の下に出す(サービスの案内やボタン)
+ *   履歴の行に href(同じオリジンの URL だけ)を入れると、対象がリンクになる。Account.onTarget = function (entry) {…} を入れると、押したときに呼ぶ
+ *   Template01 でない画面では、assets/ui_parts.css を読み込む(モーダルの中にだけ効く)
  *
  * WebAPI の形(どのサービスでも同じ。画面のログインから使う。APIキーでは呼べない):
  *   GET    {keys}        → {keys: [{id, label, role, createdAt, expiresAt, lastUsedAt}], myRole}(配列だけを返してもよい)
@@ -20,7 +23,7 @@
  *                          平文のキーは、この応答の 1 回だけ。admin のキーは発行できない。自分の権限より上のキーは 403
  *   DELETE {keys}/{id}   失効させる(自分のキーだけ)
  *   GET    {history}     → {entries: [{at, action, target, result, via}], actions: [{value, label}]}(配列だけを返してもよい)
- *                          自分の分だけ。result は success / denied / failed、via は screen / apikey
+ *                          自分の分だけ。result は success / denied / failed、via は screen / apikey。href(任意)は対象を開く URL
  */
 (function () {
 	"use strict";
@@ -32,7 +35,7 @@
 		{value: "30d", label: "30 日"},
 		{value: "90d", label: "90 日"},
 		{value: "1y", label: "1 年"},
-		{value: "none", label: "無期限(readonly だけ)", readonlyOnly: true}
+		{value: "none", label: "無期限(readonly だけ。イントラネットのサーバー間の通信用)", readonlyOnly: true}
 	];
 	var ROLES = {readonly: "読み取り専用", readwrite: "読み書き"};
 	var ROLE_DETAIL = {
@@ -48,7 +51,9 @@
 		keys: me.getAttribute("data-keys") || "./webapi/apikeys",
 		history: me.getAttribute("data-history") || "./webapi/history",
 		guide: me.getAttribute("data-guide"),
-		service: me.getAttribute("data-service") || document.title.replace(/^【開発モード】/, "").split("|")[0].trim(),
+		keysNote: me.getAttribute("data-keys-note"),       // APIキーの管理の下に出す案内(<template id="…"> の id)
+		historyNote: me.getAttribute("data-history-note"), // 自分の操作の履歴の下に出す案内(同じ)
+		service: me.getAttribute("data-service") || document.title.replace(/^【開発モード】/, "").split("|").pop().trim(),   // 題名は「画面の名前 | システムの名前」。後ろを取る
 		login: me.getAttribute("data-login") || "./",
 		demo: me.hasAttribute("data-demo")
 	};
@@ -66,7 +71,7 @@
 		history: {
 			actions: [{value: "login", label: "ログイン"}, {value: "upload", label: "登録"}, {value: "delete", label: "削除"}, {value: "apikey_issue", label: "APIキーの発行"}],
 			entries: [
-				{at: new Date(now - 15 * 60000).toISOString(), action: "upload", target: "report.html", result: "success", via: "apikey"},
+				{at: new Date(now - 15 * 60000).toISOString(), action: "upload", target: "report.html", result: "success", via: "apikey", href: "template_detail.html"},
 				{at: new Date(now - 2 * H).toISOString(), action: "apikey_issue", target: "AI エージェント用", result: "success", via: "screen"},
 				{at: new Date(now - 3 * H).toISOString(), action: "delete", target: "old.md", result: "denied", via: "apikey"},
 				{at: new Date(now - 5 * H).toISOString(), action: "login", target: null, result: "success", via: "screen"}
@@ -128,6 +133,7 @@
 		var m = UI.modal({titleHtml: "APIキーの管理", wide: true, body: "<div data-part=\"form\"></div><div data-part=\"issued\"></div><div data-part=\"msg\"></div><div data-part=\"list\"></div>",
 			onClose: function () { issued = null; }});
 		var box = m.box;
+		addNote(box, cfg.keysNote);
 		var part = function (n) { return box.querySelector("[data-part=" + n + "]"); };
 
 		var renderForm = function (myRole) {
@@ -152,7 +158,7 @@
 				var at = expiresAt(ex.value);
 				var text = "失効: " + (at ? esc(when(at)) : "なし(無期限)");
 				if (ex.value === "1y") text += "<span class=\"key_warn\">" + ICON_WARN + "長い期限。漏れたときの被害が長く続く。切れる前に発行し直す</span>";
-				if (ex.value === "none") text += "<span class=\"key_warn\">" + ICON_WARN + "失効しない。ほかのサービスが値を読みに来る連携だけに使い、使わなくなったら消す</span>";
+				if (ex.value === "none") text += "<span class=\"key_warn\">" + ICON_WARN + "失効しない。イントラネットの中の、サーバー間の通信(ほかのサービスが値を読みに来る連携)だけに使う。インターネットから届く所では使わない。使わなくなったら消す</span>";
 				part("form").querySelector("[data-f=hint]").innerHTML = text;
 			};
 			part("form").querySelectorAll("select").forEach(function (s) { s.addEventListener("change", hint); });
@@ -244,20 +250,56 @@
 		});
 	}
 
+	// サービスの案内(<template> の中身)を、モーダルの本文の下に足す。<template> の中はサービスが書いた物(利用者の文字ではない)
+	function addNote(box, id) {
+		var t = id ? document.getElementById(id) : null;
+		if (!t || !t.content) return;
+		var note = document.createElement("div");
+		note.className = "modal_note";
+		note.appendChild(t.content.cloneNode(true));
+		box.querySelector(".modal_body").appendChild(note);
+	}
+
+	// 履歴の対象のリンク: 同じオリジンの URL だけを受け付ける(外へ飛ばさない)
+	function safeHref(href) {
+		if (!href || typeof href !== "string") return null;
+		try {
+			var u = new URL(href, location.href);
+			return u.origin === location.origin && (u.protocol === "http:" || u.protocol === "https:") ? u.href : null;
+		} catch (e) { return null; }
+	}
+
 	// ---------------------------------------------------------------- 自分の操作の履歴
 	function openHistory() {
 		var m = UI.modal({titleHtml: "自分の操作の履歴", wide: true, body: "<div class=\"runtime_text\" style=\"margin-bottom:6px\">自分の分だけ(新しい順)。全員の分は、管理者が管理の画面の「監査ログ」で見る。</div><div data-part=\"list\">Checking…</div>"});
+		addNote(m.box, cfg.historyNote);
 		request("GET", cfg.history).then(function (d) {
 			var entries = Array.isArray(d) ? d : (d.entries || []);
 			var actions = (d && d.actions) || [];
 			var label = function (v) { for (var i = 0; i < actions.length; i += 1) if (actions[i].value === v) return actions[i].label; return v; };
+			var targetCell = function (e, i) {
+				if (!e.target) return "―";
+				var href = safeHref(e.href);
+				if (!href && typeof window.Account.onTarget !== "function") return esc(e.target);
+				return "<a href=\"" + esc(href || "#") + "\" data-target=\"" + i + "\">" + esc(e.target) + "</a>";
+			};
 			m.box.querySelector("[data-part=list]").innerHTML = "<div class=\"data_table_wrap\"><table class=\"data_table\"><thead><tr><th>日時</th><th>操作</th><th>対象</th><th>結果</th><th>経路</th></tr></thead><tbody>" +
-				(entries.map(function (e) {
+				(entries.map(function (e, i) {
 					var r = RESULT[e.result] || ["completed", "Success"];
 					return "<tr" + (e.result && e.result !== "success" ? " class=\"row_failed\"" : "") + "><td style=\"white-space:nowrap\">" + esc(when(e.at)) + "</td>" +
-						"<td>" + esc(label(e.action)) + "</td><td>" + (e.target ? esc(e.target) : "―") + "</td>" +
+						"<td>" + esc(label(e.action)) + "</td><td>" + targetCell(e, i) + "</td>" +
 						"<td><span class=\"status_badge " + r[0] + "\">" + r[1] + "</span></td><td>" + (e.via === "apikey" ? "APIキー" : "画面") + "</td></tr>";
 				}).join("") || "<tr><td colspan=\"5\" class=\"runtime_text\">記録なし</td></tr>") + "</tbody></table></div>";
+			// 対象を押したとき: Account.onTarget があれば、それを呼んで閉じる(同じページの中で開く画面向け)。無ければ href へ移る
+			m.box.querySelectorAll("[data-target]").forEach(function (a) {
+				a.addEventListener("click", function (ev) {
+					if (typeof window.Account.onTarget !== "function") return;
+					ev.preventDefault();
+					var entry = entries[Number(a.getAttribute("data-target"))];
+					m.close();
+					window.Account.onTarget(entry);
+				});
+			});
 		}, function (err) { m.close(); UI.error({body: "操作の履歴を読めなかった。", detail: err.message}); });
 	}
 
