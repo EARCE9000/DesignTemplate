@@ -587,8 +587,9 @@ body {
   .data_table thead th,
   .data_table tbody td { white-space: normal; }
 
-  /* 本文の左右パディングを詰める */
-  .flex_main { padding: 6px; }
+  /* 本文の左右パディングを詰める。中の広い物(表、題名の帯)に引っぱられて、ページ全体が横に広がらないようにする */
+  .flex_main { padding: 6px; min-width: 0; max-width: 100%; }
+  .item_title .title { white-space: normal; flex-wrap: wrap; }
 
   /* フィルタ: 期間ボタン列・検索欄を折り返す */
   .filter_group { flex-wrap: wrap; }
