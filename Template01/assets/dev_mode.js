@@ -33,6 +33,8 @@
 		var header = document.querySelector(".header");
 		var badge = document.querySelector(".dev_mode_badge");
 		if (header) header.classList.toggle("dev_mode", !!on);
+		// Template01 でない画面は、ヘッダーに当たる要素に class="dev_mode_header" を付けておく(ui_parts.css が紫にする)
+		document.querySelectorAll(".dev_mode_header").forEach(function (el) { el.classList.toggle("dev_mode", !!on); });
 		if (badge) badge.hidden = !on;
 		var title = document.title.indexOf(PREFIX) === 0 ? document.title.slice(PREFIX.length) : document.title;
 		document.title = on ? PREFIX + title : title;
@@ -50,7 +52,8 @@
 	var me = document.currentScript;
 	var url = me && me.getAttribute("data-check");
 	var demo = me && me.hasAttribute("data-demo") && /[?&]dev_mode=1\b/.test(location.search);   // テンプレートの見本だけ: ?dev_mode=1 で出す
-	var run = function () { if (demo) apply(true); else if (url) check(url); };
+	var isDemo = me && me.hasAttribute("data-demo");   // テンプレートの見本は、WebAPI を呼ばない
+	var run = function () { if (demo) apply(true); else if (url && !isDemo) check(url); };
 	if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run);
 	else run();
 })();

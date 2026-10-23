@@ -30,6 +30,7 @@ _template/
 │   ├─ components.css    共通部品(バッジ/テーブル/フォーム/フィルタ/タイル/モーダル/カード 等)
 │   ├─ dropzone.js       ファイルD&Dの共通挙動(全 .dropzone を自動初期化)
 │   ├─ ui.js             どの画面でも使う部品(確認とエラーのモーダル、右下のポップアップ、コピー、通知の On/Off)
+│   ├─ ui_parts.css      Template01 でない画面のための、部品だけの見た目(ui_scope の中にだけ効く)
 │   ├─ account.js        全員が使う画面(APIキーの管理、自分の操作の履歴)を、ヘッダーのアイコンからモーダルで開く
 │   ├─ admin.js          管理機能の画面(利用者/セッション/監査ログ/サーバー)を、共通の WebAPI の応答から描く
 │   └─ dev_mode.js       開発モード(認証なし)で動いていることを、しるし・ヘッダーの色・タブの題名で出す
@@ -42,6 +43,7 @@ _template/
 ├─ template_monitor.html      状態モニタ/ダッシュボード: カード+ステータス+自動更新
 ├─ template_status.html       状態画面: 完了/エラー(403/404/500の例)
 ├─ template_icons.html        アイコン一覧(SVG のコピー元)と、使い方の決まり
+├─ sample_ui_parts.html       見本: Template01 でない画面で、ui.js・account.js の部品を使う
 ├─ template_admin.html        管理機能の画面: 共通のタブ(利用者/セッション/監査ログ/サーバー)+サービスが足すタブ
 └─ AI_GUIDE.md                このファイル
 ```
@@ -336,6 +338,15 @@ UI.copy(button, text);                                                   // 「�
 - 発行した直後: キーを 1 回だけ出し、「APIキーをコピー」と「AIチャット貼り付け用にコピー」。閉じたら消える。
 - 貼り付け用の文面は、期限と権限をガイドの前に置き、`data-guide` の Markdown の `<APIキー>`・`<ベースURL>`・`<サービス名>` を置き換えて作る。ベースURL は開いている画面の URL から求める。
 - テンプレートの見本は `data-demo` で、中に持っている見本のデータで動く(サービスでは付けない)。
+- 期限の選択肢は 5 つ(当日限り・30 日・90 日・1 年・無期限)。**無期限は readonly だけで、イントラネットの中のサーバー間の通信のために残す**(インターネットから届く所では使わない)。
+- `data-keys-note` / `data-history-note` に `<template id="…">` の id を入れると、その中身をモーダルの下に出す(サービスの案内やボタン)。
+- 履歴の行に `href`(同じオリジンの URL だけ)があれば、対象がリンクになる。同じページの中で開く画面は `Account.onTarget = function (entry) {…}`。
+
+### Template01 でない画面で、部品を使う(`assets/ui_parts.css`)
+Template01 の CSS は `body` や素の `input`・`button` にも効くので、作りの違う既存の画面には入れられない。その画面では、代わりに `ui_parts.css` を読み込む。
+- `ui.js` が出す物(モーダル・ポップアップ)は、すべて `class="ui_scope"` の入れ物の中。`ui_parts.css` は、その中にだけ効く。画面の見た目は変えない。
+- 開発モードのしるし `dev_mode_badge` は、class にだけ効くので、どの画面のヘッダーにも置ける。ヘッダーの紫は、ヘッダーに当たる要素に `class="dev_mode_header"` を付ける。
+- 見本は `sample_ui_parts.html`(わざと別の見た目にした画面)。
 
 ### 開発モードの表示(`assets/dev_mode.js`)
 開発モード(`AUTH_DISABLED=true`。認証なしで入る)で動いているときだけ、次の 3 つを一緒に出す。消す設定は置かない。
