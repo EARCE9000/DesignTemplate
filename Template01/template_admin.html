@@ -240,22 +240,30 @@
           <!--
             共通の WebAPI({base}、{base}/components、{base}/packages?q=)を読んで、assets/admin_server.js が描く。
             サービスでは data-sample を消し、data-base="./webapi/server-status" と data-login(401 のときに移る先)を付ける。
-            並びは、上に設定(機能の On/Off、セキュリティ設定、サービスの設定の節)、下に状態(このサーバー、接続の確認、稼働中の部品の版、ライブラリ)。
+            並びは、上に「設定(管理者が変更可)」(機能の On/Off、サービスの設定の節)、下に「確認(表示だけ)」(このサーバー、接続の確認、セキュリティ設定、稼働中の部品の版、ライブラリ)。
             サービスが足す相手(外部連携など)は、components[] に足せば、そのまま出る(details の項目も出る)。
           -->
           <div class="admin_server" data-sample="admin_server_sample">
-            <!-- サービスが足す設定の節の例。admin_server_extra を付けて、この要素の中に書くと、設定の並び(機能の On/Off・セキュリティ設定)の後ろに差し込まれる。
+            <!-- サービスが足す設定の節の例。admin_server_extra を付けて、この要素の中に書くと、「設定(管理者が変更可)」の中(機能の On/Off の下)に差し込まれる。
                  変更の操作(切り替え、上限の変更など)は、ここに書く。状態の表示は、その下に共通のスクリプトが描く -->
             <div class="admin_server_extra">
-              <div class="panel_section_title">機能の切り替え(サービスが足した節の例)</div>
-              <div style="padding:4px 14px 14px;">
-                <label class="toggle_switch">
-                  <input type="checkbox" checked>
-                  <span class="toggle_track"></span>
-                  <span class="toggle_label">画面案(モックアップ)の登録を受け付ける</span>
-                </label>
-                <div class="form_hint">切り替えはすぐに反映、再起動は不要(複数台でも全台に反映)。切り替えは監査ログに記録。</div>
+              <div class="panel_section_title">API の回数の上限(サービスが足した節の例)</div>
+              <div class="data_table_wrap">
+                <table class="data_table">
+                  <thead><tr><th>対象</th><th>5 分あたりの上限</th><th>出どころ</th><th>操作</th></tr></thead>
+                  <tbody>
+                    <tr><td>ログインした人・APIキー(利用者ごと)</td>
+                      <td><input type="number" class="search_input" style="width:8em;" min="100" max="100000" step="100" value="1000"> 回</td>
+                      <td class="runtime_text">環境変数 RATE_LIMIT_AUTHENTICATED</td>
+                      <td style="white-space:nowrap;"><button type="button" class="search_btn">保存</button></td></tr>
+                    <tr><td>ログインしていない呼び出し(IP ごと)</td>
+                      <td><input type="number" class="search_input" style="width:8em;" min="10" max="10000" step="10" value="300"> 回</td>
+                      <td class="runtime_text">既定の値</td>
+                      <td style="white-space:nowrap;"><button type="button" class="search_btn">保存</button></td></tr>
+                  </tbody>
+                </table>
               </div>
+              <div class="form_hint" style="padding:4px 14px 0;">保存はすぐに反映(複数台でも 30 秒以内に全台に反映)。変更は監査ログに記録。</div>
             </div>
           </div>
         </div>
@@ -397,14 +405,25 @@
   ],
   "features": [
    {
+    "key": "mockups",
     "name": "画面案(モックアップ)の登録",
     "enabled": true,
-    "note": "管理の画面から切り替え可。すぐに反映"
+    "editable": true,
+    "note": "切り替えはすぐに反映、再起動は不要(複数台でも全台に反映)。監査ログに記録"
    },
    {
+    "key": "pdf_export",
+    "name": "PDF でダウンロード",
+    "enabled": false,
+    "editable": true,
+    "note": "変換のサービスを使う構成で使用"
+   },
+   {
+    "key": "semantic_search",
     "name": "意味検索",
     "enabled": false,
-    "note": "検索のサービスを使う構成でだけ使用可"
+    "editable": false,
+    "note": "検索のサービスの接続先(環境変数)が要る"
    }
   ]
  },

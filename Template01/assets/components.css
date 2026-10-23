@@ -755,6 +755,12 @@ body {
 /* サービスが足したタブ(共通のタブの後ろに並べる)。見た目は同じで、区切りの線だけ入れる */
 .tab_label.custom_first { margin-left: 10px; border-left: 1px solid #e8e8e8; }
 
+/* タブの中の、まとまりの見出し(「設定(管理者が変更可)」「確認(表示だけ)」など) */
+.panel_group            { display: flex; align-items: center; gap: 10px; margin: 18px 14px 0; padding: 6px 0 4px; border-bottom: 2px solid #ee7800;
+                          font-size: 9.5pt; font-weight: bold; color: #b05000; letter-spacing: 0.05em; }
+.panel_group:first-child { margin-top: 10px; }
+.panel_group .panel_section_action { margin-left: auto; font-weight: normal; letter-spacing: 0; }
+
 /* タブの中の説明文と、節の見出し */
 .panel_note             { padding: 10px 14px; font-size: 9.5pt; color: #555555; background-color: #fafafa; border-bottom: 1px solid #eeeeee; }
 .panel_note ul          { margin: 4px 0 0 1.2em; padding: 0; }

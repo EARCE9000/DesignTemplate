@@ -6,12 +6,14 @@
  *
  * 共通アーキテクチャ(構成 6.2・6.3 / 画面 8.1・8.2)で決めた WebAPI の応答を読んで、次を描く。
  * セキュリティの点検(部品の脆弱性、設定の抜け)のときに、この画面だけで判断できる情報量にする。
- * 上に設定、下に状態の表示を並べる。
- *   設定  1. 機能の On/Off
- *         2. セキュリティ設定(認証の方式、回数の上限、セッションの寿命、APIキーの最長の期限 など)
- *         3. サービスが足した設定の節(class="admin_server_extra" を付けて、この要素の中に書いた物)
- *   状態  4. このサーバー(版・ビルド・リビジョン・ビルド日時・起動日時・稼働時間・DB の種類と、DB のファイル)
- *         5. 接続の確認(接続先ごとに、状態・応答時間・最終成功・補足)
+ * 上に、管理者が変更できる設定。下に、確認するだけの表示を並べる。
+ *   設定(管理者が変更可)
+ *         1. 機能の On/Off(editable の機能は、その場で切り替え。PUT {base}/features/{key} {enabled})
+ *         2. サービスが足した設定の節(class="admin_server_extra" を付けて、この要素の中に書いた物。回数の上限の変更など)
+ *   確認(表示だけ)
+ *         3. このサーバー(版・ビルド・リビジョン・ビルド日時・起動日時・稼働時間・DB の種類と、DB のファイル)
+ *         4. 接続の確認(接続先ごとに、状態・応答時間・最終成功・補足)
+ *         5. セキュリティ設定(認証の方式、回数の上限、セッションの寿命、APIキーの最長の期限 など)
  *         6. 稼働中の部品の版(本体・DB・つながっている相手の、製品と版と土台。本体は V8・カーネル・CPU・メモリまで)
  *         7. 直接使っているライブラリと、部品表(名前で探す。入れ子に入った別の版も)
  *
@@ -28,11 +30,11 @@
  * サービスごとの足し方(カスタム化):
  *   - status.extra: [{label, value}] … 「このサーバー」に項目を足す
  *   - status.security: [{label, value, state, note}] … セキュリティ設定の行。state は ok / warn / bad / 省略
- *   - status.features: [{name, enabled, note}] … 機能の On/Off(ここでは読むだけ。切り替えはサービスの節で)
+ *   - status.features: [{key, name, enabled, editable, note}] … 機能の On/Off。editable が true なら、ここで切り替えられる
  *   - components[] にサービス独自の相手を足してよい(key は重ならない名前)。
  *     details: [{label, value}] を付けると、補足の欄にそのまま出す。知らない項目は読み飛ばす
  *   - サービスの設定の節(機能の切り替え、上限の変更など)は、class="admin_server_extra" を付けて、この要素の中に書く。
- *     描くときに残し、設定の並びの最後(セキュリティ設定の下)に差し込む。状態の表示の後ろに足したい物は、この要素の外に書く
+ *     描くときに残し、設定の並び(機能の On/Off の下)に差し込む。確認の表示の後ろに足したい物は、この要素の外に書く
  */
 (function () {
 	"use strict";
@@ -164,17 +166,19 @@
 		for (var i = 0; i < this.root.children.length; i += 1) {
 			if (this.root.children[i].classList.contains("admin_server_extra")) extras.push(this.root.children[i]);
 		}
-		// 上に設定(機能の On/Off、セキュリティ設定、サービスの設定の節)、下に状態の表示
+		// 上に、管理者が変更できる設定(機能の On/Off、サービスの設定の節)。下に、確認するだけの表示
 		this.root.innerHTML =
-			"<div class=\"panel_section_title\">機能の On/Off<span class=\"panel_section_action\"><a href=\"#\" data-act=\"reload\" style=\"font-size:9pt;color:#187FF5;text-decoration:none;\">" + REF + "再確認</a></span></div>" +
+			"<div class=\"panel_group\">設定(管理者が変更可)<span class=\"panel_section_action\"><a href=\"#\" data-act=\"reload\" style=\"font-size:9pt;color:#187FF5;text-decoration:none;\">" + REF + "再確認</a></span></div>" +
+			"<div class=\"panel_section_title\">機能の On/Off</div>" +
 			"<div data-part=\"features\"></div>" +
-			"<div class=\"panel_section_title\">セキュリティ設定</div><div data-part=\"security\"></div>" +
 			"<div data-part=\"extras\"></div>" +
+			"<div class=\"panel_group\">確認(表示だけ)</div>" +
 			"<div class=\"panel_section_title\">このサーバー</div>" +
 			"<div class=\"info_grid\" data-part=\"status\"></div>" +
 			"<div data-part=\"dbfiles\"></div>" +
 			"<div class=\"panel_section_title\">接続の確認<span class=\"panel_section_action runtime_text\" data-part=\"checked\"></span></div>" +
 			"<div data-part=\"connections\"></div>" +
+			"<div class=\"panel_section_title\">セキュリティ設定</div><div data-part=\"security\"></div>" +
 			"<div class=\"panel_section_title\">稼働中の部品の版</div><div data-part=\"components\"></div>" +
 			"<div class=\"panel_section_title\">ライブラリ(部品表)<span class=\"panel_section_action runtime_text\" data-part=\"pkgcount\"></span></div>" +
 			"<div class=\"filter_panel\"><div class=\"search_form\"><span class=\"filter_label\">部品の名前</span>" +
@@ -227,9 +231,45 @@
 				(LEVEL[r.state] ? badge(LEVEL[r.state]) : "") + "</td><td class=\"runtime_text\">" + esc(r.note || "") + "</td></tr>";
 		}), "セキュリティ設定の返却なし");
 
-		this.part("features").innerHTML = table(["機能", "状態", "補足"], (s.features || []).map(function (f) {
-			return "<tr><td>" + esc(f.name) + "</td><td>" + (f.enabled ? badge(["completed", "On"]) : badge(["unknown", "Off"])) + "</td><td class=\"runtime_text\">" + esc(f.note || "") + "</td></tr>";
-		}), "切り替え可能な機能なし");
+		// 切り替えられる機能(editable)はスイッチ、構成で決まる機能は On / Off の表示だけ
+		var features = s.features || [];
+		this.part("features").innerHTML = table(["機能", "状態", "補足"], features.map(function (f, i) {
+			var state = f.editable
+				? "<label class=\"toggle_switch\"><input type=\"checkbox\" data-feature=\"" + i + "\"" + (f.enabled ? " checked" : "") + ">" +
+				  "<span class=\"toggle_track\"></span><span class=\"toggle_label\"><span class=\"toggle_on\">On</span><span class=\"toggle_off\">Off</span></span></label>"
+				: (f.enabled ? badge(["completed", "On"]) : badge(["unknown", "Off"]));
+			return "<tr><td>" + esc(f.name) + "</td><td>" + state + "</td><td class=\"runtime_text\" data-feature-note=\"" + i + "\">" +
+				esc(f.note || "") + (f.editable ? "" : (f.note ? "。" : "") + "構成で決まる(ここでは変更不可)") + "</td></tr>";
+		}), "機能の切り替えなし");
+		var self = this;
+		var boxes = this.part("features").querySelectorAll("input[data-feature]");
+		for (var b = 0; b < boxes.length; b += 1) {
+			boxes[b].addEventListener("change", function (e) { self.setFeature(features[Number(e.target.getAttribute("data-feature"))], e.target); });
+		}
+	};
+
+	AdminServer.prototype.setFeature = function (feature, input) {
+		var self = this;
+		var note = this.root.querySelector("[data-feature-note=\"" + input.getAttribute("data-feature") + "\"]");
+		var enabled = input.checked;
+		if (this.sample) {
+			note.textContent = (feature.note ? feature.note + "。" : "") + "見本のため保存しない";
+			return;
+		}
+		input.disabled = true;
+		fetch(this.base + "/features/" + encodeURIComponent(feature.key), {
+			method: "PUT", credentials: "same-origin",
+			headers: {"Content-Type": "application/json", "Accept": "application/json"},
+			body: JSON.stringify({enabled: enabled})
+		}).then(function (res) {
+			if (res.status === 401) { window.location.href = self.login; throw new Error("unauthenticated"); }
+			if (!res.ok) throw new Error("HTTP " + res.status);
+			feature.enabled = enabled;
+			note.textContent = (feature.note ? feature.note + "。" : "") + "保存済み(" + when(new Date().toISOString()) + ")";
+		}).catch(function (err) {
+			input.checked = !enabled;     // 保存できなかったら、元に戻す
+			note.innerHTML = "<span class=\"msg_error\" style=\"display:inline-block;padding:2px 8px\">保存失敗: " + esc(err.message) + "</span>";
+		}).then(function () { input.disabled = false; });
 	};
 
 	AdminServer.prototype.showComponents = function (data) {
