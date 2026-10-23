@@ -31,16 +31,16 @@
   <!-- アイコン出典: Feather Icons (MIT) key / bell / settings / log-out、Lucide (ISC) history — THIRD_PARTY_NOTICES.md 参照 -->
   <div class="header_actions">
     <span class="header_user">{{ユーザー名}}</span>
-    <a href="#" class="header_icon_button" title="APIキー管理" aria-label="APIキー管理">
+    <a href="#" class="header_icon_button" title="APIキー管理" aria-label="APIキー管理" data-open="apikeys">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
     </a>
-    <a href="#" class="header_icon_button" title="通知" aria-label="通知">
+    <a href="#" class="header_icon_button" title="通知" aria-label="通知" data-toggle="notify" aria-pressed="true">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
     </a>
     <a href="template_admin.html" class="header_icon_button" title="管理" aria-label="管理">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </a>
-    <a href="#" class="header_icon_button" title="操作履歴" aria-label="操作履歴">
+    <a href="#" class="header_icon_button" title="操作履歴" aria-label="操作履歴" data-open="history">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>
     </a>
     <a href="#" class="header_icon_button" title="ログアウト" aria-label="ログアウト">
@@ -247,6 +247,23 @@
     </div>
 
     <div class="item_group" style="min-width:0;">
+      <div class="item_title"><div class="title">知らせ方の部品(assets/ui.js)</div></div>
+      <div style="padding:10px 14px;font-size:10pt;color:#444;">
+        押して動きを確かめる。確認とエラーはモーダル(Esc・枠の外・× で閉じる)、ほかの人の操作は右下のポップアップ(約 6 秒で消え、マウスを乗せている間は残る)。
+        ヘッダーのベルで、ポップアップの On / Off(このブラウザに保存)。鍵と時計のアイコンは、APIキーの管理と自分の操作の履歴(assets/account.js)を開く。
+      </div>
+      <div style="padding:0 14px 14px;display:flex;flex-wrap:wrap;gap:8px;">
+        <button type="button" class="search_btn" style="width:auto;height:auto;" onclick="UI.confirm({title:'削除の確認',danger:true,ok:'削除する',body:'「見本の資料」を削除。元に戻せない。'})">確認のモーダル</button>
+        <button type="button" class="search_btn" style="width:auto;height:auto;" onclick="UI.error({body:'保存できなかった。時間をおいて、もう一度。',detail:'HTTP 503 Service Unavailable'})">エラーのモーダル</button>
+        <button type="button" class="search_btn" style="width:auto;height:auto;" onclick="UI.toast({who:'user1@example.com',what:'更新',target:'報告書.md',href:'#'})">ポップアップ</button>
+        <button type="button" class="search_btn" style="width:auto;height:auto;" onclick="UI.toast({who:'admin@example.com',what:'登録',target:'夜間の取り込み結果.csv',viaApiKey:true})">ポップアップ(APIキー経由)</button>
+        <button type="button" class="search_btn" style="width:auto;height:auto;" onclick="UI.copy(this,'コピーの見本')">コピー</button>
+        <button type="button" class="search_btn" style="width:auto;height:auto;" data-open="apikeys">APIキーの管理</button>
+        <button type="button" class="search_btn" style="width:auto;height:auto;" data-open="history">自分の操作の履歴</button>
+      </div>
+    </div>
+
+    <div class="item_group" style="min-width:0;">
       <div class="item_title"><div class="title">開発モードの表示</div></div>
       <div style="padding:10px 14px;font-size:10pt;color:#444;">
         開発モード(<code>AUTH_DISABLED=true</code>)で動いているときだけ出す。check_access_token の <code>authDisabled</code> を見て、assets/dev_mode.js が付ける。消す設定は置かない。
@@ -270,6 +287,8 @@
   <span class="footer_version">Ver. {{バージョン}}</span>
 </div>
 
+<script src="./assets/ui.js"></script>
+<script src="./assets/account.js" data-keys="./webapi/apikeys" data-history="./webapi/history" data-guide="./webapi/usage.md" data-demo></script>
 <script src="./assets/dev_mode.js" data-check="./webapi/check_access_token" data-demo></script>
 </body>
 </html>

@@ -29,6 +29,8 @@ _template/
 │   ├─ design.css        基本スタイル(ヘッダ/メニューバー/ボタン/item_group) ※変更しない
 │   ├─ components.css    共通部品(バッジ/テーブル/フォーム/フィルタ/タイル/モーダル/カード 等)
 │   ├─ dropzone.js       ファイルD&Dの共通挙動(全 .dropzone を自動初期化)
+│   ├─ ui.js             どの画面でも使う部品(確認とエラーのモーダル、右下のポップアップ、コピー、通知の On/Off)
+│   ├─ account.js        全員が使う画面(APIキーの管理、自分の操作の履歴)を、ヘッダーのアイコンからモーダルで開く
 │   ├─ admin.js          管理機能の画面(利用者/セッション/監査ログ/サーバー)を、共通の WebAPI の応答から描く
 │   └─ dev_mode.js       開発モード(認証なし)で動いていることを、しるし・ヘッダーの色・タブの題名で出す
 ├─ template_menu.html         メニュー画面
@@ -303,6 +305,32 @@ CSSは3枚を**この順**で読み込む（後勝ちで上書きするため順
   - 機能の On/Off: `features` の `editable: true` の機能は、その場で切り替えるスイッチになる(`PUT {base}/features/{key}` に `{enabled}` を送る。失敗したら元に戻す)。構成で決まる機能は、表示だけ。
   - サービスの設定の節(回数の上限の変更など)は、`class="admin_server_extra"` を付けて `admin_server` の要素の中に書く。スクリプトが、機能の On/Off の下に差し込む。
   - テンプレートでは `data-sample` で、ページに埋めた見本の JSON から描いている。
+
+### どの画面でも使う部品(`assets/ui.js`)
+`</body>` の直前で読み込む(`account.js`・`admin.js` より先)。
+```js
+UI.confirm({title: "削除の確認", danger: true, ok: "削除する", body: "「" + UI.esc(name) + "」を削除。元に戻せない。"}).then(function (yes) { … });
+UI.error({body: "保存できなかった。", detail: err.message});             // 題名は ×の印と「エラー」
+UI.toast({who: "user1@example.com", what: "更新", target: "報告書.md", href: "…", viaApiKey: false});
+UI.copy(button, text);                                                   // 「コピーしました」に変えて戻す
+```
+- モーダルは Esc・枠の外・× で閉じる。Tab の移動はモーダルの中に閉じ、閉じたら元の場所へ戻る。重なったときは、いちばん上だけが閉じる。
+- 確認のモーダルは、最初にキャンセルが選ばれている(うっかり Enter を押しても実行しない)。壊す操作は `danger: true`(左にキャンセル、右に赤い実行)。
+- `body` は HTML。利用者が付けた文字は `UI.esc` で包む。`UI.toast` の文字は、すべて文字として入る。
+- ブラウザの `confirm` / `alert` は使わない。
+- 右下のポップアップは、約 6 秒で消え、マウスを乗せている間は残る。ヘッダーのベル(`data-toggle="notify"`)で On / Off(そのブラウザに保存)。自分が画面で行った操作は出さない。APIキー経由は `viaApiKey: true`。
+
+### APIキーの管理と、自分の操作の履歴(`assets/account.js`)
+ヘッダーの鍵のアイコンに `data-open="apikeys"`、時計のアイコンに `data-open="history"` を付けると、押したときにモーダルで開く。
+```html
+<script src="./assets/ui.js"></script>
+<script src="./assets/account.js" data-keys="./webapi/apikeys" data-history="./webapi/history" data-guide="./webapi/usage.md" data-service="サービス名" data-login="./"></script>
+```
+- WebAPI の形は、共通アーキテクチャの認証の資料 4.7(`GET`・`POST webapi/apikeys`、`DELETE webapi/apikeys/{id}`、`GET webapi/history`)。
+- 発行の欄: 期限(当日限りが既定。1 年と無期限は、その場に注意。無期限は readonly だけ)、権限、用途のメモ、発行。期限を選ぶと、失効の日時をその場に出す。
+- 発行した直後: キーを 1 回だけ出し、「APIキーをコピー」と「AIチャット貼り付け用にコピー」。閉じたら消える。
+- 貼り付け用の文面は、期限と権限をガイドの前に置き、`data-guide` の Markdown の `<APIキー>`・`<ベースURL>`・`<サービス名>` を置き換えて作る。ベースURL は開いている画面の URL から求める。
+- テンプレートの見本は `data-demo` で、中に持っている見本のデータで動く(サービスでは付けない)。
 
 ### 開発モードの表示(`assets/dev_mode.js`)
 開発モード(`AUTH_DISABLED=true`。認証なしで入る)で動いているときだけ、次の 3 つを一緒に出す。消す設定は置かない。
