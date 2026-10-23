@@ -24,6 +24,8 @@
 <!-- ===== ヘッダ(黒帯・ユーザー情報/ログアウト) ===== -->
 <div class="header">
   <div class="header_title">{{システム名}}</div>
+  <!-- 開発モードのしるし。authDisabled が true のときだけ出す(assets/dev_mode.js)。題字の要素の外に置く -->
+  <span class="dev_mode_badge" hidden title="認証を切って動いている(AUTH_DISABLED)。誰でも管理者として入れる。本番では設定しない"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>開発モード</span>
   <!-- たまにしか使わない機能は右上にアイコンで並べる(title がツールチップになる) -->
   <!-- 並べる順: APIキー → 通知 → 管理 → 操作履歴 → ログアウト(ログアウトは常に右端)。無い機能は詰め、権限のない利用者にはボタンごと出さない -->
   <!-- アイコン出典: Feather Icons (MIT) key / bell / settings / log-out、Lucide (ISC) history — THIRD_PARTY_NOTICES.md 参照 -->
@@ -114,5 +116,6 @@
   <span class="footer_version">Ver. {{バージョン}}</span>
 </div>
 
+<script src="./assets/dev_mode.js" data-check="./webapi/check_access_token" data-demo></script>
 </body>
 </html>

@@ -29,7 +29,8 @@ _template/
 │   ├─ design.css        基本スタイル(ヘッダ/メニューバー/ボタン/item_group) ※変更しない
 │   ├─ components.css    共通部品(バッジ/テーブル/フォーム/フィルタ/タイル/モーダル/カード 等)
 │   ├─ dropzone.js       ファイルD&Dの共通挙動(全 .dropzone を自動初期化)
-│   └─ admin.js          管理機能の画面(利用者/セッション/監査ログ/サーバー)を、共通の WebAPI の応答から描く
+│   ├─ admin.js          管理機能の画面(利用者/セッション/監査ログ/サーバー)を、共通の WebAPI の応答から描く
+│   └─ dev_mode.js       開発モード(認証なし)で動いていることを、しるし・ヘッダーの色・タブの題名で出す
 ├─ template_menu.html         メニュー画面
 ├─ template_list.html         一覧+絞り込み+検索(空状態の例も内包)
 ├─ template_form_simple.html  簡易登録(Queueレベル): 上で入力・下で直近一覧
@@ -302,6 +303,26 @@ CSSは3枚を**この順**で読み込む（後勝ちで上書きするため順
   - 機能の On/Off: `features` の `editable: true` の機能は、その場で切り替えるスイッチになる(`PUT {base}/features/{key}` に `{enabled}` を送る。失敗したら元に戻す)。構成で決まる機能は、表示だけ。
   - サービスの設定の節(回数の上限の変更など)は、`class="admin_server_extra"` を付けて `admin_server` の要素の中に書く。スクリプトが、機能の On/Off の下に差し込む。
   - テンプレートでは `data-sample` で、ページに埋めた見本の JSON から描いている。
+
+### 開発モードの表示(`assets/dev_mode.js`)
+開発モード(`AUTH_DISABLED=true`。認証なしで入る)で動いているときだけ、次の 3 つを一緒に出す。消す設定は置かない。
+- 題字の横のしるし `dev_mode_badge`(黄の札・太字・三角の印「開発モード」。ツールチップに理由)
+- ヘッダーの紫 `.header.dev_mode`
+- ブラウザのタブの題名の先頭の【開発モード】
+
+```html
+<div class="header">
+  <div class="header_title">{{システム名}}</div>
+  <span class="dev_mode_badge" hidden title="認証を切って動いている(AUTH_DISABLED)。誰でも管理者として入れる。本番では設定しない"><svg>…</svg>開発モード</span>
+  <div class="header_actions"> … </div>
+</div>
+…
+<script src="./assets/dev_mode.js" data-check="./webapi/check_access_token"></script>
+```
+- **しるしは、題字の要素の外**(題字のすぐ後ろ)に置く。題字の中に入れると、隠していても題字の文字に「開発モード」が混ざる。
+- サーバーは `check_access_token` の応答に `authDisabled`(true / false)を入れる。`data-check` を付けると、読み込んだときに確かめて出す。すでに呼んでいる画面は `DevMode.apply(res.authDisabled === true)`。
+- 画面の側で、ホスト名などから開発かどうかを推測しない。確かめられなかったときは、何も出さない。
+- テンプレートの見本は `?dev_mode=1` で見た目を確かめられる(`data-demo` の付いた見本だけの動き。サービスでは `data-demo` を付けない)。
 
 ### 状態モニタ カード
 ```html
