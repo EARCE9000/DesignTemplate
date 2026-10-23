@@ -5,13 +5,15 @@
  * Source: https://github.com/EARCE9000/DesignTemplate (published on GitHub)
  *
  * 共通アーキテクチャ(構成 6.2・6.3 / 画面 8.1・8.2)で決めた WebAPI の応答を読んで、次を描く。
- * 守りの点検(部品の脆弱性、設定の抜け)のときに、この画面だけで判断できる情報量にする。
- *   1. このサーバー(版・ビルド・リビジョン・ビルドした日時・起動した日時・動いている時間・DB の種類と、DB のファイル)
- *   2. 守りの設定(認証の方式、回数の上限、セッションの寿命、APIキーの最長の期限 など)
- *   3. 機能の On/Off
- *   4. つながりの確認(つながる先ごとに、状態・掛かった時間・最後に成功・補足)
- *   5. 動いている部品の版(本体・DB・つながっている相手の、製品と版と土台。本体は V8・カーネル・CPU・メモリまで)
- *   6. 直接使っている部品と、部品表(名前で探す。入れ子に入った別の版も)
+ * セキュリティの点検(部品の脆弱性、設定の抜け)のときに、この画面だけで判断できる情報量にする。
+ * 上に設定、下に状態の表示を並べる。
+ *   設定  1. 機能の On/Off
+ *         2. セキュリティ設定(認証の方式、回数の上限、セッションの寿命、APIキーの最長の期限 など)
+ *         3. サービスが足した設定の節(class="admin_server_extra" を付けて、この要素の中に書いた物)
+ *   状態  4. このサーバー(版・ビルド・リビジョン・ビルド日時・起動日時・稼働時間・DB の種類と、DB のファイル)
+ *         5. 接続の確認(接続先ごとに、状態・応答時間・最終成功・補足)
+ *         6. 稼働中の部品の版(本体・DB・つながっている相手の、製品と版と土台。本体は V8・カーネル・CPU・メモリまで)
+ *         7. 直接使っているライブラリと、部品表(名前で探す。入れ子に入った別の版も)
  *
  * 使い方(サービスの画面):
  *   <div class="admin_server" data-base="./webapi/server-status" data-login="./"></div>
@@ -25,12 +27,12 @@
  *
  * サービスごとの足し方(カスタム化):
  *   - status.extra: [{label, value}] … 「このサーバー」に項目を足す
- *   - status.security: [{label, value, state, note}] … 守りの設定の行。state は ok / warn / bad / 省略
+ *   - status.security: [{label, value, state, note}] … セキュリティ設定の行。state は ok / warn / bad / 省略
  *   - status.features: [{name, enabled, note}] … 機能の On/Off(ここでは読むだけ。切り替えはサービスの節で)
  *   - components[] にサービス独自の相手を足してよい(key は重ならない名前)。
  *     details: [{label, value}] を付けると、補足の欄にそのまま出す。知らない項目は読み飛ばす
- *   - この要素の後ろに、サービスが自分の節(上限の変更、機能の切り替えなど)を足してよい
- *     (この要素の外に書く。このスクリプトは、この要素の中しか書き換えない)
+ *   - サービスの設定の節(機能の切り替え、上限の変更など)は、class="admin_server_extra" を付けて、この要素の中に書く。
+ *     描くときに残し、設定の並びの最後(セキュリティ設定の下)に差し込む。状態の表示の後ろに足したい物は、この要素の外に書く
  */
 (function () {
 	"use strict";
@@ -157,12 +159,20 @@
 	AdminServer.prototype.render = function () {
 		var REF = "<svg class=\"inline_icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">" +
 			"<polyline points=\"23 4 23 10 17 10\"/><polyline points=\"1 20 1 14 7 14\"/><path d=\"M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15\"/></svg>";
+		// サービスが書いた設定の節(class="admin_server_extra")は、残して、設定の並びの最後に差し込む
+		var extras = [];
+		for (var i = 0; i < this.root.children.length; i += 1) {
+			if (this.root.children[i].classList.contains("admin_server_extra")) extras.push(this.root.children[i]);
+		}
+		// 上に設定(機能の On/Off、セキュリティ設定、サービスの設定の節)、下に状態の表示
 		this.root.innerHTML =
-			"<div class=\"panel_section_title\">このサーバー<span class=\"panel_section_action\"><a href=\"#\" data-act=\"reload\" style=\"font-size:9pt;color:#187FF5;text-decoration:none;\">" + REF + "再確認</a></span></div>" +
+			"<div class=\"panel_section_title\">機能の On/Off<span class=\"panel_section_action\"><a href=\"#\" data-act=\"reload\" style=\"font-size:9pt;color:#187FF5;text-decoration:none;\">" + REF + "再確認</a></span></div>" +
+			"<div data-part=\"features\"></div>" +
+			"<div class=\"panel_section_title\">セキュリティ設定</div><div data-part=\"security\"></div>" +
+			"<div data-part=\"extras\"></div>" +
+			"<div class=\"panel_section_title\">このサーバー</div>" +
 			"<div class=\"info_grid\" data-part=\"status\"></div>" +
 			"<div data-part=\"dbfiles\"></div>" +
-			"<div class=\"panel_section_title\">守りの設定</div><div data-part=\"security\"></div>" +
-			"<div class=\"panel_section_title\">機能の On/Off</div><div data-part=\"features\"></div>" +
 			"<div class=\"panel_section_title\">接続の確認<span class=\"panel_section_action runtime_text\" data-part=\"checked\"></span></div>" +
 			"<div data-part=\"connections\"></div>" +
 			"<div class=\"panel_section_title\">稼働中の部品の版</div><div data-part=\"components\"></div>" +
@@ -170,6 +180,8 @@
 			"<div class=\"filter_panel\"><div class=\"search_form\"><span class=\"filter_label\">部品の名前</span>" +
 			"<input type=\"search\" class=\"search_input\" data-part=\"q\" placeholder=\"例) openssl、express\" autocomplete=\"off\"></div></div>" +
 			"<div data-part=\"packages\"></div>";
+		var slot = this.part("extras");
+		extras.forEach(function (node) { slot.appendChild(node); });
 		var self = this;
 		this.root.querySelector("[data-act=reload]").addEventListener("click", function (e) { e.preventDefault(); self.load(); });
 		this.root.querySelector("[data-part=q]").addEventListener("input", function (e) {
@@ -213,7 +225,7 @@
 		this.part("security").innerHTML = table(["項目", "現在の値", "状態", "補足"], (s.security || []).map(function (r) {
 			return "<tr" + (r.state === "bad" ? " class=\"row_failed\"" : "") + "><td>" + esc(r.label) + "</td><td>" + esc(r.value) + "</td><td>" +
 				(LEVEL[r.state] ? badge(LEVEL[r.state]) : "") + "</td><td class=\"runtime_text\">" + esc(r.note || "") + "</td></tr>";
-		}), "守りの設定の返却なし");
+		}), "セキュリティ設定の返却なし");
 
 		this.part("features").innerHTML = table(["機能", "状態", "補足"], (s.features || []).map(function (f) {
 			return "<tr><td>" + esc(f.name) + "</td><td>" + (f.enabled ? badge(["completed", "On"]) : badge(["unknown", "Off"])) + "</td><td class=\"runtime_text\">" + esc(f.note || "") + "</td></tr>";

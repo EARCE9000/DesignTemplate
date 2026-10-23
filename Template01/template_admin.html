@@ -240,19 +240,23 @@
           <!--
             共通の WebAPI({base}、{base}/components、{base}/packages?q=)を読んで、assets/admin_server.js が描く。
             サービスでは data-sample を消し、data-base="./webapi/server-status" と data-login(401 のときに移る先)を付ける。
+            並びは、上に設定(機能の On/Off、セキュリティ設定、サービスの設定の節)、下に状態(このサーバー、接続の確認、稼働中の部品の版、ライブラリ)。
             サービスが足す相手(外部連携など)は、components[] に足せば、そのまま出る(details の項目も出る)。
           -->
-          <div class="admin_server" data-sample="admin_server_sample"></div>
-
-          <!-- サービスが足す節の例。共通の節(admin_server の要素)の後ろに置く。変更の操作は、ここに書く -->
-          <div class="panel_section_title">機能の切り替え(サービスが足した節の例)</div>
-          <div style="padding:4px 14px 14px;">
-            <label class="toggle_switch">
-              <input type="checkbox" checked>
-              <span class="toggle_track"></span>
-              <span class="toggle_label">画面案(モックアップ)の登録を受け付ける</span>
-            </label>
-            <div class="form_hint">切り替えはすぐに反映、再起動は不要(複数台でも全台に反映)。切り替えは監査ログに記録。</div>
+          <div class="admin_server" data-sample="admin_server_sample">
+            <!-- サービスが足す設定の節の例。admin_server_extra を付けて、この要素の中に書くと、設定の並び(機能の On/Off・セキュリティ設定)の後ろに差し込まれる。
+                 変更の操作(切り替え、上限の変更など)は、ここに書く。状態の表示は、その下に共通のスクリプトが描く -->
+            <div class="admin_server_extra">
+              <div class="panel_section_title">機能の切り替え(サービスが足した節の例)</div>
+              <div style="padding:4px 14px 14px;">
+                <label class="toggle_switch">
+                  <input type="checkbox" checked>
+                  <span class="toggle_track"></span>
+                  <span class="toggle_label">画面案(モックアップ)の登録を受け付ける</span>
+                </label>
+                <div class="form_hint">切り替えはすぐに反映、再起動は不要(複数台でも全台に反映)。切り替えは監査ログに記録。</div>
+              </div>
+            </div>
           </div>
         </div>
 
