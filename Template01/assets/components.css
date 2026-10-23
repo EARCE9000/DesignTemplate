@@ -54,7 +54,7 @@
   white-space: nowrap;
 }
 
-/* 開発モード(認証なしで入る)のしるしとヘッダーの色。assets/dev_mode.js が付け外しする。消す設定は置かない */
+/* 開発モード(認証なしで入る)のしるしとヘッダーの色。開発モードのときだけ、しるしの hidden を外し、.header に dev_mode を付ける。消す設定は置かない */
 .header.dev_mode { background-color: #4a1f6e; }
 .dev_mode_badge {
   display: inline-flex;
@@ -831,7 +831,7 @@ button.icon_button        { width: 28px; height: 26px; padding: 0; margin: 0; fo
 }
 
 
-/* ===== モーダルの部品(assets/ui.js) ================================== */
+/* ===== モーダルの部品(題名の × / 広いモーダル / エラーの詳細) ========= */
 .modal_title           { display: flex; align-items: center; gap: 8px; }
 .modal_title > span    { flex: 1; display: flex; align-items: center; }
 .modal_close           { width: 28px !important; height: 28px !important; padding: 0 !important; margin: 0; border: 0; background: transparent;
@@ -848,7 +848,7 @@ button.icon_button        { width: 28px; height: 26px; padding: 0; margin: 0; fo
 .search_btn.primary    { background-color: #187FF5; border-color: #187FF5; color: #ffffff; }
 .search_btn.primary:hover { background-color: #0f6ad8; color: #ffffff; }
 
-/* ===== 右下のポップアップ(assets/ui.js の UI.toast) ===================== */
+/* ===== 右下のポップアップ(toast_stack の中に toast。APIキー経由は via_api_key) */
 .toast_stack  { position: fixed; right: 16px; bottom: 16px; z-index: 2000; display: flex; flex-direction: column; gap: 8px; width: min(340px, calc(100vw - 32px)); }
 .toast        { display: block; padding: 10px 14px; border-radius: 8px; background-color: #2b2b2b; color: #ffffff; text-decoration: none;
                 box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25); font-size: 10pt; border-left: 4px solid #ee7800; }
@@ -861,7 +861,7 @@ button.icon_button        { width: 28px; height: 26px; padding: 0; margin: 0; fo
 .header_icon_button.is_off { opacity: 0.45; position: relative; }
 .header_icon_button.is_off::after { content: ""; position: absolute; left: 6px; right: 6px; top: 50%; border-top: 2px solid currentColor; transform: rotate(-35deg); }
 
-/* ===== APIキーの管理(assets/account.js) ============================== */
+/* ===== APIキーの管理(発行の欄・発行した直後の欄。見本は template_icons.html) */
 .key_form        { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 14px; }
 .key_form label  { display: flex; flex-direction: column; gap: 3px; font-size: 9pt; color: #555555; }
 .key_form .search_input { width: auto; min-width: 9em; }
@@ -875,7 +875,7 @@ button.icon_button        { width: 28px; height: 26px; padding: 0; margin: 0; fo
 .key_issued_actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 tr.row_expired td { color: #9a9a9a; }
 
-/* サーバーのタブの書き出しの欄(admin.js) */
+/* サーバーのタブの書き出しの欄(template_admin.html) */
 .export_bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 10px 14px 0; padding: 8px 12px; border: 1px dashed #d0d0d0; border-radius: 8px; background-color: #fcfcfc; }
 .export_bar > span:first-child { flex: 1; min-width: 14em; }
 .export_bar label { display: inline-flex; align-items: center; gap: 4px; }
